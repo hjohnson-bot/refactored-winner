@@ -1,0 +1,5 @@
+{
+  "run": "/knowify-report",
+  "cron": "0 8 * * *",
+  "description": "Runs /knowify-report every day at 8am"
+}
