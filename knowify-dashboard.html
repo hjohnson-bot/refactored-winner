@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Knowify Financials Dashboard</title>
+  <style>
+    /* ── Reset & Base ─────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+      background: #eef2ff;
+      color: #1f2937;
+      line-height: 1.5;
+    }
+
+    /* ── Header Banner ────────────────────────────────────────── */
+    .banner {
+      background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+      padding: 36px 0 28px;
+      text-align: center;
+    }
+    .banner h1 {
+      font-size: 44px;
+      font-weight: 800;
+      color: #fff;
+      font-style: italic;
+      letter-spacing: -0.5px;
+    }
+    .banner p {
+      color: #cbd5e1;
+      font-size: 16px;
+      margin-top: 6px;
+    }
+
+    /* ── Container ────────────────────────────────────────────── */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* ── Project Header ───────────────────────────────────────── */
+    .project-header {
+      display: flex;
+      align-items: center;
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 18px 24px;
+      margin-top: -18px;
+      position: relative;
+      z-index: 1;
+      gap: 18px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    .project-icon {
+      width: 72px;
+      height: 72px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: 700;
+      flex-shrink: 0;
+      text-align: center;
+    }
+    .project-icon .emoji { font-size: 26px; }
+    .project-icon .label { font-size: 10px; margin-top: 2px; }
+    .project-info { flex: 1; }
+    .project-info .tag {
+      font-size: 11px;
+      color: #6b7280;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 600;
+    }
+    .project-info .name {
+      font-size: 21px;
+      font-weight: 700;
+      color: #111827;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .project-info .name .edit-icon {
+      color: #6b7280;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .project-meta {
+      display: flex;
+      gap: 28px;
+      margin-top: 6px;
+      font-size: 13px;
+    }
+    .project-meta .meta-label {
+      font-size: 10px;
+      color: #6b7280;
+      text-transform: uppercase;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #f59e0b;
+      display: inline-block;
+      margin-right: 4px;
+      vertical-align: middle;
+    }
+    .header-actions {
+      display: flex;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+    .btn-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 8px;
+      border: 1px solid #d1d5db;
+      background: #fff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      color: #374151;
+    }
+    .btn-actions {
+      padding: 9px 18px;
+      border-radius: 8px;
+      border: none;
+      background: #2563eb;
+      color: #fff;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* ── Main Layout ──────────────────────────────────────────── */
+    .main-layout {
+      display: flex;
+      gap: 24px;
+      margin-top: 28px;
+      padding-bottom: 48px;
+    }
+
+    /* ── Sidebar Nav ──────────────────────────────────────────── */
+    .sidebar-nav {
+      width: 185px;
+      flex-shrink: 0;
+    }
+    .nav-item {
+      padding: 10px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-bottom: 2px;
+      transition: background 0.15s;
+    }
+    .nav-item:hover { background: #f0f4ff; }
+    .nav-item.active { background: #eff6ff; }
+    .nav-item .nav-label {
+      font-size: 14px;
+      font-weight: 500;
+      color: #374151;
+    }
+    .nav-item.active .nav-label {
+      font-weight: 700;
+      color: #2563eb;
+    }
+    .nav-item .nav-sub {
+      font-size: 11px;
+      color: #9ca3af;
+      margin-top: 1px;
+    }
+
+    /* ── Content Area ─────────────────────────────────────────── */
+    .content { flex: 1; min-width: 0; }
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 18px;
+    }
+    .section-header h2 {
+      font-size: 23px;
+      font-weight: 700;
+      color: #111827;
+    }
+    .section-header .collapse-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 4px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #374151;
+      cursor: pointer;
+    }
+    .section-header .collapse-row .arrow {
+      font-size: 10px;
+      color: #6b7280;
+    }
+    .btn-costing {
+      padding: 9px 22px;
+      border-radius: 8px;
+      border: 1.5px solid #2563eb;
+      background: #fff;
+      color: #2563eb;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    /* ── Summary Cards ────────────────────────────────────────── */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .card {
+      background: #fff;
+      border-radius: 10px;
+      padding: 22px 24px;
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+    .card .card-label {
+      font-size: 11px;
+      color: #6b7280;
+      text-transform: uppercase;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+    .card .card-value {
+      font-size: 28px;
+      font-weight: 700;
+      color: #111827;
+      margin-top: 4px;
+    }
+    .card .card-divider {
+      border-top: 1px solid #f3f4f6;
+      margin-top: 14px;
+      padding-top: 14px;
+    }
+    .card .card-sub-label {
+      font-size: 11px;
+      color: #6b7280;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+    .card .card-sub-value {
+      font-size: 16px;
+      font-weight: 600;
+      color: #374151;
+      margin-top: 3px;
+    }
+
+    /* ── Expense Bar Chart ────────────────────────────────────── */
+    .bar-chart {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      margin-top: 14px;
+    }
+    .bar-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .bar-label {
+      width: 95px;
+      font-size: 12px;
+      text-align: right;
+      color: #374151;
+      flex-shrink: 0;
+    }
+    .bar-track {
+      flex: 1;
+      height: 18px;
+      background: #f3f4f6;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .bar-fill {
+      height: 100%;
+      background: #2596be;
+      border-radius: 3px;
+      transition: width 0.6s ease;
+    }
+    .bar-fill.green { background: #178a6e; }
+    .bar-amount {
+      width: 80px;
+      font-size: 12px;
+      color: #374151;
+      flex-shrink: 0;
+    }
+
+    /* ── Margin Section ───────────────────────────────────────── */
+    .margin-section {
+      background: #fff;
+      border-radius: 10px;
+      padding: 26px;
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+    .margin-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+    }
+    .margin-headers {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .margin-actual .card-label {
+      font-size: 11px;
+      color: #6b7280;
+      text-transform: uppercase;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+    .margin-actual .card-value {
+      font-size: 28px;
+      font-weight: 700;
+      color: #111827;
+      margin-top: 4px;
+    }
+    .margin-budgeted {
+      text-align: right;
+    }
+    .margin-budgeted .card-label {
+      font-size: 11px;
+      color: #6b7280;
+      text-transform: uppercase;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+    .margin-budgeted .card-sub-value {
+      font-size: 16px;
+      font-weight: 600;
+      color: #374151;
+      margin-top: 6px;
+    }
+
+    /* ── Summary Table ────────────────────────────────────────── */
+    .summary-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    .summary-table td {
+      padding: 11px 10px;
+      border-bottom: 1px solid #f3f4f6;
+    }
+    .summary-table .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+    .summary-table .val {
+      text-align: right;
+      font-weight: 600;
+      color: #111827;
+    }
+
+    /* ── Responsive ───────────────────────────────────────────── */
+    @media (max-width: 900px) {
+      .cards-grid { grid-template-columns: 1fr; }
+      .margin-grid { grid-template-columns: 1fr; }
+      .main-layout { flex-direction: column; }
+      .sidebar-nav { width: 100%; display: flex; flex-wrap: wrap; gap: 4px; }
+      .nav-item { padding: 8px 12px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Banner ──────────────────────────────────────────────── -->
+  <div class="banner">
+    <h1>Financials Dashboard</h1>
+    <p>Track profit and progress with easy-to-read charts</p>
+  </div>
+
+  <!-- ── Project Header ──────────────────────────────────────── -->
+  <div class="container">
+    <div class="project-header">
+      <div class="project-icon">
+        <div>
+          <div class="emoji">&#128204;</div>
+          <div class="label">Project</div>
+        </div>
+      </div>
+      <div class="project-info">
+        <div class="tag">PROJECT</div>
+        <div class="name">
+          Sunset Plaza High School
+          <span class="edit-icon">&#9998;</span>
+        </div>
+        <div class="project-meta">
+          <div>
+            <div class="meta-label">STATUS</div>
+            <div><span class="status-dot"></span> In Progress</div>
+          </div>
+          <div>
+            <div class="meta-label">SERVICE ADDRESS</div>
+            <div>123 Sunset Blvd Mason Los Angeles, CA 90028</div>
+          </div>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button class="btn-icon">&#9998;</button>
+        <button class="btn-actions">Actions <span style="font-size:10px">&#9650;</span></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Main Content ────────────────────────────────────────── -->
+  <div class="container">
+    <div class="main-layout">
+
+      <!-- Sidebar Nav -->
+      <nav class="sidebar-nav" id="sidebarNav">
+        <div class="nav-item" data-nav="Dashboard">
+          <div class="nav-label">Dashboard</div>
+          <div class="nav-sub">Project Overview</div>
+        </div>
+        <div class="nav-item active" data-nav="Financials">
+          <div class="nav-label">Financials</div>
+          <div class="nav-sub">Overview</div>
+        </div>
+        <div class="nav-item" data-nav="Jobs">
+          <div class="nav-label">Jobs</div>
+          <div class="nav-sub">Booking, Jobs &amp; Appointments</div>
+        </div>
+        <div class="nav-item" data-nav="Estimates">
+          <div class="nav-label">Estimates</div>
+          <div class="nav-sub">Sold &amp; Unsold Estimates</div>
+        </div>
+        <div class="nav-item" data-nav="Purchasing">
+          <div class="nav-label">Purchasing</div>
+          <div class="nav-sub">Purchase Order</div>
+        </div>
+        <div class="nav-item" data-nav="Technicians">
+          <div class="nav-label">Technicians</div>
+          <div class="nav-sub">Team</div>
+        </div>
+        <div class="nav-item" data-nav="ProjectPlan">
+          <div class="nav-label">Project Plan</div>
+          <div class="nav-sub">Tasks &amp; Jobs</div>
+        </div>
+        <div class="nav-item" data-nav="Documents">
+          <div class="nav-label">Documents</div>
+          <div class="nav-sub">Tasks &amp; Jobs</div>
+        </div>
+        <div class="nav-item" data-nav="DailyLog">
+          <div class="nav-label">Daily Log</div>
+          <div class="nav-sub">Daily Log</div>
+        </div>
+        <div class="nav-item" data-nav="ChangeOrders">
+          <div class="nav-label">Change Orders</div>
+          <div class="nav-sub">Change Orders</div>
+        </div>
+      </nav>
+
+      <!-- Content -->
+      <div class="content">
+        <!-- Section Header -->
+        <div class="section-header">
+          <div>
+            <h2>Financials</h2>
+            <div class="collapse-row">
+              <span class="arrow">&#9660;</span>
+              <span>Project Summary</span>
+            </div>
+          </div>
+          <button class="btn-costing">Project Costing</button>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="cards-grid">
+          <!-- Contract Value -->
+          <div class="card">
+            <div class="card-label">CONTRACT VALUE</div>
+            <div class="card-value">$1,207,000.00</div>
+            <div class="card-divider">
+              <div class="card-sub-label">ACTUAL REVENUE</div>
+              <div class="card-sub-value">$247,000.00</div>
+            </div>
+          </div>
+
+          <!-- Total Budgeted Expenses -->
+          <div class="card">
+            <div class="card-label">TOTAL BUDGETED EXPENSES</div>
+            <div class="card-value">$847,450.00</div>
+            <div class="card-divider">
+              <div class="card-sub-label">COST TO COMPLETE</div>
+              <div class="card-sub-value">+$740,490.00</div>
+            </div>
+          </div>
+
+          <!-- Actual Expense -->
+          <div class="card">
+            <div class="card-label">ACTUAL EXPENSE</div>
+            <div class="card-value">$106,960.00</div>
+            <div class="bar-chart">
+              <div class="bar-row">
+                <span class="bar-label">Equipment</span>
+                <div class="bar-track"><div class="bar-fill" style="width:39%"></div></div>
+                <span class="bar-amount">$24,000.00</span>
+              </div>
+              <div class="bar-row">
+                <span class="bar-label">Labor</span>
+                <div class="bar-track"><div class="bar-fill" style="width:100%"></div></div>
+                <span class="bar-amount">$61,500.00</span>
+              </div>
+              <div class="bar-row">
+                <span class="bar-label">Materials</span>
+                <div class="bar-track"><div class="bar-fill" style="width:28.5%"></div></div>
+                <span class="bar-amount">$17,500.00</span>
+              </div>
+              <div class="bar-row">
+                <span class="bar-label">Sub-Contractor</span>
+                <div class="bar-track"><div class="bar-fill" style="width:4.9%"></div></div>
+                <span class="bar-amount">$3,000.00</span>
+              </div>
+              <div class="bar-row">
+                <span class="bar-label">Permit</span>
+                <div class="bar-track"><div class="bar-fill" style="width:1.6%"></div></div>
+                <span class="bar-amount">$960.00</span>
+              </div>
+              <div class="bar-row">
+                <span class="bar-label">Rentals</span>
+                <div class="bar-track"><div class="bar-fill" style="width:0.26%"></div></div>
+                <span class="bar-amount">$160.00</span>
+              </div>
+              <div class="bar-row">
+                <span class="bar-label">Other</span>
+                <div class="bar-track"><div class="bar-fill" style="width:0.08%"></div></div>
+                <span class="bar-amount">$50.00</span>
+              </div>
+              <div class="bar-row">
+                <span class="bar-label">Direct Costs</span>
+                <div class="bar-track"><div class="bar-fill green" style="width:0.08%"></div></div>
+                <span class="bar-amount">$50.00</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Margin Section -->
+        <div class="margin-section">
+          <div class="margin-grid">
+            <!-- Left: Margin + Donut -->
+            <div>
+              <div class="margin-headers">
+                <div class="margin-actual">
+                  <div class="card-label">ACTUAL MARGIN</div>
+                  <div class="card-value">$140,040.00</div>
+                </div>
+                <div class="margin-budgeted">
+                  <div class="card-label">BUDGETED MARGIN</div>
+                  <div class="card-sub-value">$359,550.00 (29.79%)</div>
+                </div>
+              </div>
+
+              <!-- SVG Donut Chart -->
+              <div style="display:flex;align-items:center;justify-content:center;margin-top:8px">
+                <svg width="170" height="170" viewBox="0 0 170 170">
+                  <!-- Background ring -->
+                  <circle cx="85" cy="85" r="62" fill="none" stroke="#e5e7eb" stroke-width="30"/>
+                  <!-- Revenue segment (teal) -->
+                  <circle cx="85" cy="85" r="62" fill="none" stroke="#2596be" stroke-width="30"
+                    stroke-dasharray="168.7 220.9"
+                    stroke-dashoffset="0"
+                    transform="rotate(-90 85 85)"/>
+                  <!-- Expense segment (dark teal) -->
+                  <circle cx="85" cy="85" r="62" fill="none" stroke="#1a7a9e" stroke-width="30"
+                    stroke-dasharray="84.5 305.1"
+                    stroke-dashoffset="-168.7"
+                    transform="rotate(-90 85 85)"/>
+                  <!-- Margin segment (purple) -->
+                  <circle cx="85" cy="85" r="62" fill="none" stroke="#7c5bbf" stroke-width="30"
+                    stroke-dasharray="136.4 253.2"
+                    stroke-dashoffset="-253.2"
+                    transform="rotate(-90 85 85)"/>
+                  <!-- Center text -->
+                  <text x="85" y="80" text-anchor="middle" dominant-baseline="middle"
+                    style="font-size:21px;font-weight:700;fill:#178a6e">56.70%</text>
+                </svg>
+              </div>
+            </div>
+
+            <!-- Right: Summary Table -->
+            <div style="display:flex;align-items:center">
+              <table class="summary-table">
+                <tbody>
+                  <tr>
+                    <td>Actual Revenue to date</td>
+                    <td class="val">$247,000.00</td>
+                  </tr>
+                  <tr>
+                    <td><span class="dot" style="background:#2596be"></span>Actual Expense to date</td>
+                    <td class="val">$106,960.00</td>
+                  </tr>
+                  <tr>
+                    <td><span class="dot" style="background:#7c5bbf"></span>Actual Margin $ to date</td>
+                    <td class="val">$140,040.00</td>
+                  </tr>
+                  <tr>
+                    <td>Actual Margin % to date</td>
+                    <td class="val">56.70%</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Interactive Nav ─────────────────────────────────────── -->
+  <script>
+    document.querySelectorAll('.nav-item').forEach(function(item) {
+      item.addEventListener('click', function() {
+        document.querySelectorAll('.nav-item').forEach(function(el) { el.classList.remove('active'); });
+        item.classList.add('active');
+      });
+    });
+  </script>
+
+</body>
+</html>
