@@ -1296,6 +1296,114 @@ a:hover {
     scroll-behavior: auto !important;
   }
 }
+
+/* ---------- Changes Over Time Table ---------- */
+.changes-controls {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+.changes-controls label {
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: #475569;
+}
+.changes-controls select {
+  padding: 6px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  background: #fff;
+}
+.changes-table-wrap {
+  overflow-x: auto;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: #fff;
+}
+.changes-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8125rem;
+  white-space: nowrap;
+}
+.changes-table thead {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+.changes-table th {
+  background: #f8fafc;
+  border-bottom: 2px solid #e2e8f0;
+  padding: 10px 14px;
+  text-align: left;
+  font-weight: 600;
+  color: #334155;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+.changes-table th.snapshot-col {
+  text-align: center;
+  min-width: 100px;
+  border-left: 1px solid #e2e8f0;
+}
+.changes-table th.frozen {
+  position: sticky;
+  left: 0;
+  z-index: 3;
+  background: #f8fafc;
+}
+.changes-table td {
+  padding: 8px 14px;
+  border-bottom: 1px solid #f1f5f9;
+  color: #334155;
+}
+.changes-table td.frozen {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background: #fff;
+  font-weight: 600;
+  max-width: 260px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.changes-table td.snapshot-val {
+  text-align: center;
+  border-left: 1px solid #f1f5f9;
+}
+.changes-table tbody tr:nth-child(even) td {
+  background: #f8fafc;
+}
+.changes-table tbody tr:nth-child(even) td.frozen {
+  background: #f8fafc;
+}
+.changes-table tbody tr:hover td {
+  background: #eff6ff;
+}
+.delta-positive {
+  color: #16a34a;
+  font-size: 0.6875rem;
+  font-weight: 600;
+}
+.delta-negative {
+  color: #dc2626;
+  font-size: 0.6875rem;
+  font-weight: 600;
+}
+.delta-neutral {
+  color: #94a3b8;
+  font-size: 0.6875rem;
+}
+.changes-empty {
+  text-align: center;
+  padding: 48px 24px;
+  color: #94a3b8;
+  font-size: 1rem;
+}
   </style>
 </head>
 <body>
@@ -1347,6 +1455,7 @@ a:hover {
       <button class="tab active" data-tab="projects" onclick="switchTab('projects')">Projects</button>
       <button class="tab" data-tab="charts" onclick="switchTab('charts')">Charts</button>
       <button class="tab" data-tab="trending" onclick="switchTab('trending')">Trending</button>
+      <button class="tab" data-tab="changes" onclick="switchTab('changes')">Changes Over Time</button>
     </div>
 
     <!-- Tab: Projects -->
@@ -1416,6 +1525,36 @@ a:hover {
           <select id="trendProjectSelect" multiple size="6" onchange="renderTrendComparison()"></select>
         </div>
         <canvas id="chartTrendCompare"></canvas>
+      </div>
+    </div>
+
+    <!-- Tab: Changes Over Time -->
+    <div class="tab-content" id="tabChanges" style="display:none">
+      <div class="changes-controls">
+        <label>Metric:</label>
+        <select id="changesMetric" onchange="renderChangesTable()">
+          <option value="projectedProfitability">Profitability %</option>
+          <option value="profitAmount">Profit $</option>
+          <option value="contractTotal">Contract Total</option>
+          <option value="totalCostActual">Actual Cost</option>
+          <option value="totalCostBudget">Cost Budget</option>
+          <option value="completion">Completion %</option>
+          <option value="wip">WIP</option>
+          <option value="invoiced">Invoiced</option>
+          <option value="totalCostCommitted">Committed Cost</option>
+        </select>
+        <label>Sort by:</label>
+        <select id="changesSort" onchange="renderChangesTable()">
+          <option value="latest">Latest Value</option>
+          <option value="change">Biggest Change</option>
+          <option value="name">Job Name</option>
+        </select>
+        <label>
+          <input type="checkbox" id="changesShowDelta" checked onchange="renderChangesTable()"> Show deltas
+        </label>
+      </div>
+      <div class="changes-table-wrap" id="changesTableWrap">
+        <div class="changes-empty">Upload at least 2 snapshots to see how metrics change over time.</div>
       </div>
     </div>
 
@@ -1842,6 +1981,7 @@ function switchTab(tab) {
   document.querySelector('.tab[data-tab="'+tab+'"]').classList.add('active');
   if (tab === 'charts') renderCharts();
   if (tab === 'trending') renderTrending();
+  if (tab === 'changes') renderChangesTable();
 }
 
 // ---------------------------------------------------------------------------
@@ -1856,6 +1996,8 @@ function renderAll() {
   if (chartsTab.style.display !== 'none') renderCharts();
   const trendTab = document.getElementById('tabTrending');
   if (trendTab.style.display !== 'none') renderTrending();
+  const changesTab = document.getElementById('tabChanges');
+  if (changesTab.style.display !== 'none') renderChangesTable();
 }
 
 // ---------------------------------------------------------------------------
@@ -2165,6 +2307,108 @@ function openModal(jobName) {
   }
 
   document.getElementById('modalOverlay').style.display = 'flex';
+}
+
+// ---------------------------------------------------------------------------
+// 13. Changes Over Time Table
+// ---------------------------------------------------------------------------
+function renderChangesTable() {
+  var wrap = document.getElementById('changesTableWrap');
+  var snapshots = loadSnapshots();
+
+  if (snapshots.length < 1) {
+    wrap.innerHTML = '<div class="changes-empty">Upload at least 2 snapshots to see how metrics change over time.</div>';
+    return;
+  }
+
+  var metric = document.getElementById('changesMetric').value;
+  var sortBy = document.getElementById('changesSort').value;
+  var showDelta = document.getElementById('changesShowDelta').checked;
+
+  var isCurrency = ['profitAmount','contractTotal','totalCostActual','totalCostBudget','wip','invoiced','totalCostCommitted'].indexOf(metric) !== -1;
+  var isPercent = ['projectedProfitability','completion'].indexOf(metric) !== -1;
+
+  function fmtVal(v) {
+    if (v === null || v === undefined) return '—';
+    if (isCurrency) return formatCurrency(v);
+    if (isPercent) return formatPercent(v);
+    return v.toFixed(2);
+  }
+
+  function fmtDelta(curr, prev) {
+    if (prev === null || prev === undefined || curr === null || curr === undefined) return '';
+    var d = curr - prev;
+    if (Math.abs(d) < 0.005) return '<span class="delta-neutral">—</span>';
+    var arrow = d > 0 ? '&#9650;' : '&#9660;';
+    var cls = d > 0 ? 'delta-positive' : 'delta-negative';
+    var val = isCurrency ? formatCurrency(Math.abs(d)) : Math.abs(d).toFixed(2) + (isPercent ? '%' : '');
+    return '<br><span class="' + cls + '">' + arrow + ' ' + val + '</span>';
+  }
+
+  // Collect all unique job names across all snapshots
+  var jobMap = {};
+  snapshots.forEach(function(s) {
+    s.projects.forEach(function(p) {
+      if (!jobMap[p.jobName]) jobMap[p.jobName] = {};
+      jobMap[p.jobName][s.id] = p[metric];
+    });
+  });
+
+  // Build rows
+  var rows = Object.keys(jobMap).map(function(name) {
+    var values = snapshots.map(function(s) { return jobMap[name][s.id] !== undefined ? jobMap[name][s.id] : null; });
+    var latestVal = null;
+    for (var i = values.length - 1; i >= 0; i--) { if (values[i] !== null) { latestVal = values[i]; break; } }
+    var firstVal = null;
+    for (var j = 0; j < values.length; j++) { if (values[j] !== null) { firstVal = values[j]; break; } }
+    var totalChange = (latestVal !== null && firstVal !== null) ? latestVal - firstVal : 0;
+    return { name: name, values: values, latestVal: latestVal, totalChange: totalChange };
+  });
+
+  // Sort
+  if (sortBy === 'latest') {
+    rows.sort(function(a, b) { return (b.latestVal || 0) - (a.latestVal || 0); });
+  } else if (sortBy === 'change') {
+    rows.sort(function(a, b) { return Math.abs(b.totalChange) - Math.abs(a.totalChange); });
+  } else {
+    rows.sort(function(a, b) { return a.name.localeCompare(b.name); });
+  }
+
+  // Build table HTML
+  var html = '<table class="changes-table">';
+  html += '<thead><tr>';
+  html += '<th class="frozen">Job Name</th>';
+  snapshots.forEach(function(s) {
+    html += '<th class="snapshot-col">' + s.label + '</th>';
+  });
+  if (snapshots.length > 1) {
+    html += '<th class="snapshot-col" style="background:#eff6ff;font-weight:700">Total Change</th>';
+  }
+  html += '</tr></thead>';
+
+  html += '<tbody>';
+  rows.forEach(function(row) {
+    html += '<tr>';
+    html += '<td class="frozen">' + row.name + '</td>';
+    row.values.forEach(function(val, idx) {
+      var delta = '';
+      if (showDelta && idx > 0 && val !== null && row.values[idx-1] !== null) {
+        delta = fmtDelta(val, row.values[idx-1]);
+      }
+      html += '<td class="snapshot-val">' + fmtVal(val) + delta + '</td>';
+    });
+    if (snapshots.length > 1) {
+      var tc = row.totalChange;
+      var tcClass = tc > 0.005 ? 'delta-positive' : tc < -0.005 ? 'delta-negative' : 'delta-neutral';
+      var tcArrow = tc > 0.005 ? '&#9650; ' : tc < -0.005 ? '&#9660; ' : '';
+      var tcFmt = isCurrency ? formatCurrency(Math.abs(tc)) : Math.abs(tc).toFixed(2) + (isPercent ? '%' : '');
+      html += '<td class="snapshot-val" style="background:#eff6ff"><span class="' + tcClass + '">' + tcArrow + tcFmt + '</span></td>';
+    }
+    html += '</tr>';
+  });
+  html += '</tbody></table>';
+
+  wrap.innerHTML = html;
 }
 
 function closeModal() {
