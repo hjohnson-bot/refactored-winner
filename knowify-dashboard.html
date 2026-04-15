@@ -1297,6 +1297,30 @@ a:hover {
   }
 }
 
+/* ---------- Snapshot Prompt ---------- */
+.snapshot-prompt {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 8px;
+  margin: 12px 0;
+  flex-wrap: wrap;
+}
+.snapshot-prompt label {
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: #1e40af;
+}
+.snapshot-prompt input[type="month"] {
+  padding: 6px 12px;
+  border: 1px solid #93c5fd;
+  border-radius: 6px;
+  font-size: 0.875rem;
+}
+
 /* ---------- Changes Over Time Table ---------- */
 .changes-controls {
   display: flex;
@@ -1656,57 +1680,97 @@ function formatPercent(num) {
 // ─── Excel Parsing ────────────────────────────────────────────────────────────
 
 function parseExcelData(workbook) {
-  const sheetName = workbook.SheetNames[0];
-  const sheet = workbook.Sheets[sheetName];
-  const rows = XLSX.utils.sheet_to_json(sheet, { defval: '' });
+  var sheetName = workbook.SheetNames[0];
+  var sheet = workbook.Sheets[sheetName];
+  var rows = XLSX.utils.sheet_to_json(sheet, { defval: '' });
+  if (rows.length === 0) return [];
 
-  const projects = rows.map(row => ({
-    jobName: row['Job name'] || '',
-    client: row['Client'] || '',
-    creationDate: row['Creation Date'] || '',
-    gcContract: row['GC Contract#'] || '',
-    contractNum: row['Contract #'] || '',
-    address: row['Address'] || '',
-    city: row['City'] || '',
-    state: row['State'] || '',
-    zip: row['ZIP'] || '',
-    startDate: row['Start Date'] || '',
-    endDate: row['End Date'] || '',
-    salesLead: row['Sales Lead'] || '',
-    projectManager: row['Project Manager'] || '',
-    classField: row['Class'] || '',
-    tags: row['Tags'] || '',
-    originalContract: parseCurrency(row['Original Contract'] || row[' Original Contract ']),
-    changeOrders: parseCurrency(row['Change Orders'] || row[' Change Orders ']),
-    contractTotal: parseCurrency(row['Contract Total'] || row[' Contract Total ']),
-    invoiced: parseCurrency(row['Invoiced'] || row[' Invoiced ']),
-    retainage: parseCurrency(row['Retainage'] || row[' Retainage ']),
-    invoicedPlusRetainage: parseCurrency(row['Invoiced plus retainage'] || row[' Invoiced plus retainage ']),
-    totalCostCommitted: parseCurrency(row['Total cost committed'] || row[' Total cost committed ']),
-    totalCostActual: parseCurrency(row['Total cost actual'] || row[' Total cost actual ']),
-    totalCostBudget: parseCurrency(row['Total cost budget'] || row[' Total cost budget ']),
-    laborBudget: parseCurrency(row['Labor budget'] || row[' Labor budget ']),
-    laborCommitted: parseCurrency(row['Labor Committed'] || row[' Labor Committed ']),
-    materialsBudget: parseCurrency(row['Materials budget'] || row[' Materials budget ']),
-    materialsCommitted: parseCurrency(row['Materials committed'] || row[' Materials committed ']),
-    materialsActual: parseCurrency(row['Materials Actual'] || row[' Materials Actual ']),
-    subsBudget: parseCurrency(row['Subs budget'] || row[' Subs budget ']),
-    subsCommitted: parseCurrency(row['Subs committed'] || row[' Subs committed ']),
-    subsActual: parseCurrency(row['Subs Actual'] || row[' Subs Actual ']),
-    equipmentBudget: parseCurrency(row['Equipment budget'] || row[' Equipment budget ']),
-    equipmentCommitted: parseCurrency(row['Equipment committed'] || row[' Equipment committed ']),
-    equipmentActual: parseCurrency(row['Equipment actual'] || row[' Equipment actual ']),
-    miscBudget: parseCurrency(row['Miscellanea budget'] || row[' Miscellanea budget ']),
-    miscCommitted: parseCurrency(row['Miscellanea committed'] || row[' Miscellanea committed ']),
-    miscActual: parseCurrency(row['Miscellanea actual'] || row[' Miscellanea actual ']),
-    wip: parseCurrency(row['WIP'] || row[' WIP ']),
-    profit: row['Profit'] || '',
-    profitAmount: parseCurrency(row['Profit Amount'] || row[' Profit Amount ']),
-    projectedProfitability: parsePercent(row['Projected Profitability']),
-    completion: parsePercent(row['Percentage of Completion']),
-  }));
+  // Build a fuzzy column lookup: normalize keys by trimming and lowercasing
+  function getVal(row, names) {
+    for (var i = 0; i < names.length; i++) {
+      // Try exact match first
+      if (row[names[i]] !== undefined && row[names[i]] !== '') return row[names[i]];
+    }
+    // Fuzzy match: compare trimmed lowercase keys
+    var rowKeys = Object.keys(row);
+    for (var i = 0; i < names.length; i++) {
+      var target = names[i].trim().toLowerCase().replace(/\s+/g, ' ');
+      for (var j = 0; j < rowKeys.length; j++) {
+        if (rowKeys[j].trim().toLowerCase().replace(/\s+/g, ' ') === target) {
+          return row[rowKeys[j]];
+        }
+      }
+    }
+    return '';
+  }
 
-  return projects.filter(p => p.jobName !== '');
+  var projects = rows.map(function(row) {
+    return {
+      jobName: getVal(row, ['Job name', 'Job Name', 'JobName', 'job name', 'Job']),
+      client: getVal(row, ['Client', 'client']),
+      creationDate: getVal(row, ['Creation Date', 'creation date']),
+      gcContract: getVal(row, ['GC Contract#', 'GC Contract']),
+      contractNum: getVal(row, ['Contract #', 'Contract Number']),
+      address: getVal(row, ['Address', 'address']),
+      city: getVal(row, ['City', 'city']),
+      state: getVal(row, ['State', 'state']),
+      zip: getVal(row, ['ZIP', 'Zip', 'zip']),
+      startDate: getVal(row, ['Start Date', 'start date']),
+      endDate: getVal(row, ['End Date', 'end date']),
+      salesLead: getVal(row, ['Sales Lead', 'sales lead']),
+      projectManager: getVal(row, ['Project Manager', 'project manager', 'PM']),
+      classField: getVal(row, ['Class', 'class']),
+      tags: getVal(row, ['Tags', 'tags']),
+      originalContract: parseCurrency(getVal(row, ['Original Contract', 'original contract'])),
+      changeOrders: parseCurrency(getVal(row, ['Change Orders', 'change orders'])),
+      contractTotal: parseCurrency(getVal(row, ['Contract Total', 'contract total'])),
+      contractTotalTaxes: parseCurrency(getVal(row, ['Contract Total Taxes', 'contract total taxes'])),
+      invoiced: parseCurrency(getVal(row, ['Invoiced', 'invoiced'])),
+      invoicedTaxes: parseCurrency(getVal(row, ['Invoiced Taxes', 'invoiced taxes'])),
+      retainage: parseCurrency(getVal(row, ['Retainage', 'retainage'])),
+      invoicedPlusRetainage: parseCurrency(getVal(row, ['Invoiced plus retainage', 'invoiced plus retainage'])),
+      paymentsInvoices: parseCurrency(getVal(row, ['Payments Invoices', 'payments invoices'])),
+      deposits: parseCurrency(getVal(row, ['Deposits', 'deposits'])),
+      billableItems: parseCurrency(getVal(row, ['Billable Items', 'billable items'])),
+      totalCostCommitted: parseCurrency(getVal(row, ['Total cost committed', 'total cost committed'])),
+      totalCostActual: parseCurrency(getVal(row, ['Total cost actual', 'total cost actual'])),
+      totalCostBudget: parseCurrency(getVal(row, ['Total cost budget', 'total cost budget'])),
+      totalBudgetCommittedRemaining: parseCurrency(getVal(row, ['Total budget committed remaining', 'total budget committed remaining'])),
+      totalBudgetActualRemaining: parseCurrency(getVal(row, ['Total budget actual remaining', 'total budget actual remaining'])),
+      laborBudget: parseCurrency(getVal(row, ['Labor budget', 'labor budget'])),
+      laborCommitted: parseCurrency(getVal(row, ['Labor Committed', 'labor committed'])),
+      laborCommittedRemaining: parseCurrency(getVal(row, ['Labor committed remaining', 'labor committed remaining'])),
+      laborHoursCommitted: parseCurrency(getVal(row, ['Labor hours committed', 'labor hours committed'])),
+      materialsBudget: parseCurrency(getVal(row, ['Materials budget', 'materials budget'])),
+      materialsCommitted: parseCurrency(getVal(row, ['Materials committed', 'materials committed'])),
+      materialsActual: parseCurrency(getVal(row, ['Materials Actual', 'materials actual'])),
+      materialsCommittedRemaining: parseCurrency(getVal(row, ['Materials committed remaining', 'materials committed remaining'])),
+      materialsActualRemaining: parseCurrency(getVal(row, ['Materials actual remaining', 'materials actual remaining'])),
+      subsBudget: parseCurrency(getVal(row, ['Subs budget', 'subs budget'])),
+      subsCommitted: parseCurrency(getVal(row, ['Subs committed', 'subs committed'])),
+      subsActual: parseCurrency(getVal(row, ['Subs Actual', 'subs actual'])),
+      subsCommittedRemaining: parseCurrency(getVal(row, ['Subs committed remaining', 'subs committed remaining'])),
+      subsActualRemaining: parseCurrency(getVal(row, ['Subs actual remaining', 'subs actual remaining'])),
+      equipmentBudget: parseCurrency(getVal(row, ['Equipment budget', 'equipment budget'])),
+      equipmentCommitted: parseCurrency(getVal(row, ['Equipment committed', 'equipment committed'])),
+      equipmentActual: parseCurrency(getVal(row, ['Equipment actual', 'equipment actual'])),
+      equipmentCommittedRemaining: parseCurrency(getVal(row, ['Equipment committed remaining', 'equipment committed remaining'])),
+      equipmentActualRemaining: parseCurrency(getVal(row, ['Equipment actual remaining', 'equipment actual remaining'])),
+      equipmentHoursCommitted: parseCurrency(getVal(row, ['Equipment Hours Committed', 'equipment hours committed'])),
+      miscBudget: parseCurrency(getVal(row, ['Miscellanea budget', 'miscellanea budget'])),
+      miscCommitted: parseCurrency(getVal(row, ['Miscellanea committed', 'miscellanea committed'])),
+      miscActual: parseCurrency(getVal(row, ['Miscellanea actual', 'miscellanea actual'])),
+      miscActualRemaining: parseCurrency(getVal(row, ['Misc. actual remaining', 'misc. actual remaining'])),
+      miscCommittedRemaining: parseCurrency(getVal(row, ['Misc. committed remaining', 'misc. committed remaining'])),
+      wip: parseCurrency(getVal(row, ['WIP', 'wip'])),
+      profit: getVal(row, ['Profit', 'profit']),
+      profitAmount: parseCurrency(getVal(row, ['Profit Amount', 'profit amount'])),
+      projectedProfitability: parsePercent(getVal(row, ['Projected Profitability', 'projected profitability'])),
+      completion: parsePercent(getVal(row, ['Percentage of Completion', 'percentage of completion'])),
+    };
+  });
+
+  return projects.filter(function(p) { return p.jobName !== '' && p.jobName !== undefined; });
 }
 
 // ─── LocalStorage Management ──────────────────────────────────────────────────
@@ -1930,14 +1994,30 @@ document.addEventListener('DOMContentLoaded', init);
 // 3. File Handling
 // ---------------------------------------------------------------------------
 function handleFile(file) {
-  const reader = new FileReader();
+  if (!file) { alert('No file selected'); return; }
+  var reader = new FileReader();
+  reader.onerror = function() { alert('Error reading file. Please try again.'); };
   reader.onload = function(e) {
-    const workbook = XLSX.read(e.target.result, {type: 'array'});
-    _pendingData = parseExcelData(workbook);
-    // Show snapshot date prompt
-    document.getElementById('snapshotPrompt').style.display = 'flex';
-    const now = new Date();
-    document.getElementById('snapshotDate').value = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0');
+    try {
+      var workbook = XLSX.read(e.target.result, {type: 'array'});
+      _pendingData = parseExcelData(workbook);
+      if (!_pendingData || _pendingData.length === 0) {
+        // Debug: show what columns were found
+        var sheetName = workbook.SheetNames[0];
+        var sheet = workbook.Sheets[sheetName];
+        var rows = XLSX.utils.sheet_to_json(sheet, { defval: '' });
+        var cols = rows.length > 0 ? Object.keys(rows[0]).join(', ') : 'NO ROWS FOUND';
+        alert('No projects found in file. Found ' + rows.length + ' rows.\n\nColumns detected:\n' + cols.substring(0, 500));
+        return;
+      }
+      alert('Parsed ' + _pendingData.length + ' projects successfully! Now select a date for this snapshot.');
+      // Show snapshot date prompt
+      document.getElementById('snapshotPrompt').style.display = 'flex';
+      var now = new Date();
+      document.getElementById('snapshotDate').value = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0');
+    } catch(err) {
+      alert('Error parsing Excel file: ' + err.message);
+    }
   };
   reader.readAsArrayBuffer(file);
 }
