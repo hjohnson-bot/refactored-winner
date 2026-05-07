@@ -1,0 +1,28 @@
+---
+import KnowifyDashboard from '../components/KnowifyDashboard.tsx';
+
+export const prerender = true;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Knowify Financials Dashboard</title>
+    <meta name="description" content="Project financials dashboard inspired by Knowify AJR - track profit and progress with easy-to-read charts" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <style>
+      /* Reset for standalone page - override dark theme */
+      html, body {
+        background-color: #f0f4ff !important;
+        color: #1f2937 !important;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <KnowifyDashboard client:load />
+  </body>
+</html>

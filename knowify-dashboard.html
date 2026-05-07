@@ -1,0 +1,2499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Knowify AJR Dashboard — Construction Project Profitability</title>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+/* ============================================================
+   Knowify Construction Financial Dashboard — Complete Styles
+   Theme: Light/White Professional | Accent: #2563eb
+   ============================================================ */
+
+/* ---------- Reset & Base ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont,
+    'Helvetica Neue', Arial, sans-serif;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: #1e293b;
+  background: #f1f5f9;
+}
+
+a {
+  color: #2563eb;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* ---------- 1. .app ---------- */
+.app {
+  min-height: 100vh;
+  background: #f1f5f9;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---------- 2. .banner ---------- */
+.banner {
+  background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 55%, #1d4ed8 100%);
+  color: #ffffff;
+  padding: 0;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.banner-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 0;
+  gap: 16px;
+}
+
+.banner-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #ffffff;
+  white-space: nowrap;
+}
+
+.banner-logo span {
+  color: #93c5fd;
+}
+
+.banner-subtitle {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.banner-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* ---------- 3. .container ---------- */
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+/* ---------- Main Content Padding ---------- */
+.main-content {
+  flex: 1;
+  padding-top: 24px;
+  padding-bottom: 40px;
+}
+
+/* ---------- 4. .upload-zone ---------- */
+.upload-zone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  height: 120px;
+  border: 2px dashed #94a3b8;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #64748b;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: border-color 0.18s ease, background 0.18s ease, color 0.18s ease;
+  outline: none;
+  user-select: none;
+}
+
+.upload-zone:hover {
+  border-color: #2563eb;
+  background: #eff6ff;
+  color: #2563eb;
+}
+
+.upload-zone:focus-visible {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25);
+}
+
+.upload-zone-icon {
+  width: 32px;
+  height: 32px;
+  opacity: 0.6;
+}
+
+.upload-zone-text {
+  font-weight: 500;
+  font-size: 0.875rem;
+}
+
+.upload-zone-hint {
+  font-size: 0.75rem;
+  color: #94a3b8;
+}
+
+/* ---------- 5. .upload-zone.drag-over ---------- */
+.upload-zone.drag-over {
+  border-color: #2563eb;
+  border-style: solid;
+  background: #dbeafe;
+  color: #1d4ed8;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.18);
+}
+
+/* ---------- 6. .snapshot-bar ---------- */
+.snapshot-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 12px 0;
+  border-bottom: 1px solid #e2e8f0;
+  margin-bottom: 20px;
+  min-height: 52px;
+}
+
+.snapshot-bar-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #64748b;
+  white-space: nowrap;
+  margin-right: 4px;
+}
+
+/* ---------- 7. .snapshot-pill ---------- */
+.snapshot-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #e2e8f0;
+  color: #475569;
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1.5px solid transparent;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease,
+    box-shadow 0.15s ease;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.snapshot-pill:hover {
+  background: #dbeafe;
+  color: #1d4ed8;
+  border-color: #bfdbfe;
+}
+
+.snapshot-pill.active {
+  background: #2563eb;
+  color: #ffffff;
+  border-color: #1d4ed8;
+  box-shadow: 0 1px 4px rgba(37, 99, 235, 0.35);
+}
+
+.snapshot-pill-remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.12);
+  font-size: 10px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.12s ease;
+}
+
+.snapshot-pill.active .snapshot-pill-remove {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.snapshot-pill-remove:hover {
+  background: rgba(0, 0, 0, 0.25);
+}
+
+/* ---------- 8. .kpi-grid ---------- */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+/* ---------- 9. .kpi-card ---------- */
+.kpi-card {
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 18px 20px;
+  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.08), 0 0 0 1px rgba(15, 23, 42, 0.04);
+  border-left: 4px solid #2563eb;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  position: relative;
+  overflow: hidden;
+  transition: box-shadow 0.18s ease, transform 0.18s ease;
+}
+
+.kpi-card:hover {
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.12), 0 0 0 1px rgba(15, 23, 42, 0.06);
+  transform: translateY(-1px);
+}
+
+.kpi-card--green  { border-left-color: #16a34a; }
+.kpi-card--yellow { border-left-color: #ca8a04; }
+.kpi-card--red    { border-left-color: #dc2626; }
+.kpi-card--purple { border-left-color: #7c3aed; }
+.kpi-card--blue   { border-left-color: #2563eb; }
+
+/* ---------- 10. .kpi-value ---------- */
+.kpi-card .kpi-value {
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1.1;
+  color: #0f172a;
+  letter-spacing: -0.03em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ---------- 11. .kpi-label ---------- */
+.kpi-card .kpi-label {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: #94a3b8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.kpi-card .kpi-delta {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #64748b;
+}
+
+/* ---------- 12. .tabs ---------- */
+.tabs {
+  display: flex;
+  align-items: flex-end;
+  gap: 0;
+  border-bottom: 2px solid #e2e8f0;
+  margin-bottom: 20px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.tabs::-webkit-scrollbar {
+  display: none;
+}
+
+/* ---------- 13. .tab ---------- */
+.tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 18px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #64748b;
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -2px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+  outline: none;
+  border-radius: 6px 6px 0 0;
+}
+
+.tab:hover {
+  color: #1e40af;
+  background: #eff6ff;
+}
+
+.tab.active {
+  color: #2563eb;
+  border-bottom-color: #2563eb;
+  font-weight: 600;
+}
+
+.tab:focus-visible {
+  box-shadow: 0 0 0 2px #93c5fd inset;
+}
+
+.tab-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: #e2e8f0;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: #475569;
+  line-height: 1;
+}
+
+.tab.active .tab-count {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+/* ---------- 14. .search-bar ---------- */
+.search-bar {
+  position: relative;
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.search-bar-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  color: #94a3b8;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.search-bar input[type='text'],
+.search-bar input[type='search'] {
+  width: 100%;
+  padding: 9px 14px 9px 38px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 0.875rem;
+  color: #1e293b;
+  background: #ffffff;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  -webkit-appearance: none;
+}
+
+.search-bar input[type='text']::placeholder,
+.search-bar input[type='search']::placeholder {
+  color: #94a3b8;
+}
+
+.search-bar input[type='text']:focus,
+.search-bar input[type='search']:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.18);
+}
+
+/* ---------- 15. .data-table ---------- */
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 10px;
+  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.08), 0 0 0 1px rgba(15, 23, 42, 0.04);
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #ffffff;
+  font-size: 0.875rem;
+  border-radius: 10px;
+  overflow: hidden;
+  min-width: 600px;
+}
+
+/* ---------- 16. .data-table th ---------- */
+.data-table thead {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.data-table th {
+  background: #f8fafc;
+  padding: 11px 14px;
+  text-align: left;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: #64748b;
+  border-bottom: 2px solid #e2e8f0;
+  cursor: pointer;
+  white-space: nowrap;
+  user-select: none;
+  transition: background 0.12s ease, color 0.12s ease;
+}
+
+.data-table th:hover {
+  background: #f1f5f9;
+  color: #2563eb;
+}
+
+.data-table th.sorted-asc,
+.data-table th.sorted-desc {
+  color: #2563eb;
+  background: #eff6ff;
+}
+
+.data-table th .sort-icon {
+  display: inline-block;
+  margin-left: 4px;
+  opacity: 0.4;
+  font-size: 0.625rem;
+  vertical-align: middle;
+}
+
+.data-table th.sorted-asc .sort-icon,
+.data-table th.sorted-desc .sort-icon {
+  opacity: 1;
+}
+
+/* ---------- 17. .data-table td ---------- */
+.data-table td {
+  padding: 10px 14px;
+  border-bottom: 1px solid #f1f5f9;
+  color: #334155;
+  vertical-align: middle;
+  white-space: nowrap;
+  max-width: 260px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.data-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Striped rows */
+.data-table tbody tr:nth-child(even) {
+  background: #f8fafc;
+}
+
+/* Row hover */
+.data-table tbody tr {
+  transition: background 0.12s ease;
+}
+
+.data-table tbody tr:hover {
+  background: #eff6ff;
+  cursor: pointer;
+}
+
+/* ---------- 18–20. Profit color classes ---------- */
+.profit-positive {
+  color: #16a34a;
+  font-weight: 600;
+}
+
+.profit-warning {
+  color: #ca8a04;
+  font-weight: 600;
+}
+
+.profit-negative {
+  color: #dc2626;
+  font-weight: 600;
+}
+
+/* ---------- 21. Badges ---------- */
+.badge-green,
+.badge-yellow,
+.badge-red {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.badge-green {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.badge-yellow {
+  background: #fef9c3;
+  color: #a16207;
+}
+
+.badge-red {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.badge-blue {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.badge-gray {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+/* ---------- 22. .charts-grid ---------- */
+.charts-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+/* ---------- 23. .chart-card ---------- */
+.chart-card {
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 20px 20px 16px;
+  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.08), 0 0 0 1px rgba(15, 23, 42, 0.04);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.chart-card-title {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #0f172a;
+  letter-spacing: -0.01em;
+}
+
+.chart-card-subtitle {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  margin-top: 2px;
+}
+
+.chart-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.chart-card-body {
+  min-height: 180px;
+  position: relative;
+}
+
+/* ---------- 24. .modal-overlay ---------- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  z-index: 1000;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 32px 16px 32px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  animation: overlay-fade-in 0.18s ease;
+}
+
+@keyframes overlay-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ---------- 25. .modal ---------- */
+.modal {
+  background: #ffffff;
+  border-radius: 14px;
+  width: 100%;
+  max-width: 900px;
+  max-height: calc(100vh - 64px);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  box-shadow: 0 20px 60px rgba(15, 23, 42, 0.25), 0 0 0 1px rgba(15, 23, 42, 0.06);
+  display: flex;
+  flex-direction: column;
+  animation: modal-slide-in 0.2s ease;
+  position: relative;
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
+}
+
+.modal::-webkit-scrollbar {
+  width: 6px;
+}
+
+.modal::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.modal::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+@keyframes modal-slide-in {
+  from { opacity: 0; transform: translateY(-16px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ---------- 26. .modal-header ---------- */
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid #e2e8f0;
+  position: sticky;
+  top: 0;
+  background: #ffffff;
+  z-index: 10;
+  border-radius: 14px 14px 0 0;
+}
+
+.modal-title {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: #0f172a;
+  letter-spacing: -0.02em;
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.modal-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: #f1f5f9;
+  color: #64748b;
+  cursor: pointer;
+  font-size: 1.1rem;
+  line-height: 1;
+  transition: background 0.13s ease, color 0.13s ease;
+  flex-shrink: 0;
+  outline: none;
+}
+
+.modal-close:hover {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.modal-close:focus-visible {
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.3);
+}
+
+.modal-body {
+  padding: 20px 24px 24px;
+  flex: 1;
+}
+
+.modal-footer {
+  padding: 14px 24px;
+  border-top: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  background: #f8fafc;
+  border-radius: 0 0 14px 14px;
+}
+
+/* ---------- 27. .detail-grid ---------- */
+.detail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+/* ---------- 28. .detail-card ---------- */
+.detail-card {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.detail-card-label {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: #94a3b8;
+}
+
+.detail-card-value {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: #0f172a;
+  letter-spacing: -0.01em;
+}
+
+.detail-card-sub {
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+/* ---------- 29. .progress-bar ---------- */
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: #e2e8f0;
+  border-radius: 999px;
+  overflow: hidden;
+  position: relative;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: #2563eb;
+  transition: width 0.4s ease;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.progress-bar--green  .progress-bar-fill { background: #16a34a; }
+.progress-bar--yellow .progress-bar-fill { background: #ca8a04; }
+.progress-bar--red    .progress-bar-fill { background: #dc2626; }
+.progress-bar--blue   .progress-bar-fill { background: #2563eb; }
+
+.progress-bar-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: #64748b;
+  margin-bottom: 4px;
+}
+
+.progress-bar-pct {
+  font-weight: 600;
+  color: #1e293b;
+}
+
+/* ---------- 30. .cost-row ---------- */
+.cost-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 0;
+}
+
+.cost-row-label {
+  flex: 0 0 140px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #475569;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cost-row-bar-track {
+  flex: 1;
+  height: 10px;
+  background: #e2e8f0;
+  border-radius: 999px;
+  overflow: hidden;
+  position: relative;
+}
+
+.cost-row-bar-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: #2563eb;
+  transition: width 0.4s ease;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.cost-row-amount {
+  flex: 0 0 90px;
+  text-align: right;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: #0f172a;
+  white-space: nowrap;
+}
+
+.cost-row + .cost-row {
+  border-top: 1px solid #f1f5f9;
+}
+
+/* ---------- 31. .btn (base) ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 18px;
+  border-radius: 7px;
+  border: 1.5px solid transparent;
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.25;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease,
+    box-shadow 0.15s ease, transform 0.1s ease;
+  outline: none;
+  user-select: none;
+  text-decoration: none;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.btn:active {
+  transform: scale(0.97);
+}
+
+.btn:focus-visible {
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.3);
+}
+
+/* ---------- 32. .btn-primary ---------- */
+.btn-primary {
+  background: #2563eb;
+  color: #ffffff;
+  border-color: #1d4ed8;
+}
+
+.btn-primary:hover {
+  background: #1d4ed8;
+  border-color: #1e40af;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.35);
+}
+
+/* ---------- 33. .btn-danger ---------- */
+.btn-danger {
+  background: #dc2626;
+  color: #ffffff;
+  border-color: #b91c1c;
+}
+
+.btn-danger:hover {
+  background: #b91c1c;
+  border-color: #991b1b;
+  box-shadow: 0 2px 8px rgba(220, 38, 38, 0.35);
+}
+
+/* Secondary / ghost variants (utility) */
+.btn-secondary {
+  background: #ffffff;
+  color: #374151;
+  border-color: #d1d5db;
+}
+
+.btn-secondary:hover {
+  background: #f9fafb;
+  border-color: #9ca3af;
+}
+
+.btn-ghost {
+  background: transparent;
+  color: #2563eb;
+  border-color: transparent;
+}
+
+.btn-ghost:hover {
+  background: #eff6ff;
+}
+
+/* ---------- 34. .btn-sm ---------- */
+.btn-sm {
+  padding: 5px 11px;
+  font-size: 0.8125rem;
+  border-radius: 5px;
+  gap: 4px;
+}
+
+/* ---------- 35. .trend-selector ---------- */
+.trend-selector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 14px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 10px;
+  background: #f8fafc;
+  margin-bottom: 16px;
+}
+
+.trend-selector-label {
+  width: 100%;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: #94a3b8;
+  margin-bottom: 4px;
+}
+
+.trend-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  border: 1.5px solid #e2e8f0;
+  background: #ffffff;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #475569;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
+  user-select: none;
+}
+
+.trend-option:hover {
+  border-color: #93c5fd;
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
+.trend-option.selected {
+  border-color: #2563eb;
+  background: #2563eb;
+  color: #ffffff;
+}
+
+.trend-option-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+/* ---------- 36. .empty-state ---------- */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 12px;
+  padding: 60px 24px;
+  color: #94a3b8;
+}
+
+.empty-state-icon {
+  width: 56px;
+  height: 56px;
+  opacity: 0.45;
+  margin-bottom: 4px;
+}
+
+.empty-state-title {
+  font-size: 1.0625rem;
+  font-weight: 600;
+  color: #64748b;
+  letter-spacing: -0.01em;
+}
+
+.empty-state-desc {
+  font-size: 0.875rem;
+  color: #94a3b8;
+  max-width: 380px;
+  line-height: 1.6;
+}
+
+/* ---------- Utility / Helpers ---------- */
+
+.section-title {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: #0f172a;
+  letter-spacing: -0.01em;
+  margin-bottom: 12px;
+}
+
+.section-divider {
+  border: none;
+  border-top: 1px solid #e2e8f0;
+  margin: 20px 0;
+}
+
+.text-right { text-align: right; }
+.text-center { text-align: center; }
+.font-mono { font-family: 'Cascadia Code', 'Fira Mono', Consolas, monospace; }
+
+.mt-0  { margin-top: 0; }
+.mt-8  { margin-top: 8px; }
+.mt-12 { margin-top: 12px; }
+.mt-16 { margin-top: 16px; }
+.mt-20 { margin-top: 20px; }
+.mt-24 { margin-top: 24px; }
+.mb-8  { margin-bottom: 8px; }
+.mb-12 { margin-bottom: 12px; }
+.mb-16 { margin-bottom: 16px; }
+.mb-20 { margin-bottom: 20px; }
+.mb-24 { margin-bottom: 24px; }
+
+/* Flex helpers */
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.items-center { align-items: center; }
+.justify-between { justify-content: space-between; }
+.gap-8  { gap: 8px; }
+.gap-12 { gap: 12px; }
+.gap-16 { gap: 16px; }
+.flex-1 { flex: 1; }
+.flex-shrink-0 { flex-shrink: 0; }
+
+/* Skeleton / loading pulse */
+.skeleton {
+  background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%);
+  background-size: 200% 100%;
+  animation: skeleton-pulse 1.4s ease infinite;
+  border-radius: 5px;
+}
+
+@keyframes skeleton-pulse {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Tooltip base */
+[data-tooltip] {
+  position: relative;
+  cursor: default;
+}
+
+[data-tooltip]::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1e293b;
+  color: #f1f5f9;
+  font-size: 0.72rem;
+  padding: 4px 9px;
+  border-radius: 5px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  z-index: 200;
+}
+
+[data-tooltip]:hover::after {
+  opacity: 1;
+}
+
+/* ---------- Responsive ---------- */
+
+/* 4-col breakpoint */
+@media (max-width: 1100px) {
+  .kpi-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Tablet: 768px */
+@media (max-width: 768px) {
+  .kpi-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .charts-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .detail-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .banner-subtitle {
+    display: none;
+  }
+
+  .tabs {
+    gap: 0;
+  }
+
+  .tab {
+    padding: 9px 13px;
+    font-size: 0.8125rem;
+  }
+
+  .modal-overlay {
+    padding: 16px 8px;
+  }
+
+  .modal {
+    border-radius: 10px;
+    max-height: calc(100vh - 32px);
+  }
+
+  .modal-header {
+    padding: 16px 16px 14px;
+    border-radius: 10px 10px 0 0;
+  }
+
+  .modal-body {
+    padding: 16px 16px 20px;
+  }
+
+  .modal-footer {
+    padding: 12px 16px;
+    border-radius: 0 0 10px 10px;
+  }
+
+  .cost-row-label {
+    flex: 0 0 100px;
+    font-size: 0.75rem;
+  }
+
+  .cost-row-amount {
+    flex: 0 0 70px;
+    font-size: 0.75rem;
+  }
+
+  .snapshot-bar {
+    padding: 8px 0;
+  }
+
+  .trend-selector {
+    padding: 10px;
+  }
+
+  .empty-state {
+    padding: 40px 16px;
+  }
+}
+
+/* Mobile: single column */
+@media (max-width: 480px) {
+  .kpi-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .kpi-card {
+    padding: 14px 14px;
+  }
+
+  .kpi-card .kpi-value {
+    font-size: 1.375rem;
+  }
+
+  .container {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .upload-zone {
+    height: 100px;
+    font-size: 0.8125rem;
+  }
+
+  .section-title {
+    font-size: 0.875rem;
+  }
+
+  .banner-logo {
+    font-size: 1.0625rem;
+  }
+
+  .btn {
+    padding: 7px 14px;
+    font-size: 0.8125rem;
+  }
+}
+
+/* Horizontal table scroll on mobile */
+@media (max-width: 768px) {
+  .table-wrapper {
+    border-radius: 8px;
+  }
+
+  .data-table {
+    font-size: 0.8125rem;
+    min-width: 560px;
+  }
+
+  .data-table th,
+  .data-table td {
+    padding: 8px 11px;
+  }
+}
+
+/* High-contrast / reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ---------- Snapshot Prompt ---------- */
+.snapshot-prompt {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 8px;
+  margin: 12px 0;
+  flex-wrap: wrap;
+}
+.snapshot-prompt label {
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: #1e40af;
+}
+.snapshot-prompt input[type="month"] {
+  padding: 6px 12px;
+  border: 1px solid #93c5fd;
+  border-radius: 6px;
+  font-size: 0.875rem;
+}
+
+/* ---------- Changes Over Time Table ---------- */
+.changes-controls {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+.changes-controls label {
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: #475569;
+}
+.changes-controls select {
+  padding: 6px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  background: #fff;
+}
+.changes-table-wrap {
+  overflow-x: auto;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: #fff;
+}
+.changes-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8125rem;
+  white-space: nowrap;
+}
+.changes-table thead {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+.changes-table th {
+  background: #f8fafc;
+  border-bottom: 2px solid #e2e8f0;
+  padding: 10px 14px;
+  text-align: left;
+  font-weight: 600;
+  color: #334155;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+.changes-table th.snapshot-col {
+  text-align: center;
+  min-width: 100px;
+  border-left: 1px solid #e2e8f0;
+}
+.changes-table th.frozen {
+  position: sticky;
+  left: 0;
+  z-index: 3;
+  background: #f8fafc;
+}
+.changes-table td {
+  padding: 8px 14px;
+  border-bottom: 1px solid #f1f5f9;
+  color: #334155;
+}
+.changes-table td.frozen {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background: #fff;
+  font-weight: 600;
+  max-width: 260px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.changes-table td.snapshot-val {
+  text-align: center;
+  border-left: 1px solid #f1f5f9;
+}
+.changes-table tbody tr:nth-child(even) td {
+  background: #f8fafc;
+}
+.changes-table tbody tr:nth-child(even) td.frozen {
+  background: #f8fafc;
+}
+.changes-table tbody tr:hover td {
+  background: #eff6ff;
+}
+.delta-positive {
+  color: #16a34a;
+  font-size: 0.6875rem;
+  font-weight: 600;
+}
+.delta-negative {
+  color: #dc2626;
+  font-size: 0.6875rem;
+  font-weight: 600;
+}
+.delta-neutral {
+  color: #94a3b8;
+  font-size: 0.6875rem;
+}
+.changes-empty {
+  text-align: center;
+  padding: 48px 24px;
+  color: #94a3b8;
+  font-size: 1rem;
+}
+  </style>
+</head>
+<body>
+<div class="app">
+
+  <!-- Banner -->
+  <div class="banner">
+    <h1>Knowify AJR Dashboard</h1>
+    <p>Construction Project Profitability Tracker</p>
+  </div>
+
+  <div class="container">
+
+    <!-- Upload Section -->
+    <div class="upload-zone" id="uploadZone">
+      <input type="file" id="fileInput" accept=".xlsx,.xls,.csv" hidden>
+      <p><strong>Drop Excel file here</strong> or <a href="#" onclick="document.getElementById('fileInput').click();return false">browse</a></p>
+      <p class="upload-sub">Accepts .xlsx, .xls from Knowify AJR export</p>
+    </div>
+
+    <!-- Snapshot date prompt (hidden by default) -->
+    <div id="snapshotPrompt" style="display:none" class="snapshot-prompt">
+      <label>Snapshot label for this upload:</label>
+      <input type="month" id="snapshotDate">
+      <button class="btn btn-primary" onclick="confirmUpload()">Save Snapshot</button>
+      <button class="btn" onclick="cancelUpload()">Cancel</button>
+    </div>
+
+    <!-- Snapshot Bar -->
+    <div class="snapshot-bar" id="snapshotBar"></div>
+
+    <!-- Action buttons row -->
+    <div style="display:flex;gap:8px;margin:12px 0">
+      <button class="btn btn-primary btn-sm" onclick="loadSampleData()">Load Sample Data</button>
+      <button class="btn btn-danger btn-sm" onclick="clearAllData()">Clear All Data</button>
+    </div>
+
+    <!-- KPI Cards -->
+    <div class="kpi-grid" id="kpiGrid">
+      <div class="kpi-card" id="kpiContracts"><div class="kpi-label">TOTAL CONTRACT VALUE</div><div class="kpi-value" id="kpiContractVal">--</div></div>
+      <div class="kpi-card" id="kpiProfit"><div class="kpi-label">TOTAL PROFIT</div><div class="kpi-value" id="kpiProfitVal">--</div></div>
+      <div class="kpi-card" id="kpiAvgProfit"><div class="kpi-label">AVG PROFITABILITY</div><div class="kpi-value" id="kpiAvgProfitVal">--</div></div>
+      <div class="kpi-card" id="kpiProjects"><div class="kpi-label">ACTIVE PROJECTS</div><div class="kpi-value" id="kpiProjectsVal">--</div></div>
+      <div class="kpi-card" id="kpiCompletion"><div class="kpi-label">AVG COMPLETION</div><div class="kpi-value" id="kpiCompletionVal">--</div></div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab active" data-tab="projects" onclick="switchTab('projects')">Projects</button>
+      <button class="tab" data-tab="charts" onclick="switchTab('charts')">Charts</button>
+      <button class="tab" data-tab="trending" onclick="switchTab('trending')">Trending</button>
+      <button class="tab" data-tab="changes" onclick="switchTab('changes')">Changes Over Time</button>
+    </div>
+
+    <!-- Tab: Projects -->
+    <div class="tab-content" id="tabProjects">
+      <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="Search projects by name, client, PM..." oninput="renderTable()">
+      </div>
+      <div style="overflow-x:auto">
+        <table class="data-table" id="projectsTable">
+          <thead>
+            <tr>
+              <th data-sort="jobName" onclick="sortTable('jobName')">Job Name &#x25B4;&#x25BE;</th>
+              <th data-sort="client" onclick="sortTable('client')">Client &#x25B4;&#x25BE;</th>
+              <th data-sort="projectManager" onclick="sortTable('projectManager')">PM &#x25B4;&#x25BE;</th>
+              <th data-sort="contractTotal" onclick="sortTable('contractTotal')">Contract Total &#x25B4;&#x25BE;</th>
+              <th data-sort="totalCostActual" onclick="sortTable('totalCostActual')">Actual Cost &#x25B4;&#x25BE;</th>
+              <th data-sort="profitAmount" onclick="sortTable('profitAmount')">Profit &#x25B4;&#x25BE;</th>
+              <th data-sort="projectedProfitability" onclick="sortTable('projectedProfitability')">Profitability % &#x25B4;&#x25BE;</th>
+              <th data-sort="completion" onclick="sortTable('completion')">Completion % &#x25B4;&#x25BE;</th>
+              <th data-sort="wip" onclick="sortTable('wip')">WIP &#x25B4;&#x25BE;</th>
+            </tr>
+          </thead>
+          <tbody id="projectsBody"></tbody>
+        </table>
+      </div>
+      <div class="empty-state" id="emptyState">No data loaded. Upload an Excel file or click "Load Sample Data" to get started.</div>
+    </div>
+
+    <!-- Tab: Charts -->
+    <div class="tab-content" id="tabCharts" style="display:none">
+      <div class="charts-grid">
+        <div class="chart-card">
+          <h3>Profitability Distribution</h3>
+          <canvas id="chartProfitDist"></canvas>
+        </div>
+        <div class="chart-card">
+          <h3>Portfolio Cost Breakdown</h3>
+          <canvas id="chartCostBreakdown"></canvas>
+        </div>
+        <div class="chart-card">
+          <h3>Top 10 Most Profitable</h3>
+          <canvas id="chartTop10"></canvas>
+        </div>
+        <div class="chart-card">
+          <h3>Bottom 10 Least Profitable</h3>
+          <canvas id="chartBottom10"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab: Trending -->
+    <div class="tab-content" id="tabTrending" style="display:none">
+      <div class="charts-grid">
+        <div class="chart-card" style="grid-column:1/-1">
+          <h3>Portfolio Profitability Over Time</h3>
+          <canvas id="chartTrendProfit"></canvas>
+        </div>
+        <div class="chart-card" style="grid-column:1/-1">
+          <h3>Total Contract Value Over Time</h3>
+          <canvas id="chartTrendContract"></canvas>
+        </div>
+      </div>
+      <div class="chart-card" style="margin-top:16px">
+        <h3>Compare Projects Over Time</h3>
+        <div class="trend-selector">
+          <label>Select projects to compare:</label>
+          <select id="trendProjectSelect" multiple size="6" onchange="renderTrendComparison()"></select>
+        </div>
+        <canvas id="chartTrendCompare"></canvas>
+      </div>
+    </div>
+
+    <!-- Tab: Changes Over Time -->
+    <div class="tab-content" id="tabChanges" style="display:none">
+      <div class="changes-controls">
+        <label>Metric:</label>
+        <select id="changesMetric" onchange="renderChangesTable()">
+          <option value="projectedProfitability">Profitability %</option>
+          <option value="profitAmount">Profit $</option>
+          <option value="contractTotal">Contract Total</option>
+          <option value="totalCostActual">Actual Cost</option>
+          <option value="totalCostBudget">Cost Budget</option>
+          <option value="completion">Completion %</option>
+          <option value="wip">WIP</option>
+          <option value="invoiced">Invoiced</option>
+          <option value="totalCostCommitted">Committed Cost</option>
+        </select>
+        <label>Sort by:</label>
+        <select id="changesSort" onchange="renderChangesTable()">
+          <option value="latest">Latest Value</option>
+          <option value="change">Biggest Change</option>
+          <option value="name">Job Name</option>
+        </select>
+        <label>
+          <input type="checkbox" id="changesShowDelta" checked onchange="renderChangesTable()"> Show deltas
+        </label>
+      </div>
+      <div class="changes-table-wrap" id="changesTableWrap">
+        <div class="changes-empty">Upload at least 2 snapshots to see how metrics change over time.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Project Detail Modal -->
+  <div class="modal-overlay" id="modalOverlay" style="display:none" onclick="closeModal()">
+    <div class="modal" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h2 id="modalTitle">Project Detail</h2>
+        <button class="btn btn-sm" onclick="closeModal()">&times;</button>
+      </div>
+      <div id="modalBody">
+        <!-- Info row -->
+        <div class="detail-grid" id="modalInfo"></div>
+        <!-- Financial cards -->
+        <div class="kpi-grid" id="modalKpis" style="margin:16px 0"></div>
+        <!-- Cost breakdown -->
+        <h3 style="margin:16px 0 8px">Cost Breakdown (Budget vs Actual vs Committed)</h3>
+        <div id="modalCosts"></div>
+        <!-- Completion bar -->
+        <h3 style="margin:16px 0 8px">Completion</h3>
+        <div class="progress-bar" id="modalProgress"></div>
+        <!-- Project trend (if multiple snapshots) -->
+        <div id="modalTrendSection" style="margin-top:16px;display:none">
+          <h3>Profitability Trend</h3>
+          <canvas id="chartModalTrend"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+  <script>
+// ─── Currency / Number Parsing ───────────────────────────────────────────────
+
+function parseCurrency(val) {
+  if (val === null || val === undefined || val === '') return 0;
+  if (typeof val === 'number') return val;
+
+  let str = String(val).trim();
+
+  // Handle parentheses for negatives: ($1,234.56) or (1,234.56)
+  const isNegative = str.startsWith('(') && str.endsWith(')');
+  if (isNegative) {
+    str = str.slice(1, -1);
+  }
+
+  // Strip $, commas, whitespace, and % sign
+  str = str.replace(/[$,%\s]/g, '');
+
+  const result = parseFloat(str);
+  if (isNaN(result)) return 0;
+  return isNegative ? -result : result;
+}
+
+function parsePercent(val) {
+  if (val === null || val === undefined || val === '') return 0;
+  if (typeof val === 'number') return val;
+
+  let str = String(val).trim();
+
+  // Handle parentheses for negatives
+  const isNegative = str.startsWith('(') && str.endsWith(')');
+  if (isNegative) {
+    str = str.slice(1, -1);
+  }
+
+  // Strip %, $, commas, and whitespace
+  str = str.replace(/[%$,\s]/g, '');
+
+  const result = parseFloat(str);
+  if (isNaN(result)) return 0;
+  return isNegative ? -result : result;
+}
+
+function formatCurrency(num) {
+  if (typeof num !== 'number' || isNaN(num)) num = 0;
+
+  const negative = num < 0;
+  const abs = Math.abs(num);
+
+  const formatted = abs.toLocaleString('en-US', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+
+  if (negative) {
+    return '-$' + formatted;
+  }
+  return '$' + formatted;
+}
+
+function formatPercent(num) {
+  if (typeof num !== 'number' || isNaN(num)) num = 0;
+  return num.toFixed(2) + '%';
+}
+
+// ─── Excel Parsing ────────────────────────────────────────────────────────────
+
+function parseExcelData(workbook) {
+  var sheetName = workbook.SheetNames[0];
+  var sheet = workbook.Sheets[sheetName];
+  var rows = XLSX.utils.sheet_to_json(sheet, { defval: '' });
+  if (rows.length === 0) return [];
+
+  // Build a fuzzy column lookup: normalize keys by trimming and lowercasing
+  function getVal(row, names) {
+    for (var i = 0; i < names.length; i++) {
+      // Try exact match first
+      if (row[names[i]] !== undefined && row[names[i]] !== '') return row[names[i]];
+    }
+    // Fuzzy match: compare trimmed lowercase keys
+    var rowKeys = Object.keys(row);
+    for (var i = 0; i < names.length; i++) {
+      var target = names[i].trim().toLowerCase().replace(/\s+/g, ' ');
+      for (var j = 0; j < rowKeys.length; j++) {
+        if (rowKeys[j].trim().toLowerCase().replace(/\s+/g, ' ') === target) {
+          return row[rowKeys[j]];
+        }
+      }
+    }
+    return '';
+  }
+
+  var projects = rows.map(function(row) {
+    return {
+      jobName: getVal(row, ['Job name', 'Job Name', 'JobName', 'job name', 'Job']),
+      client: getVal(row, ['Client', 'client']),
+      creationDate: getVal(row, ['Creation Date', 'creation date']),
+      gcContract: getVal(row, ['GC Contract#', 'GC Contract']),
+      contractNum: getVal(row, ['Contract #', 'Contract Number']),
+      address: getVal(row, ['Address', 'address']),
+      city: getVal(row, ['City', 'city']),
+      state: getVal(row, ['State', 'state']),
+      zip: getVal(row, ['ZIP', 'Zip', 'zip']),
+      startDate: getVal(row, ['Start Date', 'start date']),
+      endDate: getVal(row, ['End Date', 'end date']),
+      salesLead: getVal(row, ['Sales Lead', 'sales lead']),
+      projectManager: getVal(row, ['Project Manager', 'project manager', 'PM']),
+      classField: getVal(row, ['Class', 'class']),
+      tags: getVal(row, ['Tags', 'tags']),
+      originalContract: parseCurrency(getVal(row, ['Original Contract', 'original contract'])),
+      changeOrders: parseCurrency(getVal(row, ['Change Orders', 'change orders'])),
+      contractTotal: parseCurrency(getVal(row, ['Contract Total', 'contract total'])),
+      contractTotalTaxes: parseCurrency(getVal(row, ['Contract Total Taxes', 'contract total taxes'])),
+      invoiced: parseCurrency(getVal(row, ['Invoiced', 'invoiced'])),
+      invoicedTaxes: parseCurrency(getVal(row, ['Invoiced Taxes', 'invoiced taxes'])),
+      retainage: parseCurrency(getVal(row, ['Retainage', 'retainage'])),
+      invoicedPlusRetainage: parseCurrency(getVal(row, ['Invoiced plus retainage', 'invoiced plus retainage'])),
+      paymentsInvoices: parseCurrency(getVal(row, ['Payments Invoices', 'payments invoices'])),
+      deposits: parseCurrency(getVal(row, ['Deposits', 'deposits'])),
+      billableItems: parseCurrency(getVal(row, ['Billable Items', 'billable items'])),
+      totalCostCommitted: parseCurrency(getVal(row, ['Total cost committed', 'total cost committed'])),
+      totalCostActual: parseCurrency(getVal(row, ['Total cost actual', 'total cost actual'])),
+      totalCostBudget: parseCurrency(getVal(row, ['Total cost budget', 'total cost budget'])),
+      totalBudgetCommittedRemaining: parseCurrency(getVal(row, ['Total budget committed remaining', 'total budget committed remaining'])),
+      totalBudgetActualRemaining: parseCurrency(getVal(row, ['Total budget actual remaining', 'total budget actual remaining'])),
+      laborBudget: parseCurrency(getVal(row, ['Labor budget', 'labor budget'])),
+      laborCommitted: parseCurrency(getVal(row, ['Labor Committed', 'labor committed'])),
+      laborCommittedRemaining: parseCurrency(getVal(row, ['Labor committed remaining', 'labor committed remaining'])),
+      laborHoursCommitted: parseCurrency(getVal(row, ['Labor hours committed', 'labor hours committed'])),
+      materialsBudget: parseCurrency(getVal(row, ['Materials budget', 'materials budget'])),
+      materialsCommitted: parseCurrency(getVal(row, ['Materials committed', 'materials committed'])),
+      materialsActual: parseCurrency(getVal(row, ['Materials Actual', 'materials actual'])),
+      materialsCommittedRemaining: parseCurrency(getVal(row, ['Materials committed remaining', 'materials committed remaining'])),
+      materialsActualRemaining: parseCurrency(getVal(row, ['Materials actual remaining', 'materials actual remaining'])),
+      subsBudget: parseCurrency(getVal(row, ['Subs budget', 'subs budget'])),
+      subsCommitted: parseCurrency(getVal(row, ['Subs committed', 'subs committed'])),
+      subsActual: parseCurrency(getVal(row, ['Subs Actual', 'subs actual'])),
+      subsCommittedRemaining: parseCurrency(getVal(row, ['Subs committed remaining', 'subs committed remaining'])),
+      subsActualRemaining: parseCurrency(getVal(row, ['Subs actual remaining', 'subs actual remaining'])),
+      equipmentBudget: parseCurrency(getVal(row, ['Equipment budget', 'equipment budget'])),
+      equipmentCommitted: parseCurrency(getVal(row, ['Equipment committed', 'equipment committed'])),
+      equipmentActual: parseCurrency(getVal(row, ['Equipment actual', 'equipment actual'])),
+      equipmentCommittedRemaining: parseCurrency(getVal(row, ['Equipment committed remaining', 'equipment committed remaining'])),
+      equipmentActualRemaining: parseCurrency(getVal(row, ['Equipment actual remaining', 'equipment actual remaining'])),
+      equipmentHoursCommitted: parseCurrency(getVal(row, ['Equipment Hours Committed', 'equipment hours committed'])),
+      miscBudget: parseCurrency(getVal(row, ['Miscellanea budget', 'miscellanea budget'])),
+      miscCommitted: parseCurrency(getVal(row, ['Miscellanea committed', 'miscellanea committed'])),
+      miscActual: parseCurrency(getVal(row, ['Miscellanea actual', 'miscellanea actual'])),
+      miscActualRemaining: parseCurrency(getVal(row, ['Misc. actual remaining', 'misc. actual remaining'])),
+      miscCommittedRemaining: parseCurrency(getVal(row, ['Misc. committed remaining', 'misc. committed remaining'])),
+      wip: parseCurrency(getVal(row, ['WIP', 'wip'])),
+      profit: getVal(row, ['Profit', 'profit']),
+      profitAmount: parseCurrency(getVal(row, ['Profit Amount', 'profit amount'])),
+      projectedProfitability: parsePercent(getVal(row, ['Projected Profitability', 'projected profitability'])),
+      completion: parsePercent(getVal(row, ['Percentage of Completion', 'percentage of completion'])),
+    };
+  });
+
+  return projects.filter(function(p) { return p.jobName !== '' && p.jobName !== undefined; });
+}
+
+// ─── LocalStorage Management ──────────────────────────────────────────────────
+
+const STORAGE_KEY = 'knowify_snapshots';
+
+// Holds the currently active snapshot object; set externally by the UI layer.
+let _activeSnapshot = null;
+
+function loadSnapshots() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch (e) {
+    console.error('Failed to load snapshots:', e);
+    return [];
+  }
+}
+
+function saveSnapshot(label, date, projects) {
+  const snapshots = loadSnapshots();
+  const newSnapshot = {
+    id: Date.now(),
+    date: date,
+    label: label,
+    projects: projects,
+    uploadedAt: new Date().toISOString(),
+  };
+  snapshots.push(newSnapshot);
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(snapshots));
+  } catch (e) {
+    console.error('Failed to save snapshot:', e);
+  }
+  return newSnapshot;
+}
+
+function deleteSnapshot(id) {
+  const snapshots = loadSnapshots();
+  const updated = snapshots.filter(s => s.id !== id);
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+  } catch (e) {
+    console.error('Failed to delete snapshot:', e);
+  }
+  // Clear the active snapshot reference if it was the deleted one
+  if (_activeSnapshot && _activeSnapshot.id === id) {
+    _activeSnapshot = null;
+  }
+}
+
+function getActiveSnapshot() {
+  if (_activeSnapshot) return _activeSnapshot;
+  const snapshots = loadSnapshots();
+  if (snapshots.length === 0) return null;
+  // Default to the most recently uploaded snapshot
+  return snapshots[snapshots.length - 1];
+}
+
+function clearAllData() {
+  if (confirm('Delete all stored data? This cannot be undone.')) {
+    localStorage.removeItem(STORAGE_KEY);
+    location.reload();
+  }
+}
+
+// ─── Sample Data Generator ────────────────────────────────────────────────────
+
+function generateSampleData() {
+  const sampleNames = [
+    {jobName: '2025.1006 Keller Office', client: 'Keller Group', pm: 'Mike Johnson'},
+    {jobName: '2025.1017 Gateway Senior Living', client: 'Gateway Development', pm: 'Sarah Chen'},
+    {jobName: '2024.909 Andretti Global HQ', client: 'Andretti Autosport', pm: 'David Park'},
+    {jobName: '2025.1026 HNTB Buildout (Salesforce Tower)', client: 'HNTB Corp', pm: 'Sarah Chen'},
+    {jobName: 'MF.2024.892 The Lofts at Headwaters Park', client: 'Great Lakes Capital', pm: 'Mike Johnson'},
+    {jobName: '2024.913 Walmart Phoenix', client: 'Walmart Inc', pm: 'Lisa Rodriguez'},
+    {jobName: '2024.883 Indianapolis Public Library', client: 'City of Indianapolis', pm: 'David Park'},
+    {jobName: '2024.874 Noblesville HS Academic Addition', client: 'Noblesville Schools', pm: 'Tom Williams'},
+    {jobName: '2025.965 Simply Good Foods', client: 'Simply Good Foods Co', pm: 'Lisa Rodriguez'},
+    {jobName: '2025.993 Batesville Public Library', client: 'City of Batesville', pm: 'Tom Williams'},
+    {jobName: '2024.869 Prospect Lake Clean Water Center', client: 'Prospect Lake WD', pm: 'Mike Johnson'},
+    {jobName: '2025.1011 Airport South Logistics Bldg A', client: 'Ambrose Property', pm: 'Sarah Chen'},
+    {jobName: '2025.1022 Champagne Velvet Centennial', client: 'CV Holdings', pm: 'David Park'},
+    {jobName: '2024.944 Penguin Random House', client: 'PRH Publishing', pm: 'Lisa Rodriguez'},
+    {jobName: 'MF.2024.927 Jeffersonian Apartments', client: 'Jefferson Capital', pm: 'Tom Williams'},
+    {jobName: '2025.964 Avon Municipal Building', client: 'Town of Avon', pm: 'Mike Johnson'},
+    {jobName: '2024.950 Caterpillar Triple Crown', client: 'Caterpillar Inc', pm: 'Sarah Chen'},
+    {jobName: '2025.1029 Resmed Indy 500', client: 'ResMed Corp', pm: 'David Park'},
+    {jobName: '2026.1034 Stellas Ice Cream Shop', client: 'Stellas LLC', pm: 'Lisa Rodriguez'},
+    {jobName: '2025.979 Groundbreakers', client: 'Groundbreakers Inc', pm: 'Tom Williams'},
+  ];
+
+  return sampleNames.map(s => {
+    const contractTotal = Math.round(50000 + Math.random() * 4950000);
+    const completion = Math.round(Math.random() * 100);
+    const profitabilityPct = -5 + Math.random() * 40; // -5% to 35%
+    const totalCostBudget = contractTotal * (1 - profitabilityPct / 100);
+    const totalCostActual = totalCostBudget * (0.3 + completion / 100 * 0.7) * (0.9 + Math.random() * 0.2);
+    const laborPct = 0.35 + Math.random() * 0.15;
+    const matPct = 0.2 + Math.random() * 0.1;
+    const subsPct = 0.2 + Math.random() * 0.15;
+    const equipPct = 0.05 + Math.random() * 0.05;
+    const miscPct = 1 - laborPct - matPct - subsPct - equipPct;
+
+    return {
+      jobName: s.jobName,
+      client: s.client,
+      projectManager: s.pm,
+      address: '123 Main St',
+      city: 'Indianapolis',
+      state: 'IN',
+      classField: completion > 95 ? 'Completed' : 'Active',
+      originalContract: contractTotal * 0.9,
+      changeOrders: contractTotal * 0.1,
+      contractTotal: contractTotal,
+      invoiced: contractTotal * completion / 100 * 0.85,
+      retainage: contractTotal * completion / 100 * 0.15,
+      invoicedPlusRetainage: contractTotal * completion / 100,
+      totalCostCommitted: totalCostBudget * 0.8,
+      totalCostActual: totalCostActual,
+      totalCostBudget: totalCostBudget,
+      laborBudget: totalCostBudget * laborPct,
+      laborCommitted: totalCostBudget * laborPct * 0.8,
+      materialsBudget: totalCostBudget * matPct,
+      materialsCommitted: totalCostBudget * matPct * 0.7,
+      materialsActual: totalCostActual * matPct,
+      subsBudget: totalCostBudget * subsPct,
+      subsCommitted: totalCostBudget * subsPct * 0.75,
+      subsActual: totalCostActual * subsPct,
+      equipmentBudget: totalCostBudget * equipPct,
+      equipmentCommitted: totalCostBudget * equipPct * 0.6,
+      equipmentActual: totalCostActual * equipPct,
+      miscBudget: totalCostBudget * miscPct,
+      miscCommitted: totalCostBudget * miscPct * 0.5,
+      miscActual: totalCostActual * miscPct,
+      wip: contractTotal * completion / 100 - totalCostActual,
+      profitAmount: contractTotal - totalCostBudget,
+      projectedProfitability: profitabilityPct,
+      completion: completion,
+      tags: '',
+      startDate: '2024-01-15',
+      endDate: '2026-06-30',
+      salesLead: s.pm,
+      creationDate: '2024-01-01',
+    };
+  });
+}
+
+// ─── KPI Calculations ─────────────────────────────────────────────────────────
+
+function calculateKPIs(projects) {
+  const projectCount = projects.length;
+
+  let totalContractValue = 0;
+  let totalProfit = 0;
+  let totalProfitability = 0;
+  let totalCompletion = 0;
+  let totalCostActual = 0;
+  let totalCostBudget = 0;
+
+  for (const p of projects) {
+    totalContractValue += p.contractTotal || 0;
+    totalProfit += p.profitAmount || 0;
+    totalProfitability += p.projectedProfitability || 0;
+    totalCompletion += p.completion || 0;
+    totalCostActual += p.totalCostActual || 0;
+    totalCostBudget += p.totalCostBudget || 0;
+  }
+
+  const avgProfitability = projectCount > 0 ? totalProfitability / projectCount : 0;
+  const avgCompletion = projectCount > 0 ? totalCompletion / projectCount : 0;
+
+  return {
+    totalContractValue,
+    totalProfit,
+    avgProfitability,
+    projectCount,
+    avgCompletion,
+    totalCostActual,
+    totalCostBudget,
+  };
+}
+// ui.js — Knowify Construction Dashboard UI/Rendering
+// Assumes globals: parseCurrency, parsePercent, formatCurrency, formatPercent,
+//   parseExcelData(workbook), loadSnapshots(), saveSnapshot(label, date, projects),
+//   deleteSnapshot(id), getActiveSnapshot(), clearAllData(), generateSampleData(),
+//   calculateKPIs(projects), STORAGE_KEY
+
+// ---------------------------------------------------------------------------
+// 1. Global State
+// ---------------------------------------------------------------------------
+let _activeSnapshotId = null;
+let _sortField = 'projectedProfitability';
+let _sortDir = -1; // -1 = descending
+let _pendingData = null; // data waiting for date confirmation
+let _chartInstances = {}; // store Chart.js instances to destroy before recreating
+
+// ---------------------------------------------------------------------------
+// 2. Initialization
+// ---------------------------------------------------------------------------
+function init() {
+  // Setup drag-and-drop on uploadZone
+  const zone = document.getElementById('uploadZone');
+  zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('drag-over'); });
+  zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
+  zone.addEventListener('drop', e => { e.preventDefault(); zone.classList.remove('drag-over'); handleFile(e.dataTransfer.files[0]); });
+  document.getElementById('fileInput').addEventListener('change', e => { if(e.target.files[0]) handleFile(e.target.files[0]); });
+
+  // Load existing data and render
+  const snapshots = loadSnapshots();
+  if (snapshots.length > 0) {
+    _activeSnapshotId = snapshots[snapshots.length - 1].id;
+    renderAll();
+  }
+}
+document.addEventListener('DOMContentLoaded', init);
+
+// ---------------------------------------------------------------------------
+// 3. File Handling
+// ---------------------------------------------------------------------------
+function handleFile(file) {
+  if (!file) { alert('No file selected'); return; }
+  var reader = new FileReader();
+  reader.onerror = function() { alert('Error reading file. Please try again.'); };
+  reader.onload = function(e) {
+    try {
+      var workbook = XLSX.read(e.target.result, {type: 'array'});
+      _pendingData = parseExcelData(workbook);
+      if (!_pendingData || _pendingData.length === 0) {
+        // Debug: show what columns were found
+        var sheetName = workbook.SheetNames[0];
+        var sheet = workbook.Sheets[sheetName];
+        var rows = XLSX.utils.sheet_to_json(sheet, { defval: '' });
+        var cols = rows.length > 0 ? Object.keys(rows[0]).join(', ') : 'NO ROWS FOUND';
+        alert('No projects found in file. Found ' + rows.length + ' rows.\n\nColumns detected:\n' + cols.substring(0, 500));
+        return;
+      }
+      alert('Parsed ' + _pendingData.length + ' projects successfully! Now select a date for this snapshot.');
+      // Show snapshot date prompt
+      document.getElementById('snapshotPrompt').style.display = 'flex';
+      var now = new Date();
+      document.getElementById('snapshotDate').value = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0');
+    } catch(err) {
+      alert('Error parsing Excel file: ' + err.message);
+    }
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+function confirmUpload() {
+  const dateVal = document.getElementById('snapshotDate').value;
+  const label = dateVal || new Date().toISOString().slice(0,7);
+  saveSnapshot(label, dateVal, _pendingData);
+  _pendingData = null;
+  document.getElementById('snapshotPrompt').style.display = 'none';
+  const snapshots = loadSnapshots();
+  _activeSnapshotId = snapshots[snapshots.length - 1].id;
+  renderAll();
+}
+
+function cancelUpload() {
+  _pendingData = null;
+  document.getElementById('snapshotPrompt').style.display = 'none';
+}
+
+// ---------------------------------------------------------------------------
+// 4. Load Sample Data
+// ---------------------------------------------------------------------------
+function loadSampleData() {
+  const projects = generateSampleData();
+  const now = new Date();
+  const label = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0');
+  saveSnapshot('Sample ' + label, label, projects);
+  const snapshots = loadSnapshots();
+  _activeSnapshotId = snapshots[snapshots.length - 1].id;
+  renderAll();
+}
+
+// ---------------------------------------------------------------------------
+// 5. Tab Switching
+// ---------------------------------------------------------------------------
+function switchTab(tab) {
+  document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
+  document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
+  document.getElementById('tab' + tab.charAt(0).toUpperCase() + tab.slice(1)).style.display = 'block';
+  document.querySelector('.tab[data-tab="'+tab+'"]').classList.add('active');
+  if (tab === 'charts') renderCharts();
+  if (tab === 'trending') renderTrending();
+  if (tab === 'changes') renderChangesTable();
+}
+
+// ---------------------------------------------------------------------------
+// 6. Render All
+// ---------------------------------------------------------------------------
+function renderAll() {
+  renderSnapshotBar();
+  renderKPIs();
+  renderTable();
+  // Reset charts tab if visible
+  const chartsTab = document.getElementById('tabCharts');
+  if (chartsTab.style.display !== 'none') renderCharts();
+  const trendTab = document.getElementById('tabTrending');
+  if (trendTab.style.display !== 'none') renderTrending();
+  const changesTab = document.getElementById('tabChanges');
+  if (changesTab.style.display !== 'none') renderChangesTable();
+}
+
+// ---------------------------------------------------------------------------
+// 7. Snapshot Bar
+// ---------------------------------------------------------------------------
+function renderSnapshotBar() {
+  const bar = document.getElementById('snapshotBar');
+  const snapshots = loadSnapshots();
+  if (snapshots.length === 0) { bar.innerHTML = ''; return; }
+  bar.innerHTML = snapshots.map(s =>
+    '<span class="snapshot-pill' + (s.id === _activeSnapshotId ? ' active' : '') + '" onclick="selectSnapshot(' + s.id + ')">' +
+    s.label + ' (' + s.projects.length + ')' +
+    '<button class="pill-delete" onclick="event.stopPropagation();removeSnapshot(' + s.id + ')">&times;</button>' +
+    '</span>'
+  ).join('');
+}
+
+function selectSnapshot(id) {
+  _activeSnapshotId = id;
+  renderAll();
+}
+
+function removeSnapshot(id) {
+  deleteSnapshot(id);
+  const snapshots = loadSnapshots();
+  _activeSnapshotId = snapshots.length > 0 ? snapshots[snapshots.length-1].id : null;
+  renderAll();
+}
+
+// ---------------------------------------------------------------------------
+// 8. KPI Rendering
+// ---------------------------------------------------------------------------
+function renderKPIs() {
+  const snapshot = getActiveSnapshot();
+  if (!snapshot) {
+    ['kpiContractVal','kpiProfitVal','kpiAvgProfitVal','kpiProjectsVal','kpiCompletionVal'].forEach(id => document.getElementById(id).textContent = '--');
+    return;
+  }
+  const kpi = calculateKPIs(snapshot.projects);
+  document.getElementById('kpiContractVal').textContent = formatCurrency(kpi.totalContractValue);
+  document.getElementById('kpiProfitVal').textContent = formatCurrency(kpi.totalProfit);
+  document.getElementById('kpiAvgProfitVal').textContent = formatPercent(kpi.avgProfitability);
+  document.getElementById('kpiProjectsVal').textContent = kpi.projectCount;
+  document.getElementById('kpiCompletionVal').textContent = formatPercent(kpi.avgCompletion);
+
+  // Color code profit
+  const profitEl = document.getElementById('kpiProfitVal');
+  profitEl.className = 'kpi-value ' + (kpi.totalProfit >= 0 ? 'profit-positive' : 'profit-negative');
+  const avgEl = document.getElementById('kpiAvgProfitVal');
+  avgEl.className = 'kpi-value ' + (kpi.avgProfitability > 15 ? 'profit-positive' : kpi.avgProfitability > 5 ? 'profit-warning' : 'profit-negative');
+}
+
+// ---------------------------------------------------------------------------
+// 9. Table Rendering with Sort and Search
+// ---------------------------------------------------------------------------
+function sortTable(field) {
+  if (_sortField === field) { _sortDir *= -1; } else { _sortField = field; _sortDir = -1; }
+  renderTable();
+}
+
+function renderTable() {
+  const snapshot = getActiveSnapshot();
+  const empty = document.getElementById('emptyState');
+  const tbody = document.getElementById('projectsBody');
+  if (!snapshot || !snapshot.projects.length) { tbody.innerHTML = ''; empty.style.display = 'block'; return; }
+  empty.style.display = 'none';
+
+  const search = (document.getElementById('searchInput').value || '').toLowerCase();
+  let projects = snapshot.projects.filter(p => {
+    if (!search) return true;
+    return (p.jobName||'').toLowerCase().includes(search) ||
+           (p.client||'').toLowerCase().includes(search) ||
+           (p.projectManager||'').toLowerCase().includes(search);
+  });
+
+  projects.sort((a, b) => {
+    let va = a[_sortField], vb = b[_sortField];
+    if (typeof va === 'string') { va = va.toLowerCase(); vb = (vb||'').toLowerCase(); }
+    if (va < vb) return -1 * _sortDir;
+    if (va > vb) return 1 * _sortDir;
+    return 0;
+  });
+
+  tbody.innerHTML = projects.map((p, i) => {
+    const profClass = p.projectedProfitability > 15 ? 'profit-positive' : p.projectedProfitability > 5 ? 'profit-warning' : 'profit-negative';
+    return '<tr onclick="openModal(\'' + (p.jobName||'').replace(/'/g, "\\'") + '\')" style="cursor:pointer">' +
+      '<td>' + (p.jobName||'') + '</td>' +
+      '<td>' + (p.client||'') + '</td>' +
+      '<td>' + (p.projectManager||'') + '</td>' +
+      '<td>' + formatCurrency(p.contractTotal) + '</td>' +
+      '<td>' + formatCurrency(p.totalCostActual) + '</td>' +
+      '<td class="' + profClass + '">' + formatCurrency(p.profitAmount) + '</td>' +
+      '<td class="' + profClass + '">' + formatPercent(p.projectedProfitability) + '</td>' +
+      '<td>' + formatPercent(p.completion) + '</td>' +
+      '<td>' + formatCurrency(p.wip) + '</td>' +
+      '</tr>';
+  }).join('');
+}
+
+// ---------------------------------------------------------------------------
+// 10. Charts Rendering (uses Chart.js)
+// ---------------------------------------------------------------------------
+function destroyChart(key) {
+  if (_chartInstances[key]) { _chartInstances[key].destroy(); delete _chartInstances[key]; }
+}
+
+function renderCharts() {
+  const snapshot = getActiveSnapshot();
+  if (!snapshot) return;
+  const projects = snapshot.projects;
+
+  // Profitability Distribution - horizontal bar chart sorted by profitability
+  destroyChart('profitDist');
+  const sorted = [...projects].sort((a,b) => a.projectedProfitability - b.projectedProfitability);
+  _chartInstances.profitDist = new Chart(document.getElementById('chartProfitDist'), {
+    type: 'bar',
+    data: {
+      labels: sorted.map(p => p.jobName.length > 30 ? p.jobName.slice(0,30)+'...' : p.jobName),
+      datasets: [{
+        data: sorted.map(p => p.projectedProfitability),
+        backgroundColor: sorted.map(p => p.projectedProfitability > 15 ? '#16a34a' : p.projectedProfitability > 5 ? '#ca8a04' : '#dc2626'),
+      }]
+    },
+    options: { indexAxis: 'y', responsive: true, plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ctx.raw.toFixed(1)+'%' }}}, scales: { x: { title: { display: true, text: 'Profitability %' }}}}
+  });
+
+  // Cost Breakdown Donut
+  destroyChart('costBreakdown');
+  const totals = { labor: 0, materials: 0, subs: 0, equipment: 0, misc: 0 };
+  projects.forEach(p => {
+    totals.labor += p.laborBudget || 0;
+    totals.materials += p.materialsBudget || 0;
+    totals.subs += p.subsBudget || 0;
+    totals.equipment += p.equipmentBudget || 0;
+    totals.misc += p.miscBudget || 0;
+  });
+  _chartInstances.costBreakdown = new Chart(document.getElementById('chartCostBreakdown'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Labor', 'Materials', 'Subcontractors', 'Equipment', 'Miscellaneous'],
+      datasets: [{ data: Object.values(totals), backgroundColor: ['#2563eb','#16a34a','#ca8a04','#9333ea','#64748b'] }]
+    },
+    options: { responsive: true, plugins: { legend: { position: 'bottom' }}}
+  });
+
+  // Top 10
+  destroyChart('top10');
+  const top10 = [...projects].sort((a,b) => b.projectedProfitability - a.projectedProfitability).slice(0, 10);
+  _chartInstances.top10 = new Chart(document.getElementById('chartTop10'), {
+    type: 'bar',
+    data: {
+      labels: top10.map(p => p.jobName.length > 25 ? p.jobName.slice(0,25)+'...' : p.jobName),
+      datasets: [{ data: top10.map(p => p.projectedProfitability), backgroundColor: '#16a34a' }]
+    },
+    options: { indexAxis: 'y', responsive: true, plugins: { legend: { display: false }}, scales: { x: { title: { display: true, text: 'Profitability %' }}}}
+  });
+
+  // Bottom 10
+  destroyChart('bottom10');
+  const bottom10 = [...projects].sort((a,b) => a.projectedProfitability - b.projectedProfitability).slice(0, 10);
+  _chartInstances.bottom10 = new Chart(document.getElementById('chartBottom10'), {
+    type: 'bar',
+    data: {
+      labels: bottom10.map(p => p.jobName.length > 25 ? p.jobName.slice(0,25)+'...' : p.jobName),
+      datasets: [{ data: bottom10.map(p => p.projectedProfitability), backgroundColor: bottom10.map(p => p.projectedProfitability < 0 ? '#dc2626' : p.projectedProfitability < 5 ? '#ca8a04' : '#16a34a') }]
+    },
+    options: { indexAxis: 'y', responsive: true, plugins: { legend: { display: false }}, scales: { x: { title: { display: true, text: 'Profitability %' }}}}
+  });
+}
+
+// ---------------------------------------------------------------------------
+// 11. Trending
+// ---------------------------------------------------------------------------
+function renderTrending() {
+  const snapshots = loadSnapshots();
+  if (snapshots.length < 1) return;
+
+  // Portfolio profitability over time
+  destroyChart('trendProfit');
+  const labels = snapshots.map(s => s.label);
+  const avgProfs = snapshots.map(s => {
+    const kpi = calculateKPIs(s.projects);
+    return kpi.avgProfitability;
+  });
+  _chartInstances.trendProfit = new Chart(document.getElementById('chartTrendProfit'), {
+    type: 'line',
+    data: { labels, datasets: [{ label: 'Avg Profitability %', data: avgProfs, borderColor: '#2563eb', backgroundColor: 'rgba(37,99,235,0.1)', fill: true, tension: 0.3 }]},
+    options: { responsive: true, scales: { y: { title: { display: true, text: '%' }}}}
+  });
+
+  // Total contract value over time
+  destroyChart('trendContract');
+  const totalContracts = snapshots.map(s => calculateKPIs(s.projects).totalContractValue);
+  _chartInstances.trendContract = new Chart(document.getElementById('chartTrendContract'), {
+    type: 'line',
+    data: { labels, datasets: [{ label: 'Total Contract Value', data: totalContracts, borderColor: '#16a34a', backgroundColor: 'rgba(22,163,74,0.1)', fill: true, tension: 0.3 }]},
+    options: { responsive: true, scales: { y: { title: { display: true, text: '$' }, ticks: { callback: v => '$' + (v/1000000).toFixed(1) + 'M' }}}}
+  });
+
+  // Populate project selector for comparison
+  const select = document.getElementById('trendProjectSelect');
+  if (snapshots.length > 0) {
+    const latestProjects = snapshots[snapshots.length-1].projects;
+    select.innerHTML = latestProjects.map(p => '<option value="' + p.jobName + '">' + p.jobName + '</option>').join('');
+  }
+}
+
+function renderTrendComparison() {
+  const snapshots = loadSnapshots();
+  const select = document.getElementById('trendProjectSelect');
+  const selected = Array.from(select.selectedOptions).map(o => o.value);
+  if (selected.length === 0) return;
+
+  destroyChart('trendCompare');
+  const labels = snapshots.map(s => s.label);
+  const colors = ['#2563eb','#dc2626','#16a34a','#ca8a04','#9333ea','#64748b'];
+  const datasets = selected.map((name, i) => ({
+    label: name.length > 30 ? name.slice(0,30)+'...' : name,
+    data: snapshots.map(s => {
+      const proj = s.projects.find(p => p.jobName === name);
+      return proj ? proj.projectedProfitability : null;
+    }),
+    borderColor: colors[i % colors.length],
+    tension: 0.3,
+    spanGaps: true,
+  }));
+  _chartInstances.trendCompare = new Chart(document.getElementById('chartTrendCompare'), {
+    type: 'line',
+    data: { labels, datasets },
+    options: { responsive: true, scales: { y: { title: { display: true, text: 'Profitability %' }}}}
+  });
+}
+
+// ---------------------------------------------------------------------------
+// 12. Project Detail Modal
+// ---------------------------------------------------------------------------
+function openModal(jobName) {
+  const snapshot = getActiveSnapshot();
+  if (!snapshot) return;
+  const project = snapshot.projects.find(p => p.jobName === jobName);
+  if (!project) return;
+
+  document.getElementById('modalTitle').textContent = project.jobName;
+
+  // Info grid
+  document.getElementById('modalInfo').innerHTML =
+    '<div class="detail-card"><strong>Client</strong><br>' + (project.client||'N/A') + '</div>' +
+    '<div class="detail-card"><strong>Project Manager</strong><br>' + (project.projectManager||'N/A') + '</div>' +
+    '<div class="detail-card"><strong>Address</strong><br>' + [project.address, project.city, project.state, project.zip].filter(Boolean).join(', ') + '</div>' +
+    '<div class="detail-card"><strong>Class</strong><br>' + (project.classField||'N/A') + '</div>' +
+    '<div class="detail-card"><strong>Start Date</strong><br>' + (project.startDate||'N/A') + '</div>' +
+    '<div class="detail-card"><strong>End Date</strong><br>' + (project.endDate||'N/A') + '</div>';
+
+  // KPI cards
+  const profClass = project.projectedProfitability > 15 ? 'profit-positive' : project.projectedProfitability > 5 ? 'profit-warning' : 'profit-negative';
+  document.getElementById('modalKpis').innerHTML =
+    '<div class="kpi-card"><div class="kpi-label">CONTRACT TOTAL</div><div class="kpi-value">' + formatCurrency(project.contractTotal) + '</div></div>' +
+    '<div class="kpi-card"><div class="kpi-label">INVOICED</div><div class="kpi-value">' + formatCurrency(project.invoiced) + '</div></div>' +
+    '<div class="kpi-card"><div class="kpi-label">TOTAL COST ACTUAL</div><div class="kpi-value">' + formatCurrency(project.totalCostActual) + '</div></div>' +
+    '<div class="kpi-card"><div class="kpi-label">PROFIT</div><div class="kpi-value ' + profClass + '">' + formatCurrency(project.profitAmount) + '</div></div>' +
+    '<div class="kpi-card"><div class="kpi-label">PROFITABILITY</div><div class="kpi-value ' + profClass + '">' + formatPercent(project.projectedProfitability) + '</div></div>';
+
+  // Cost breakdown bars
+  const costs = [
+    { label: 'Labor', budget: project.laborBudget, actual: project.laborCommitted || 0, committed: project.laborCommitted || 0 },
+    { label: 'Materials', budget: project.materialsBudget, actual: project.materialsActual || 0, committed: project.materialsCommitted || 0 },
+    { label: 'Subcontractors', budget: project.subsBudget, actual: project.subsActual || 0, committed: project.subsCommitted || 0 },
+    { label: 'Equipment', budget: project.equipmentBudget, actual: project.equipmentActual || 0, committed: project.equipmentCommitted || 0 },
+    { label: 'Miscellaneous', budget: project.miscBudget, actual: project.miscActual || 0, committed: project.miscCommitted || 0 },
+  ];
+  const maxCost = Math.max(...costs.map(c => Math.max(c.budget, c.actual, c.committed)), 1);
+  document.getElementById('modalCosts').innerHTML = costs.map(c =>
+    '<div class="cost-row">' +
+      '<span class="cost-label">' + c.label + '</span>' +
+      '<div class="cost-bars">' +
+        '<div class="cost-bar-track"><div class="cost-bar-fill" style="width:' + (c.budget/maxCost*100) + '%;background:#2563eb" title="Budget: ' + formatCurrency(c.budget) + '"></div></div>' +
+        '<div class="cost-bar-track"><div class="cost-bar-fill" style="width:' + (c.actual/maxCost*100) + '%;background:#16a34a" title="Actual: ' + formatCurrency(c.actual) + '"></div></div>' +
+        '<div class="cost-bar-track"><div class="cost-bar-fill" style="width:' + (c.committed/maxCost*100) + '%;background:#ca8a04" title="Committed: ' + formatCurrency(c.committed) + '"></div></div>' +
+      '</div>' +
+      '<span class="cost-amounts">' + formatCurrency(c.budget) + ' / ' + formatCurrency(c.actual) + '</span>' +
+    '</div>'
+  ).join('') + '<div style="font-size:12px;color:#6b7280;margin-top:8px"><span style="color:#2563eb">&#9632;</span> Budget <span style="color:#16a34a">&#9632;</span> Actual <span style="color:#ca8a04">&#9632;</span> Committed</div>';
+
+  // Completion progress bar
+  document.getElementById('modalProgress').innerHTML =
+    '<div style="display:flex;justify-content:space-between;margin-bottom:4px"><span>Progress</span><span>' + formatPercent(project.completion) + '</span></div>' +
+    '<div style="height:20px;background:#e5e7eb;border-radius:10px;overflow:hidden"><div style="height:100%;width:' + Math.min(project.completion,100) + '%;background:' + (project.completion > 90 ? '#16a34a' : '#2563eb') + ';border-radius:10px;transition:width 0.5s"></div></div>';
+
+  // Project trend across snapshots
+  const snapshots = loadSnapshots();
+  const trendSection = document.getElementById('modalTrendSection');
+  if (snapshots.length > 1) {
+    trendSection.style.display = 'block';
+    destroyChart('modalTrend');
+    const labels = snapshots.map(s => s.label);
+    const data = snapshots.map(s => {
+      const p = s.projects.find(pr => pr.jobName === jobName);
+      return p ? p.projectedProfitability : null;
+    });
+    _chartInstances.modalTrend = new Chart(document.getElementById('chartModalTrend'), {
+      type: 'line',
+      data: { labels, datasets: [{ label: 'Profitability %', data, borderColor: '#2563eb', tension: 0.3, spanGaps: true }]},
+      options: { responsive: true }
+    });
+  } else {
+    trendSection.style.display = 'none';
+  }
+
+  document.getElementById('modalOverlay').style.display = 'flex';
+}
+
+// ---------------------------------------------------------------------------
+// 13. Changes Over Time Table
+// ---------------------------------------------------------------------------
+function renderChangesTable() {
+  var wrap = document.getElementById('changesTableWrap');
+  var snapshots = loadSnapshots();
+
+  if (snapshots.length < 1) {
+    wrap.innerHTML = '<div class="changes-empty">Upload at least 2 snapshots to see how metrics change over time.</div>';
+    return;
+  }
+
+  var metric = document.getElementById('changesMetric').value;
+  var sortBy = document.getElementById('changesSort').value;
+  var showDelta = document.getElementById('changesShowDelta').checked;
+
+  var isCurrency = ['profitAmount','contractTotal','totalCostActual','totalCostBudget','wip','invoiced','totalCostCommitted'].indexOf(metric) !== -1;
+  var isPercent = ['projectedProfitability','completion'].indexOf(metric) !== -1;
+
+  function fmtVal(v) {
+    if (v === null || v === undefined) return '—';
+    if (isCurrency) return formatCurrency(v);
+    if (isPercent) return formatPercent(v);
+    return v.toFixed(2);
+  }
+
+  function fmtDelta(curr, prev) {
+    if (prev === null || prev === undefined || curr === null || curr === undefined) return '';
+    var d = curr - prev;
+    if (Math.abs(d) < 0.005) return '<span class="delta-neutral">—</span>';
+    var arrow = d > 0 ? '&#9650;' : '&#9660;';
+    var cls = d > 0 ? 'delta-positive' : 'delta-negative';
+    var val = isCurrency ? formatCurrency(Math.abs(d)) : Math.abs(d).toFixed(2) + (isPercent ? '%' : '');
+    return '<br><span class="' + cls + '">' + arrow + ' ' + val + '</span>';
+  }
+
+  // Collect all unique job names across all snapshots
+  var jobMap = {};
+  snapshots.forEach(function(s) {
+    s.projects.forEach(function(p) {
+      if (!jobMap[p.jobName]) jobMap[p.jobName] = {};
+      jobMap[p.jobName][s.id] = p[metric];
+    });
+  });
+
+  // Build rows
+  var rows = Object.keys(jobMap).map(function(name) {
+    var values = snapshots.map(function(s) { return jobMap[name][s.id] !== undefined ? jobMap[name][s.id] : null; });
+    var latestVal = null;
+    for (var i = values.length - 1; i >= 0; i--) { if (values[i] !== null) { latestVal = values[i]; break; } }
+    var firstVal = null;
+    for (var j = 0; j < values.length; j++) { if (values[j] !== null) { firstVal = values[j]; break; } }
+    var totalChange = (latestVal !== null && firstVal !== null) ? latestVal - firstVal : 0;
+    return { name: name, values: values, latestVal: latestVal, totalChange: totalChange };
+  });
+
+  // Sort
+  if (sortBy === 'latest') {
+    rows.sort(function(a, b) { return (b.latestVal || 0) - (a.latestVal || 0); });
+  } else if (sortBy === 'change') {
+    rows.sort(function(a, b) { return Math.abs(b.totalChange) - Math.abs(a.totalChange); });
+  } else {
+    rows.sort(function(a, b) { return a.name.localeCompare(b.name); });
+  }
+
+  // Build table HTML
+  var html = '<table class="changes-table">';
+  html += '<thead><tr>';
+  html += '<th class="frozen">Job Name</th>';
+  snapshots.forEach(function(s) {
+    html += '<th class="snapshot-col">' + s.label + '</th>';
+  });
+  if (snapshots.length > 1) {
+    html += '<th class="snapshot-col" style="background:#eff6ff;font-weight:700">Total Change</th>';
+  }
+  html += '</tr></thead>';
+
+  html += '<tbody>';
+  rows.forEach(function(row) {
+    html += '<tr>';
+    html += '<td class="frozen">' + row.name + '</td>';
+    row.values.forEach(function(val, idx) {
+      var delta = '';
+      if (showDelta && idx > 0 && val !== null && row.values[idx-1] !== null) {
+        delta = fmtDelta(val, row.values[idx-1]);
+      }
+      html += '<td class="snapshot-val">' + fmtVal(val) + delta + '</td>';
+    });
+    if (snapshots.length > 1) {
+      var tc = row.totalChange;
+      var tcClass = tc > 0.005 ? 'delta-positive' : tc < -0.005 ? 'delta-negative' : 'delta-neutral';
+      var tcArrow = tc > 0.005 ? '&#9650; ' : tc < -0.005 ? '&#9660; ' : '';
+      var tcFmt = isCurrency ? formatCurrency(Math.abs(tc)) : Math.abs(tc).toFixed(2) + (isPercent ? '%' : '');
+      html += '<td class="snapshot-val" style="background:#eff6ff"><span class="' + tcClass + '">' + tcArrow + tcFmt + '</span></td>';
+    }
+    html += '</tr>';
+  });
+  html += '</tbody></table>';
+
+  wrap.innerHTML = html;
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').style.display = 'none';
+}
+  </script>
+</body>
+</html>
