@@ -3,18 +3,28 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CFO Dashboard — Midwest Design Group LLC</title>
+  <title>Finance &amp; Strategy Dashboard — Midwest Design Group LLC</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <header class="topbar">
     <div class="brand">
-      <h1 id="company-name">CFO Dashboard</h1>
+      <h1 id="company-name">Finance &amp; Strategy Dashboard</h1>
       <p id="company-meta" class="meta"></p>
     </div>
     <div class="topbar-controls">
+      <div class="persona-picker">
+        <label for="persona">View as</label>
+        <select id="persona">
+          <option value="cfo">CFO</option>
+          <option value="fpa">FP&amp;A</option>
+          <option value="controller">Controller</option>
+          <option value="strategy">Strategy</option>
+          <option value="treasury">Treasury</option>
+        </select>
+      </div>
       <div class="badge" id="data-source-badge">Loading…</div>
-      <button id="refresh-btn" class="btn-secondary" title="Refresh from QuickBooks (run scripts/refresh.sh)">⟳ Refresh</button>
+      <button id="refresh-btn" class="btn-secondary" title="Refresh from QuickBooks">⟳ Refresh</button>
     </div>
   </header>
 
@@ -64,72 +74,46 @@
   </section>
 
   <nav class="tabs" role="tablist">
-    <button class="tab active" data-tab="exec" role="tab">CFO Executive Summary</button>
-    <button class="tab" data-tab="pnl" role="tab">P&amp;L Dashboard</button>
-    <button class="tab" data-tab="compare" role="tab">Date Filter &amp; Period Comparison</button>
-    <button class="tab" data-tab="deepdive" role="tab">Deep Dive Analysis</button>
-    <button class="tab" data-tab="forecast" role="tab">Forecast &amp; Year-End</button>
+    <button class="tab active" data-tab="exec" role="tab">Executive Summary</button>
+    <button class="tab" data-tab="pnl" role="tab">P&amp;L</button>
+    <button class="tab" data-tab="compare" role="tab">Period Comparison</button>
+    <button class="tab" data-tab="segments" role="tab">Segments</button>
+    <button class="tab" data-tab="workingcap" role="tab">Working Capital</button>
+    <button class="tab" data-tab="deepdive" role="tab">Deep Dive</button>
+    <button class="tab" data-tab="forecast" role="tab">Forecast</button>
+    <button class="tab" data-tab="scenarios" role="tab">Scenarios</button>
     <button class="tab" data-tab="trends" role="tab">Trends</button>
+    <button class="tab" data-tab="benchmark" role="tab">Industry Benchmark</button>
     <button class="tab" data-tab="flags" role="tab">Action Flags</button>
   </nav>
 
   <main>
-    <!-- Tab 1: CFO Executive Summary -->
-    <section id="tab-exec" class="tab-panel active" role="tabpanel">
-      <h2>Executive Summary</h2>
-      <p class="period-label" id="exec-period-label"></p>
-      <div class="kpi-grid">
-        <div class="kpi" data-metric="revenue">
-          <div class="kpi-label">Revenue</div>
-          <div class="kpi-value" id="kpi-revenue"></div>
-          <div class="kpi-delta" id="kpi-revenue-delta"></div>
+    <!-- Tab 1: Executive Summary (persona-aware) -->
+    <section id="tab-exec" class="tab-panel active" role="tabpanel" data-tab="exec">
+      <div class="panel-header">
+        <div>
+          <h2>Executive Summary <span class="persona-tag" id="persona-tag">CFO</span></h2>
+          <p class="period-label" id="exec-period-label"></p>
         </div>
-        <div class="kpi" data-metric="grossProfit">
-          <div class="kpi-label">Gross Profit</div>
-          <div class="kpi-value" id="kpi-gp"></div>
-          <div class="kpi-delta" id="kpi-gp-delta"></div>
-        </div>
-        <div class="kpi" data-metric="grossMargin">
-          <div class="kpi-label">Gross Margin %</div>
-          <div class="kpi-value" id="kpi-gm-pct"></div>
-          <div class="kpi-delta" id="kpi-gm-pct-delta"></div>
-        </div>
-        <div class="kpi" data-metric="opex">
-          <div class="kpi-label">Operating Expenses</div>
-          <div class="kpi-value" id="kpi-opex"></div>
-          <div class="kpi-delta" id="kpi-opex-delta"></div>
-        </div>
-        <div class="kpi" data-metric="netIncome">
-          <div class="kpi-label">Net Income (EBITDA-like)</div>
-          <div class="kpi-value" id="kpi-net"></div>
-          <div class="kpi-delta" id="kpi-net-delta"></div>
-        </div>
-        <div class="kpi" data-metric="netMargin">
-          <div class="kpi-label">Net Margin %</div>
-          <div class="kpi-value" id="kpi-nm-pct"></div>
-          <div class="kpi-delta" id="kpi-nm-pct-delta"></div>
-        </div>
-        <div class="kpi" data-metric="cash">
-          <div class="kpi-label">Cash Position</div>
-          <div class="kpi-value" id="kpi-cash"></div>
-          <div class="kpi-delta" id="kpi-cash-delta"></div>
-        </div>
-        <div class="kpi" data-metric="ar">
-          <div class="kpi-label">A/R Change (cash flow)</div>
-          <div class="kpi-value" id="kpi-ar"></div>
-          <div class="kpi-delta-static">From cash flow statement</div>
-        </div>
+        <button class="btn-secondary csv-btn" data-csv="exec">Export CSV</button>
       </div>
+      <div class="kpi-grid" id="exec-kpis"></div>
       <div class="exec-flags">
         <h3>Critical alerts</h3>
         <ul id="exec-flag-list"></ul>
       </div>
+      <div class="notes-section" data-tab-key="exec"></div>
     </section>
 
-    <!-- Tab 2: P&L Dashboard -->
-    <section id="tab-pnl" class="tab-panel" role="tabpanel">
-      <h2>Profit &amp; Loss</h2>
-      <p class="period-label" id="pnl-period-label"></p>
+    <!-- Tab 2: P&L -->
+    <section id="tab-pnl" class="tab-panel" role="tabpanel" data-tab="pnl">
+      <div class="panel-header">
+        <div>
+          <h2>Profit &amp; Loss</h2>
+          <p class="period-label" id="pnl-period-label"></p>
+        </div>
+        <button class="btn-secondary csv-btn" data-csv="pnl">Export CSV</button>
+      </div>
       <table class="pnl-table">
         <thead>
           <tr>
@@ -143,21 +127,20 @@
         <tbody id="pnl-tbody"></tbody>
       </table>
       <div class="callout">
-        <strong>Formulas (per CFO requirements):</strong>
-        <ul>
-          <li>Gross Profit = Revenue − COGS</li>
-          <li>Gross Margin % = Gross Profit ÷ Revenue</li>
-          <li>Net Income = Revenue − COGS − Operating Expenses</li>
-          <li>Net Margin % = Net Income ÷ Revenue</li>
-          <li>Variance % = (Current − Comparison) ÷ Comparison</li>
-        </ul>
+        <strong>Formulas:</strong>
+        Gross Profit = Revenue − COGS · Gross Margin % = GP ÷ Revenue ·
+        Net Income = Revenue − COGS − OpEx · Net Margin % = Net ÷ Revenue ·
+        Variance % = (Current − Comparison) ÷ |Comparison|
       </div>
+      <div class="notes-section" data-tab-key="pnl"></div>
     </section>
 
-    <!-- Tab 3: Date Filter & Period Comparison -->
-    <section id="tab-compare" class="tab-panel" role="tabpanel">
-      <h2>Period Comparison</h2>
-      <p class="meta">All comparisons recalculate live when you change the filter bar above.</p>
+    <!-- Tab 3: Period Comparison -->
+    <section id="tab-compare" class="tab-panel" role="tabpanel" data-tab="compare">
+      <div class="panel-header">
+        <div><h2>Period Comparison</h2><p class="meta">All comparisons recalculate live when you change the filter bar above.</p></div>
+        <button class="btn-secondary csv-btn" data-csv="compare">Export CSV</button>
+      </div>
       <table class="compare-table">
         <thead>
           <tr>
@@ -165,7 +148,7 @@
             <th class="num">Current</th>
             <th class="num">Prior period</th>
             <th class="num">2 periods ago</th>
-            <th class="num">YoY % (current vs prior)</th>
+            <th class="num">YoY %</th>
             <th class="num">2-yr CAGR</th>
           </tr>
         </thead>
@@ -194,16 +177,73 @@
           </table>
         </div>
       </div>
+      <div class="notes-section" data-tab-key="compare"></div>
     </section>
 
-    <!-- Tab 4: Deep Dive -->
-    <section id="tab-deepdive" class="tab-panel" role="tabpanel">
-      <h2>Deep Dive Analysis</h2>
-      <p class="meta">Drill into any line item. Click a row to see prior-year comparison.</p>
+    <!-- Tab 4: Segments (NEW for Strategy / FP&A) -->
+    <section id="tab-segments" class="tab-panel" role="tabpanel" data-tab="segments">
+      <div class="panel-header">
+        <div><h2>Segments &amp; Cost Structure</h2><p class="meta">Revenue mix, COGS structure, and OpEx structure — for strategy &amp; FP&amp;A.</p></div>
+        <button class="btn-secondary csv-btn" data-csv="segments">Export CSV</button>
+      </div>
+      <div class="comparison-grid">
+        <div class="card">
+          <h3>Revenue by income account (YTD)</h3>
+          <table class="mini-table">
+            <thead><tr><th>Account</th><th class="num">YTD 2026</th><th class="num">% of revenue</th><th class="num">FY 2025</th></tr></thead>
+            <tbody id="seg-revenue-tbody"></tbody>
+          </table>
+        </div>
+        <div class="card">
+          <h3>COGS structure (3 buckets)</h3>
+          <table class="mini-table">
+            <thead><tr><th>Bucket</th><th class="num">YTD 2026</th><th class="num">% of COGS</th><th class="num">FY 2025</th></tr></thead>
+            <tbody id="seg-cogs-tbody"></tbody>
+          </table>
+        </div>
+        <div class="card span-2">
+          <h3>Operating expense structure (6 buckets)</h3>
+          <table class="mini-table">
+            <thead><tr><th>Bucket</th><th class="num">YTD 2026</th><th class="num">% of OpEx</th><th class="num">FY 2025</th><th class="num">Δ %</th></tr></thead>
+            <tbody id="seg-opex-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="notes-section" data-tab-key="segments"></div>
+    </section>
+
+    <!-- Tab 5: Working Capital (NEW for Controller / Treasury) -->
+    <section id="tab-workingcap" class="tab-panel" role="tabpanel" data-tab="workingcap">
+      <div class="panel-header">
+        <div><h2>Working Capital</h2><p class="meta">A/R, A/P, retainage, inventory, WIP — drives free cash flow conversion.</p></div>
+        <button class="btn-secondary csv-btn" data-csv="workingcap">Export CSV</button>
+      </div>
+      <div class="kpi-grid" id="wc-kpis"></div>
+      <div class="card">
+        <h3>Working-capital movements (cash flow statement)</h3>
+        <table class="mini-table">
+          <thead><tr><th>Account</th><th class="num">YTD 2026</th><th class="num">FY 2025</th><th class="num">Δ %</th><th>Direction</th></tr></thead>
+          <tbody id="wc-tbody"></tbody>
+        </table>
+      </div>
+      <div class="callout">
+        <strong>How to read this:</strong>
+        Positive A/P change = the company collected more by paying suppliers later (working-capital release).
+        Negative A/R change = receivables grew faster than collections (working-capital absorption).
+        Retainage swings reflect job-mix and milestone billing on construction contracts.
+      </div>
+      <div class="notes-section" data-tab-key="workingcap"></div>
+    </section>
+
+    <!-- Tab 6: Deep Dive -->
+    <section id="tab-deepdive" class="tab-panel" role="tabpanel" data-tab="deepdive">
+      <div class="panel-header">
+        <div><h2>Deep Dive Analysis</h2><p class="meta">Drill into any line item.</p></div>
+        <button class="btn-secondary csv-btn" data-csv="deepdive">Export CSV</button>
+      </div>
       <div class="deepdive-grid">
         <div class="card">
           <h3>Revenue concentration</h3>
-          <p class="meta">Verified months only. Run <code>scripts/refresh.sh</code> to expand coverage.</p>
           <table class="mini-table">
             <thead><tr><th>Metric</th><th class="num">YTD 2026</th><th class="num">FY 2025</th><th class="num">Δ %</th></tr></thead>
             <tbody id="rev-mix-tbody"></tbody>
@@ -211,7 +251,6 @@
         </div>
         <div class="card">
           <h3>Margin progression by month</h3>
-          <p class="meta">Gross margin % per verified month — early-year vs late-year.</p>
           <table class="mini-table">
             <thead><tr><th>Month</th><th class="num">Revenue</th><th class="num">GP</th><th class="num">GM %</th></tr></thead>
             <tbody id="margin-progress-tbody"></tbody>
@@ -225,12 +264,15 @@
           </table>
         </div>
       </div>
+      <div class="notes-section" data-tab-key="deepdive"></div>
     </section>
 
-    <!-- Tab 5: Forecast -->
-    <section id="tab-forecast" class="tab-panel" role="tabpanel">
-      <h2>Forecast &amp; Year-End Projection</h2>
-      <p class="meta" id="forecast-meta"></p>
+    <!-- Tab 7: Forecast -->
+    <section id="tab-forecast" class="tab-panel" role="tabpanel" data-tab="forecast">
+      <div class="panel-header">
+        <div><h2>Forecast &amp; Year-End Projection</h2><p class="meta" id="forecast-meta"></p></div>
+        <button class="btn-secondary csv-btn" data-csv="forecast">Export CSV</button>
+      </div>
       <div class="kpi-grid">
         <div class="kpi"><div class="kpi-label">Forecast revenue</div><div class="kpi-value" id="fc-revenue"></div></div>
         <div class="kpi"><div class="kpi-label">Forecast gross profit</div><div class="kpi-value" id="fc-gp"></div></div>
@@ -243,27 +285,54 @@
       </div>
       <div class="callout">
         <strong>Methodology:</strong>
-        <ul>
-          <li>Year-End Run Rate = (YTD Actual ÷ Completed Months) × 12</li>
-          <li>Year-End Forecast = YTD Actual + (Avg Monthly × Remaining Months)</li>
-          <li>Year-End Cash = Beginning Cash + (YTD CF activities) + projected CF for remaining months</li>
-          <li>Forecast vs Prior Year is shown in the comparison tab — change the comparison filter.</li>
-        </ul>
+        Year-End Run Rate = (YTD ÷ Completed Months) × 12 ·
+        Year-End Forecast = YTD + (Avg Monthly × Remaining Months) ·
+        Year-End Cash = Beginning + YTD CF + (Avg Monthly CF × Remaining)
       </div>
+      <div class="notes-section" data-tab-key="forecast"></div>
     </section>
 
-    <!-- Tab 6: Trends -->
-    <section id="tab-trends" class="tab-panel" role="tabpanel">
-      <h2>Trends</h2>
-      <p class="meta">Annual trend uses verified totals (FY 2024, FY 2025, YTD 2026 + run-rate). Monthly trend uses individually-verified monthly P&amp;L queries.</p>
-      <div class="card">
-        <h3>Annual revenue trend</h3>
-        <div id="trend-revenue" class="chart"></div>
+    <!-- Tab 8: Scenarios (NEW for Strategy / FP&A) -->
+    <section id="tab-scenarios" class="tab-panel" role="tabpanel" data-tab="scenarios">
+      <div class="panel-header">
+        <div><h2>Scenario Modeling</h2><p class="meta">Move the sliders. Year-end forecast and net income recompute live.</p></div>
+        <button class="btn-secondary csv-btn" data-csv="scenarios">Export CSV</button>
       </div>
-      <div class="card">
-        <h3>Annual gross profit &amp; net income trend</h3>
-        <div id="trend-profit" class="chart"></div>
+      <div class="scenario-grid">
+        <div class="card">
+          <h3>Inputs</h3>
+          <div class="scenario-input">
+            <label>2H revenue growth vs run-rate <output id="scn-rev-out">0%</output></label>
+            <input type="range" id="scn-rev" min="-30" max="30" step="1" value="0">
+          </div>
+          <div class="scenario-input">
+            <label>Gross margin shift (pts) <output id="scn-gm-out">+0.0pt</output></label>
+            <input type="range" id="scn-gm" min="-5" max="5" step="0.1" value="0">
+          </div>
+          <div class="scenario-input">
+            <label>OpEx % vs run-rate <output id="scn-opex-out">0%</output></label>
+            <input type="range" id="scn-opex" min="-20" max="20" step="1" value="0">
+          </div>
+        </div>
+        <div class="card">
+          <h3>Year-end outcome</h3>
+          <table class="mini-table">
+            <thead><tr><th>Metric</th><th class="num">Base forecast</th><th class="num">Scenario</th><th class="num">Δ vs base</th></tr></thead>
+            <tbody id="scn-tbody"></tbody>
+          </table>
+        </div>
       </div>
+      <div class="notes-section" data-tab-key="scenarios"></div>
+    </section>
+
+    <!-- Tab 9: Trends -->
+    <section id="tab-trends" class="tab-panel" role="tabpanel" data-tab="trends">
+      <div class="panel-header">
+        <div><h2>Trends</h2><p class="meta">Annual + verified monthly.</p></div>
+        <button class="btn-secondary csv-btn" data-csv="trends">Export CSV</button>
+      </div>
+      <div class="card"><h3>Annual revenue trend</h3><div id="trend-revenue" class="chart"></div></div>
+      <div class="card"><h3>Annual gross profit &amp; net income trend</h3><div id="trend-profit" class="chart"></div></div>
       <div class="card">
         <h3>Margin trend</h3>
         <table class="mini-table">
@@ -273,37 +342,49 @@
       </div>
       <div class="card">
         <h3>Verified monthly P&amp;L</h3>
-        <p class="meta">Only months pulled individually from QuickBooks appear here. <code>scripts/refresh.sh</code> can backfill more.</p>
         <table class="mini-table">
           <thead><tr><th>Month</th><th class="num">Revenue</th><th class="num">COGS</th><th class="num">GP</th><th class="num">OpEx</th><th class="num">Net</th><th class="num">GM %</th><th class="num">NM %</th></tr></thead>
           <tbody id="months-tbody"></tbody>
         </table>
       </div>
+      <div class="notes-section" data-tab-key="trends"></div>
     </section>
 
-    <!-- Tab 7: Action Flags -->
-    <section id="tab-flags" class="tab-panel" role="tabpanel">
-      <h2>Action Flags</h2>
-      <p class="meta">Triggered automatically from current period vs prior period &amp; forecast.</p>
+    <!-- Tab 10: Industry Benchmark (NEW for Strategy) -->
+    <section id="tab-benchmark" class="tab-panel" role="tabpanel" data-tab="benchmark">
+      <div class="panel-header">
+        <div><h2>Industry Benchmark</h2><p class="meta" id="benchmark-meta"></p></div>
+        <button class="btn-secondary csv-btn" data-csv="benchmark">Export CSV</button>
+      </div>
+      <div class="kpi-grid" id="benchmark-kpis"></div>
+      <div class="card">
+        <h3>Strategic positioning</h3>
+        <ul id="benchmark-positioning"></ul>
+      </div>
+      <div class="notes-section" data-tab-key="benchmark"></div>
+    </section>
+
+    <!-- Tab 11: Action Flags -->
+    <section id="tab-flags" class="tab-panel" role="tabpanel" data-tab="flags">
+      <div class="panel-header">
+        <div><h2>Action Flags</h2><p class="meta">Triggered automatically from current period vs prior period &amp; forecast.</p></div>
+        <button class="btn-secondary csv-btn" data-csv="flags">Export CSV</button>
+      </div>
       <ul id="action-flag-list" class="action-flag-list"></ul>
       <div class="callout">
         <strong>Flag rules:</strong>
         <ul>
-          <li>Revenue decline: current period revenue run-rate &lt; prior year revenue</li>
-          <li>Margin compression: gross margin % decline &gt; 1.0pt vs prior year</li>
-          <li>Expense spike: operating expense run-rate &gt; prior year by &gt; 5%</li>
-          <li>Negative cash flow: YTD operating + investing + financing cash &lt; 0</li>
-          <li>Negative cash position: Cash at end of period &lt; 0</li>
-          <li>Forecast miss: forecast net margin % &lt; prior year by &gt; 1.0pt</li>
-          <li>A/R risk: A/R change in cash flow &lt; -$500k (significant uncollected revenue)</li>
+          <li>Revenue decline · Margin compression · Expense spike</li>
+          <li>Negative cash flow · Negative cash position · A/R risk · Forecast miss</li>
         </ul>
       </div>
+      <div class="notes-section" data-tab-key="flags"></div>
     </section>
   </main>
 
   <footer class="footer">
-    <p>Source: <span id="source-text">QuickBooks Online (live)</span> · Data snapshot generated <span id="generated-at"></span> · As of <span id="as-of"></span></p>
-    <p class="meta">No hardcoded numbers — every value loads from <code>data/snapshot.json</code>, which is regenerated from QuickBooks via <code>scripts/refresh.sh</code>.</p>
+    <p>Source: <span id="source-text"></span> · Snapshot generated <span id="generated-at"></span> · As of <span id="as-of"></span></p>
+    <p class="meta">No hardcoded numbers — every value loads from <code>data/snapshot.json</code>, regenerated from QuickBooks via <code>scripts/refresh.sh</code>. Notes persist per browser via <code>localStorage</code>.</p>
   </footer>
 
   <script src="app.js"></script>

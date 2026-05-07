@@ -48,23 +48,19 @@ def build_standalone_html(root: Path, snapshot: dict, out_path: Path):
     )
 
     # Patch app.js so init() reads from the embedded snapshot instead of fetch().
-    patched_js = js.replace(
-        "async function init() {\n"
-        "  const res = await fetch('data/snapshot.json');\n"
-        "  if (!res.ok) {\n"
-        "    document.body.innerHTML = `<div style=\"padding:40px;color:#f55a5a\">\n"
-        "      Failed to load snapshot. Run <code>scripts/refresh.sh</code> first.\n"
-        "    </div>`;\n"
-        "    return;\n"
-        "  }\n"
-        "  SNAPSHOT = await res.json();",
-        "async function init() {\n"
-        "  SNAPSHOT = __EMBEDDED_SNAPSHOT__;",
+    # Use a regex to tolerate formatting changes inside the fetch error branch.
+    pattern = re.compile(
+        r"async function init\(\)\s*\{[^}]*?fetch\('data/snapshot\.json'\)[\s\S]*?SNAPSHOT\s*=\s*await\s*res\.json\(\)\s*;",
+        re.DOTALL,
     )
-    if "__EMBEDDED_SNAPSHOT__" not in patched_js:
+    patched_js, count = pattern.subn(
+        "async function init() {\n  SNAPSHOT = __EMBEDDED_SNAPSHOT__;",
+        js,
+    )
+    if count == 0:
         raise RuntimeError(
-            "Failed to patch app.js — fetch() block did not match. "
-            "Update build_distributables.py to match the new init()."
+            "Failed to patch app.js — could not match init()/fetch() block. "
+            "Update build_distributables.py if init() changed shape."
         )
 
     html = re.sub(
@@ -399,8 +395,152 @@ def build_xlsx(snapshot: dict, out_path: Path):
         r += 1
     _autosize(ws, [12, 18, 18, 18, 18, 18, 12, 12])
 
-    # --- Sheet 7: Action Flags ---------------------------------------------
-    ws = wb.create_sheet("7. Action Flags")
+    # --- Sheet 7: Segments --------------------------------------------------
+    ws = wb.create_sheet("7. Segments")
+    _title(ws, 1, "Segments & Cost Structure")
+    _meta(ws, 2, "Revenue mix, COGS structure, and OpEx structure for FP&A and Strategy.")
+    cur_seg = (cur.get("segments") or {})
+    prior_seg = (prior.get("segments") or {})
+
+    _set_cell(ws, 4, 1, "Revenue by income account", font=H2_FONT)
+    _headers(ws, 5, ["Account", "YTD 2026", "% of revenue (live)", "FY 2025"])
+    r = 6
+    for a in cur_seg.get("incomeAccounts", []):
+        prior_match = next((x for x in prior_seg.get("incomeAccounts", []) if x["account"] == a["account"]), None)
+        _set_cell(ws, r, 1, a["account"])
+        _set_cell(ws, r, 2, a["amount"], fmt=MONEY)
+        _set_cell(ws, r, 3, f"=B{r}/{cur['revenue']}", fmt=PCT)
+        _set_cell(ws, r, 4, prior_match["amount"] if prior_match else None, fmt=MONEY)
+        r += 1
+
+    r += 2
+    _set_cell(ws, r, 1, "COGS structure (3 buckets)", font=H2_FONT)
+    r += 1
+    _headers(ws, r, ["Bucket", "YTD 2026", "% of COGS (live)", "FY 2025"])
+    r += 1
+    for b in cur_seg.get("cogsBuckets", []):
+        prior_match = next((x for x in prior_seg.get("cogsBuckets", []) if x["bucket"] == b["bucket"]), None)
+        _set_cell(ws, r, 1, b["bucket"])
+        _set_cell(ws, r, 2, b["amount"], fmt=MONEY)
+        _set_cell(ws, r, 3, f"=B{r}/{cur['cogs']}", fmt=PCT)
+        _set_cell(ws, r, 4, prior_match["amount"] if prior_match else None, fmt=MONEY)
+        r += 1
+
+    r += 2
+    _set_cell(ws, r, 1, "OpEx structure (6 buckets)", font=H2_FONT)
+    r += 1
+    _headers(ws, r, ["Bucket", "YTD 2026", "% of OpEx (live)", "FY 2025", "Δ %"])
+    r += 1
+    for b in cur_seg.get("opexBuckets", []):
+        prior_match = next((x for x in prior_seg.get("opexBuckets", []) if x["bucket"] == b["bucket"]), None)
+        _set_cell(ws, r, 1, b["bucket"])
+        _set_cell(ws, r, 2, b["amount"], fmt=MONEY)
+        _set_cell(ws, r, 3, f"=B{r}/{cur['operatingExpenses']}", fmt=PCT)
+        _set_cell(ws, r, 4, prior_match["amount"] if prior_match else None, fmt=MONEY)
+        _set_cell(ws, r, 5, f"=IFERROR((B{r}-D{r})/ABS(D{r}),\"\")" if prior_match else "", fmt=PCT)
+        r += 1
+    _autosize(ws, [44, 18, 18, 18, 12])
+
+    # --- Sheet 8: Working Capital -------------------------------------------
+    ws = wb.create_sheet("8. Working Capital")
+    _title(ws, 1, "Working Capital — Controller / Treasury view")
+    _meta(ws, 2, "A/R, A/P, retainage, inventory, WIP. Drives free cash flow conversion.")
+    wc = snapshot.get("workingCapital", {})
+    _headers(ws, 4, ["Account", "YTD 2026", "FY 2025", "Δ %", "Cash impact"])
+    rows = [
+        ("Accounts Receivable", wc["current"].get("ar", 0), wc["prior"].get("ar", 0)),
+        ("Accounts Payable", wc["current"].get("ap", 0), wc["prior"].get("ap", 0)),
+        ("Retainage Receivable", wc["current"].get("retainage", 0), wc["prior"].get("retainage", 0)),
+        ("Drywall Inventory", wc["current"].get("inventory", 0), wc["prior"].get("inventory", 0)),
+        ("WIP Overbillings", wc["current"].get("wipOverbillings", 0), wc["prior"].get("wipOverbillings", 0)),
+        ("WIP Underbillings", wc["current"].get("wipUnderbillings", 0), wc["prior"].get("wipUnderbillings", 0)),
+        ("Line of Credit draw", wc["current"].get("lineOfCreditDraw", 0), wc["prior"].get("lineOfCreditDraw", 0)),
+    ]
+    r = 5
+    for label, c, p in rows:
+        _set_cell(ws, r, 1, label)
+        _set_cell(ws, r, 2, c, fmt=MONEY)
+        _set_cell(ws, r, 3, p, fmt=MONEY)
+        _set_cell(ws, r, 4, f"=IFERROR((B{r}-C{r})/ABS(C{r}),\"\")", fmt=PCT)
+        _set_cell(ws, r, 5, "Source of cash" if c > 0 else "Use of cash" if c < 0 else "—",
+                  fill=GOOD_FILL if c > 0 else (BAD_FILL if c < 0 else None))
+        r += 1
+    _set_cell(ws, r, 1, "Total working-capital change (live sum)", font=Font(bold=True), fill=SUBTOTAL_FILL)
+    _set_cell(ws, r, 2, f"=SUM(B5:B{r-1})", fmt=MONEY, font=Font(bold=True), fill=SUBTOTAL_FILL)
+    _set_cell(ws, r, 3, f"=SUM(C5:C{r-1})", fmt=MONEY, font=Font(bold=True), fill=SUBTOTAL_FILL)
+    _autosize(ws, [38, 18, 18, 14, 22])
+
+    # --- Sheet 9: Scenarios -------------------------------------------------
+    ws = wb.create_sheet("9. Scenarios")
+    _title(ws, 1, "Scenario Modeling — FP&A / Strategy")
+    _meta(ws, 2, "Inputs in B6:B8 are the only cells you edit. Year-end outcome below recomputes automatically.")
+    _set_cell(ws, 4, 1, "Inputs", font=H2_FONT)
+    _set_cell(ws, 5, 1, "YTD revenue (locked)")
+    _set_cell(ws, 5, 2, fc["ytdRevenue"], fmt=MONEY)
+    _set_cell(ws, 6, 1, "2H revenue growth vs run-rate (e.g., 0.05 = +5%)", font=Font(bold=True))
+    _set_cell(ws, 6, 2, 0.0, fmt=PCT, fill=GOOD_FILL)
+    _set_cell(ws, 7, 1, "Gross margin shift (pts; e.g., -0.01 = -1pt)", font=Font(bold=True))
+    _set_cell(ws, 7, 2, 0.0, fmt=PCT, fill=GOOD_FILL)
+    _set_cell(ws, 8, 1, "OpEx % vs run-rate (e.g., 0.10 = +10%)", font=Font(bold=True))
+    _set_cell(ws, 8, 2, 0.0, fmt=PCT, fill=GOOD_FILL)
+
+    _set_cell(ws, 10, 1, "Year-end outcome (live)", font=H2_FONT)
+    _headers(ws, 11, ["Metric", "Base forecast", "Scenario", "Δ vs base"])
+    r = 12
+    # Scenario formulas reference the inputs above by absolute cell address.
+    base_rev = fc["yearEndRevenue"]
+    base_gp = fc["yearEndGrossProfit"]
+    base_op = fc["yearEndOperatingExpenses"]
+    base_net = fc["yearEndNetIncome"]
+    base_gm = fc["yearEndGrossMarginPct"]
+    base_nm = fc["yearEndNetMarginPct"]
+
+    avg_rev = fc["avgMonthlyRevenue"]
+    avg_op = fc["avgMonthlyOperatingExpenses"]
+    rem = fc["remainingMonths"]
+
+    rows_scn = [
+        ("Revenue", base_rev, f"=B5+({avg_rev}*{rem})*(1+$B$6)", MONEY, False),
+        ("Gross Margin %", base_gm, f"={base_gm}+$B$7", PCT, True),
+        ("Gross Profit", base_gp, f"=C12*C13", MONEY, False),
+        ("Operating Expenses", base_op, f"={fc['ytdOperatingExpenses']}+({avg_op}*{rem})*(1+$B$8)", MONEY, False),
+        ("Net Income", base_net, f"=C14-C15", MONEY, False),
+        ("Net Margin %", base_nm, f"=C16/C12", PCT, True),
+    ]
+    for label, base, scn_formula, fmt, _is_pct in rows_scn:
+        _set_cell(ws, r, 1, label, font=Font(bold=True))
+        _set_cell(ws, r, 2, base, fmt=fmt)
+        _set_cell(ws, r, 3, scn_formula, fmt=fmt)
+        _set_cell(ws, r, 4, f"=C{r}-B{r}", fmt=fmt)
+        r += 1
+    _autosize(ws, [44, 18, 18, 18])
+
+    # --- Sheet 10: Industry Benchmark ---------------------------------------
+    ws = wb.create_sheet("10. Industry Benchmark")
+    bench = snapshot.get("benchmark") or {}
+    _title(ws, 1, "Industry Benchmark — Strategy")
+    _meta(ws, 2, f"{bench.get('industryType','')}  ·  NAICS {bench.get('naicsCode','')}  ·  {bench.get('location','')}  ·  {bench.get('benchmarkPeriodRange','')}")
+    _headers(ws, 4, ["Metric", "Value"])
+    bench_rows = [
+        ("Annualized profit (12-mo)", bench.get("metricValue"), MONEY),
+        (f"{bench.get('location','')} regional average", bench.get("regionalAverage"), MONEY),
+        ("Above regional average by (live)", None, PCT),
+        ("Multiple vs regional (live)", None, "0.0\"x\""),
+    ]
+    r = 5
+    for label, value, fmt in bench_rows:
+        _set_cell(ws, r, 1, label, font=Font(bold=True))
+        if "live" in label and "Above" in label:
+            _set_cell(ws, r, 2, "=(B5-B6)/B6", fmt=PCT)
+        elif "live" in label and "Multiple" in label:
+            _set_cell(ws, r, 2, "=B5/B6", fmt=fmt)
+        else:
+            _set_cell(ws, r, 2, value, fmt=fmt)
+        r += 1
+    _autosize(ws, [44, 22])
+
+    # --- Sheet 11: Action Flags ---------------------------------------------
+    ws = wb.create_sheet("11. Action Flags")
     _title(ws, 1, "Action Flags")
     _meta(ws, 2, "Computed live from current period vs prior + forecast. Severities: bad / warn / good.")
     _headers(ws, 4, ["Flag", "Severity", "Triggered?", "Detail"])
@@ -416,8 +556,8 @@ def build_xlsx(snapshot: dict, out_path: Path):
         r += 1
     _autosize(ws, [44, 14, 14, 70])
 
-    # --- Sheet 8: Raw snapshot ---------------------------------------------
-    ws = wb.create_sheet("8. Raw snapshot.json")
+    # --- Sheet 12: Raw snapshot --------------------------------------------
+    ws = wb.create_sheet("12. Raw snapshot.json")
     _title(ws, 1, "Raw snapshot.json values")
     _meta(ws, 2, "Source of truth for every other tab. Edit at your own risk — formulas elsewhere reference these.")
     _headers(ws, 4, ["Path", "Value"])
