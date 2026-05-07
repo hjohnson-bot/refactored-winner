@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CFO Dashboard — Midwest Design Group LLC</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <h1 id="company-name">CFO Dashboard</h1>
+      <p id="company-meta" class="meta"></p>
+    </div>
+    <div class="topbar-controls">
+      <div class="badge" id="data-source-badge">Loading…</div>
+      <button id="refresh-btn" class="btn-secondary" title="Refresh from QuickBooks (run scripts/refresh.sh)">⟳ Refresh</button>
+    </div>
+  </header>
+
+  <section class="filters" aria-label="Filters">
+    <div class="filter">
+      <label for="filter-start">Start date</label>
+      <input type="date" id="filter-start">
+    </div>
+    <div class="filter">
+      <label for="filter-end">End date</label>
+      <input type="date" id="filter-end">
+    </div>
+    <div class="filter">
+      <label for="filter-period">Period</label>
+      <select id="filter-period">
+        <option value="ytd">YTD 2026</option>
+        <option value="fy2025">FY 2025</option>
+        <option value="fy2024">FY 2024</option>
+        <option value="custom">Custom</option>
+      </select>
+    </div>
+    <div class="filter">
+      <label for="filter-comparison">Compare to</label>
+      <select id="filter-comparison">
+        <option value="prior-year">Prior year</option>
+        <option value="prior-2">2 years prior</option>
+        <option value="forecast">Forecast</option>
+        <option value="none">No comparison</option>
+      </select>
+    </div>
+    <div class="filter">
+      <label for="filter-account">Revenue account</label>
+      <select id="filter-account"><option value="all">All accounts</option></select>
+    </div>
+    <div class="filter">
+      <label for="filter-expense-cat">Expense category</label>
+      <select id="filter-expense-cat"><option value="all">All categories</option></select>
+    </div>
+    <div class="filter">
+      <label for="filter-class">Class</label>
+      <select id="filter-class"><option value="all">All classes</option></select>
+    </div>
+    <div class="filter">
+      <label for="filter-location">Location</label>
+      <select id="filter-location"><option value="all">All locations</option></select>
+    </div>
+  </section>
+
+  <nav class="tabs" role="tablist">
+    <button class="tab active" data-tab="exec" role="tab">CFO Executive Summary</button>
+    <button class="tab" data-tab="pnl" role="tab">P&amp;L Dashboard</button>
+    <button class="tab" data-tab="compare" role="tab">Date Filter &amp; Period Comparison</button>
+    <button class="tab" data-tab="deepdive" role="tab">Deep Dive Analysis</button>
+    <button class="tab" data-tab="forecast" role="tab">Forecast &amp; Year-End</button>
+    <button class="tab" data-tab="trends" role="tab">Trends</button>
+    <button class="tab" data-tab="flags" role="tab">Action Flags</button>
+  </nav>
+
+  <main>
+    <!-- Tab 1: CFO Executive Summary -->
+    <section id="tab-exec" class="tab-panel active" role="tabpanel">
+      <h2>Executive Summary</h2>
+      <p class="period-label" id="exec-period-label"></p>
+      <div class="kpi-grid">
+        <div class="kpi" data-metric="revenue">
+          <div class="kpi-label">Revenue</div>
+          <div class="kpi-value" id="kpi-revenue"></div>
+          <div class="kpi-delta" id="kpi-revenue-delta"></div>
+        </div>
+        <div class="kpi" data-metric="grossProfit">
+          <div class="kpi-label">Gross Profit</div>
+          <div class="kpi-value" id="kpi-gp"></div>
+          <div class="kpi-delta" id="kpi-gp-delta"></div>
+        </div>
+        <div class="kpi" data-metric="grossMargin">
+          <div class="kpi-label">Gross Margin %</div>
+          <div class="kpi-value" id="kpi-gm-pct"></div>
+          <div class="kpi-delta" id="kpi-gm-pct-delta"></div>
+        </div>
+        <div class="kpi" data-metric="opex">
+          <div class="kpi-label">Operating Expenses</div>
+          <div class="kpi-value" id="kpi-opex"></div>
+          <div class="kpi-delta" id="kpi-opex-delta"></div>
+        </div>
+        <div class="kpi" data-metric="netIncome">
+          <div class="kpi-label">Net Income (EBITDA-like)</div>
+          <div class="kpi-value" id="kpi-net"></div>
+          <div class="kpi-delta" id="kpi-net-delta"></div>
+        </div>
+        <div class="kpi" data-metric="netMargin">
+          <div class="kpi-label">Net Margin %</div>
+          <div class="kpi-value" id="kpi-nm-pct"></div>
+          <div class="kpi-delta" id="kpi-nm-pct-delta"></div>
+        </div>
+        <div class="kpi" data-metric="cash">
+          <div class="kpi-label">Cash Position</div>
+          <div class="kpi-value" id="kpi-cash"></div>
+          <div class="kpi-delta" id="kpi-cash-delta"></div>
+        </div>
+        <div class="kpi" data-metric="ar">
+          <div class="kpi-label">A/R Change (cash flow)</div>
+          <div class="kpi-value" id="kpi-ar"></div>
+          <div class="kpi-delta-static">From cash flow statement</div>
+        </div>
+      </div>
+      <div class="exec-flags">
+        <h3>Critical alerts</h3>
+        <ul id="exec-flag-list"></ul>
+      </div>
+    </section>
+
+    <!-- Tab 2: P&L Dashboard -->
+    <section id="tab-pnl" class="tab-panel" role="tabpanel">
+      <h2>Profit &amp; Loss</h2>
+      <p class="period-label" id="pnl-period-label"></p>
+      <table class="pnl-table">
+        <thead>
+          <tr>
+            <th>Line item</th>
+            <th class="num" id="pnl-col-current"></th>
+            <th class="num" id="pnl-col-comparison"></th>
+            <th class="num">$ Variance</th>
+            <th class="num">% Variance</th>
+          </tr>
+        </thead>
+        <tbody id="pnl-tbody"></tbody>
+      </table>
+      <div class="callout">
+        <strong>Formulas (per CFO requirements):</strong>
+        <ul>
+          <li>Gross Profit = Revenue − COGS</li>
+          <li>Gross Margin % = Gross Profit ÷ Revenue</li>
+          <li>Net Income = Revenue − COGS − Operating Expenses</li>
+          <li>Net Margin % = Net Income ÷ Revenue</li>
+          <li>Variance % = (Current − Comparison) ÷ Comparison</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Tab 3: Date Filter & Period Comparison -->
+    <section id="tab-compare" class="tab-panel" role="tabpanel">
+      <h2>Period Comparison</h2>
+      <p class="meta">All comparisons recalculate live when you change the filter bar above.</p>
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>Metric</th>
+            <th class="num">Current</th>
+            <th class="num">Prior period</th>
+            <th class="num">2 periods ago</th>
+            <th class="num">YoY % (current vs prior)</th>
+            <th class="num">2-yr CAGR</th>
+          </tr>
+        </thead>
+        <tbody id="compare-tbody"></tbody>
+      </table>
+      <div class="comparison-grid">
+        <div class="card">
+          <h3>Month vs Month (verified months)</h3>
+          <table class="mini-table">
+            <thead><tr><th>Month</th><th class="num">Revenue</th><th class="num">GP</th><th class="num">GM %</th><th class="num">Net</th><th class="num">NM %</th></tr></thead>
+            <tbody id="mvm-tbody"></tbody>
+          </table>
+        </div>
+        <div class="card">
+          <h3>Quarter vs Quarter (annualized)</h3>
+          <table class="mini-table">
+            <thead><tr><th>Period</th><th class="num">Revenue</th><th class="num">GP</th><th class="num">Net</th></tr></thead>
+            <tbody id="qvq-tbody"></tbody>
+          </table>
+        </div>
+        <div class="card">
+          <h3>Actual vs Forecast (year-end)</h3>
+          <table class="mini-table">
+            <thead><tr><th>Metric</th><th class="num">YTD actual</th><th class="num">Year-end forecast</th><th class="num">Implied 2H</th></tr></thead>
+            <tbody id="avf-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 4: Deep Dive -->
+    <section id="tab-deepdive" class="tab-panel" role="tabpanel">
+      <h2>Deep Dive Analysis</h2>
+      <p class="meta">Drill into any line item. Click a row to see prior-year comparison.</p>
+      <div class="deepdive-grid">
+        <div class="card">
+          <h3>Revenue concentration</h3>
+          <p class="meta">Verified months only. Run <code>scripts/refresh.sh</code> to expand coverage.</p>
+          <table class="mini-table">
+            <thead><tr><th>Metric</th><th class="num">YTD 2026</th><th class="num">FY 2025</th><th class="num">Δ %</th></tr></thead>
+            <tbody id="rev-mix-tbody"></tbody>
+          </table>
+        </div>
+        <div class="card">
+          <h3>Margin progression by month</h3>
+          <p class="meta">Gross margin % per verified month — early-year vs late-year.</p>
+          <table class="mini-table">
+            <thead><tr><th>Month</th><th class="num">Revenue</th><th class="num">GP</th><th class="num">GM %</th></tr></thead>
+            <tbody id="margin-progress-tbody"></tbody>
+          </table>
+        </div>
+        <div class="card span-2">
+          <h3>Cash flow decomposition</h3>
+          <table class="mini-table">
+            <thead><tr><th>Activity</th><th class="num">YTD 2026</th><th class="num">FY 2025</th><th class="num">Δ %</th></tr></thead>
+            <tbody id="cashflow-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 5: Forecast -->
+    <section id="tab-forecast" class="tab-panel" role="tabpanel">
+      <h2>Forecast &amp; Year-End Projection</h2>
+      <p class="meta" id="forecast-meta"></p>
+      <div class="kpi-grid">
+        <div class="kpi"><div class="kpi-label">Forecast revenue</div><div class="kpi-value" id="fc-revenue"></div></div>
+        <div class="kpi"><div class="kpi-label">Forecast gross profit</div><div class="kpi-value" id="fc-gp"></div></div>
+        <div class="kpi"><div class="kpi-label">Forecast gross margin %</div><div class="kpi-value" id="fc-gm-pct"></div></div>
+        <div class="kpi"><div class="kpi-label">Forecast operating expenses</div><div class="kpi-value" id="fc-opex"></div></div>
+        <div class="kpi"><div class="kpi-label">Forecast net income</div><div class="kpi-value" id="fc-net"></div></div>
+        <div class="kpi"><div class="kpi-label">Forecast net margin %</div><div class="kpi-value" id="fc-nm-pct"></div></div>
+        <div class="kpi"><div class="kpi-label">Year-end cash position</div><div class="kpi-value" id="fc-cash"></div></div>
+        <div class="kpi"><div class="kpi-label">Run-rate revenue (12mo)</div><div class="kpi-value" id="fc-runrate"></div></div>
+      </div>
+      <div class="callout">
+        <strong>Methodology:</strong>
+        <ul>
+          <li>Year-End Run Rate = (YTD Actual ÷ Completed Months) × 12</li>
+          <li>Year-End Forecast = YTD Actual + (Avg Monthly × Remaining Months)</li>
+          <li>Year-End Cash = Beginning Cash + (YTD CF activities) + projected CF for remaining months</li>
+          <li>Forecast vs Prior Year is shown in the comparison tab — change the comparison filter.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Tab 6: Trends -->
+    <section id="tab-trends" class="tab-panel" role="tabpanel">
+      <h2>Trends</h2>
+      <p class="meta">Annual trend uses verified totals (FY 2024, FY 2025, YTD 2026 + run-rate). Monthly trend uses individually-verified monthly P&amp;L queries.</p>
+      <div class="card">
+        <h3>Annual revenue trend</h3>
+        <div id="trend-revenue" class="chart"></div>
+      </div>
+      <div class="card">
+        <h3>Annual gross profit &amp; net income trend</h3>
+        <div id="trend-profit" class="chart"></div>
+      </div>
+      <div class="card">
+        <h3>Margin trend</h3>
+        <table class="mini-table">
+          <thead><tr><th>Period</th><th class="num">Revenue</th><th class="num">GP</th><th class="num">GM %</th><th class="num">Net</th><th class="num">NM %</th></tr></thead>
+          <tbody id="margin-trend-tbody"></tbody>
+        </table>
+      </div>
+      <div class="card">
+        <h3>Verified monthly P&amp;L</h3>
+        <p class="meta">Only months pulled individually from QuickBooks appear here. <code>scripts/refresh.sh</code> can backfill more.</p>
+        <table class="mini-table">
+          <thead><tr><th>Month</th><th class="num">Revenue</th><th class="num">COGS</th><th class="num">GP</th><th class="num">OpEx</th><th class="num">Net</th><th class="num">GM %</th><th class="num">NM %</th></tr></thead>
+          <tbody id="months-tbody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Tab 7: Action Flags -->
+    <section id="tab-flags" class="tab-panel" role="tabpanel">
+      <h2>Action Flags</h2>
+      <p class="meta">Triggered automatically from current period vs prior period &amp; forecast.</p>
+      <ul id="action-flag-list" class="action-flag-list"></ul>
+      <div class="callout">
+        <strong>Flag rules:</strong>
+        <ul>
+          <li>Revenue decline: current period revenue run-rate &lt; prior year revenue</li>
+          <li>Margin compression: gross margin % decline &gt; 1.0pt vs prior year</li>
+          <li>Expense spike: operating expense run-rate &gt; prior year by &gt; 5%</li>
+          <li>Negative cash flow: YTD operating + investing + financing cash &lt; 0</li>
+          <li>Negative cash position: Cash at end of period &lt; 0</li>
+          <li>Forecast miss: forecast net margin % &lt; prior year by &gt; 1.0pt</li>
+          <li>A/R risk: A/R change in cash flow &lt; -$500k (significant uncollected revenue)</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>Source: <span id="source-text">QuickBooks Online (live)</span> · Data snapshot generated <span id="generated-at"></span> · As of <span id="as-of"></span></p>
+    <p class="meta">No hardcoded numbers — every value loads from <code>data/snapshot.json</code>, which is regenerated from QuickBooks via <code>scripts/refresh.sh</code>.</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

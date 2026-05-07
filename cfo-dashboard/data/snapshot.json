@@ -1,0 +1,141 @@
+{
+  "company": {
+    "name": "Midwest Design Group LLC",
+    "industry": "Commercial and Institutional Building Construction",
+    "naics": "236220"
+  },
+  "asOf": "2026-05-07",
+  "generatedAt": "2026-05-07T03:26:00.310537+00:00",
+  "source": "QuickBooks Online (live, via QuickBooks MCP)",
+  "periods": {
+    "current": {
+      "periodStart": "2026-01-01",
+      "periodEnd": "2026-05-07",
+      "revenue": 19376770.19,
+      "cogs": 14108989.66,
+      "grossProfit": 5267780.53,
+      "operatingExpenses": 3480138.73,
+      "netIncome": 1661587.75,
+      "grossMarginPct": 0.2718606082616702,
+      "netMarginPct": 0.08575153308354315
+    },
+    "prior": {
+      "periodStart": "2025-01-01",
+      "periodEnd": "2025-12-31",
+      "revenue": 40491815.42,
+      "cogs": 27755136.44,
+      "grossProfit": 12736678.98,
+      "operatingExpenses": 9925912.36,
+      "netIncome": 2810766.62,
+      "grossMarginPct": 0.314549467537803,
+      "netMarginPct": 0.06941567304022843
+    },
+    "prior2": {
+      "periodStart": "2024-01-01",
+      "periodEnd": "2024-12-31",
+      "revenue": 39537774.9,
+      "cogs": 28435216.93,
+      "grossProfit": 11102557.97,
+      "operatingExpenses": 8249044.14,
+      "netIncome": 2899162.56,
+      "grossMarginPct": 0.28080887197321786,
+      "netMarginPct": 0.07332639652415061
+    }
+  },
+  "cashFlow": {
+    "current": {
+      "periodStart": "2026-01-01",
+      "periodEnd": "2026-05-07",
+      "operating": 760034.3,
+      "investing": 212852.1,
+      "financing": -1330991.51,
+      "netCashChange": -358105.11,
+      "cashBeginning": -243937.55,
+      "cashEnding": -602042.66
+    },
+    "prior": {
+      "periodStart": "2025-01-01",
+      "periodEnd": "2025-12-31",
+      "operating": 1607367.49,
+      "investing": 179545.59,
+      "financing": -1432655.18,
+      "netCashChange": 354257.9,
+      "cashBeginning": -598195.45,
+      "cashEnding": -243937.55
+    }
+  },
+  "forecast": {
+    "completedMonths": 5,
+    "remainingMonths": 7,
+    "ytdRevenue": 19376770.19,
+    "ytdGrossProfit": 5267780.53,
+    "ytdOperatingExpenses": 3480138.73,
+    "ytdNetIncome": 1661587.75,
+    "avgMonthlyRevenue": 3875354.04,
+    "avgMonthlyGrossProfit": 1053556.11,
+    "avgMonthlyOperatingExpenses": 696027.75,
+    "avgMonthlyNetIncome": 332317.55,
+    "yearEndRevenue": 46504248.46,
+    "yearEndGrossProfit": 12642673.27,
+    "yearEndOperatingExpenses": 8352332.95,
+    "yearEndNetIncome": 3987810.6,
+    "runRateRevenue": 46504248.46,
+    "runRateGrossProfit": 12642673.27,
+    "runRateOperatingExpenses": 8352332.95,
+    "runRateNetIncome": 3987810.6,
+    "yearEndGrossMarginPct": 0.2718606081952797,
+    "yearEndNetMarginPct": 0.08575153307616747,
+    "yearEndCash": -1103389.81,
+    "yearEndOperatingCash": 1824082.32
+  },
+  "verifiedMonths": [
+    {
+      "periodStart": "2025-01-01",
+      "periodEnd": "2025-01-31",
+      "revenue": 2041295.53,
+      "cogs": 1705779.19,
+      "grossProfit": 335516.34,
+      "operatingExpenses": 917633.43,
+      "netIncome": -582117.0,
+      "grossMarginPct": 0.16436441224167087,
+      "netMarginPct": -0.28517036923115197,
+      "month": "2025-01"
+    },
+    {
+      "periodStart": "2025-04-01",
+      "periodEnd": "2025-04-30",
+      "revenue": 2424157.48,
+      "cogs": 1668995.34,
+      "grossProfit": 755162.14,
+      "operatingExpenses": 836162.72,
+      "netIncome": -69968.27,
+      "grossMarginPct": 0.31151529809028744,
+      "netMarginPct": -0.028862922717380557,
+      "month": "2025-04"
+    },
+    {
+      "periodStart": "2026-03-01",
+      "periodEnd": "2026-03-31",
+      "revenue": 5290349.77,
+      "cogs": 3616852.68,
+      "grossProfit": 1673497.09,
+      "operatingExpenses": 897079.72,
+      "netIncome": 790908.56,
+      "grossMarginPct": 0.31633014124886494,
+      "netMarginPct": 0.14950023994349246,
+      "month": "2026-03"
+    },
+    {
+      "periodStart": "2026-04-01",
+      "periodEnd": "2026-04-30",
+      "revenue": 4593904.49,
+      "cogs": 3242912.67,
+      "grossProfit": 1350991.82,
+      "operatingExpenses": 713341.59,
+      "netIncome": 677429.81,
+      "grossMarginPct": 0.29408356724455975,
+      "netMarginPct": 0.14746275449884244,
+      "month": "2026-04"
+    }
+  ]
+}

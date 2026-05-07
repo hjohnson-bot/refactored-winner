@@ -1,0 +1,13 @@
+{
+  "periodStart": "2025-01-01",
+  "periodEnd": "2025-12-31",
+  "reportTitle": "Statement of Cash Flows",
+  "companyName": "Midwest Design Group LLC",
+  "operatingActivities": 1607367.49,
+  "investingActivities": 179545.59,
+  "financingActivities": -1432655.18,
+  "netCashIncrease": 354257.90,
+  "cashAtBeginning": -598195.45,
+  "cashAtEnd": -243937.55,
+  "netIncome": 2810766.62
+}
