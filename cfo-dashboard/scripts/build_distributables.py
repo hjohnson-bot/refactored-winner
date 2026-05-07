@@ -31,10 +31,12 @@ def build_standalone_html(root: Path, snapshot: dict, out_path: Path):
     css = (root / "styles.css").read_text(encoding="utf-8")
     js = (root / "app.js").read_text(encoding="utf-8")
 
-    # 1) replace external <link> with inline <style>
+    # 1) replace external <link> with inline <style>. Lambda replacement so
+    #    re.sub doesn't process escape sequences in the CSS body.
+    inline_style = f"<style>\n{css}\n</style>"
     html = re.sub(
         r'<link\s+rel="stylesheet"\s+href="styles\.css"\s*/?>',
-        f"<style>\n{css}\n</style>",
+        lambda _: inline_style,
         html,
     )
 
@@ -63,9 +65,14 @@ def build_standalone_html(root: Path, snapshot: dict, out_path: Path):
             "Update build_distributables.py if init() changed shape."
         )
 
+    # NOTE: re.sub interprets \n, \t, \\, etc. in the replacement string. The
+    # patched JS has plenty of those (string literals like '\n', escaped quotes,
+    # template strings). Use a lambda replacement so re.sub passes the bytes
+    # through verbatim.
+    new_script = f"<script>\n{snapshot_js}\n{patched_js}\n</script>"
     html = re.sub(
         r'<script\s+src="app\.js"\s*></script>',
-        f"<script>\n{snapshot_js}\n{patched_js}\n</script>",
+        lambda _: new_script,
         html,
     )
 

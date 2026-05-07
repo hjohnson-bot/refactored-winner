@@ -1233,8 +1233,7 @@ function exportCsv(tabKey) {
       rows.push([label, value, delta]);
     });
   });
-  const csv = rows.map(r => r.map(escapeCsv).join(',')).join('
-');
+  const csv = rows.map(r => r.map(escapeCsv).join(',')).join('\n');
   const blob = new Blob([csv], { type: 'text/csv' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
@@ -1242,8 +1241,7 @@ function exportCsv(tabKey) {
   document.body.appendChild(a); a.click(); document.body.removeChild(a);
 }
 
-function escapeCsv(s) { if (s === null || s === undefined) return ''; const t = String(s); return /[",
-]/.test(t) ? `"${t.replace(/"/g, '""')}"` : t; }
+function escapeCsv(s) { if (s === null || s === undefined) return ''; const t = String(s); return /[",\n]/.test(t) ? `"${t.replace(/"/g, '""')}"` : t; }
 
 // =============================================================================
 // Tiny SVG bar chart helpers
