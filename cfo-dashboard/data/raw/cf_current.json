@@ -1,0 +1,41 @@
+{
+  "periodStart": "2026-01-01",
+  "periodEnd": "2026-05-07",
+  "reportTitle": "Statement of Cash Flows",
+  "companyName": "Midwest Design Group LLC",
+  "operatingActivities": 760034.30,
+  "investingActivities": 212852.10,
+  "financingActivities": -1330991.51,
+  "netCashIncrease": -358105.11,
+  "cashAtBeginning": -243937.55,
+  "cashAtEnd": -602042.66,
+  "netIncome": 1661587.75,
+  "workingCapital": {
+    "accountsPayableChange": 286831.19,
+    "accountsReceivableChange": -649262.07,
+    "retainageReceivableChange": -837450.48,
+    "inventoryDrywallChange": 193111.88,
+    "wipOverbillingsChange": -1073267.83,
+    "wipUnderbillingsChange": -1274331.17,
+    "accruedBonusesChange": 224000.00,
+    "accruedPayrollChange": -149000.00,
+    "lineOfCreditDraw": 2536373.04,
+    "lineOfCreditCapXChange": -27802.23
+  },
+  "investing": {
+    "equipmentAndTools": -24640.65,
+    "fixedAssetComputers": -5605.96,
+    "furniture": 130237.80,
+    "leaseholdImprovements": 102196.58,
+    "securityDeposits": 10664.33
+  },
+  "financing": {
+    "openingBalanceEquity": 2644.70,
+    "partnerDistributionsCohoatConsulting": -278250.00,
+    "partnerDistributionsMdgEngineering": -278250.00,
+    "partnerDistributionsPatelConsulting": -278250.00,
+    "partnerDistributionsSteveLittle": -212000.00,
+    "partnerDistributionsCohoatGroup": -278250.00,
+    "wellsFargoLoanLease": -8636.21
+  }
+}

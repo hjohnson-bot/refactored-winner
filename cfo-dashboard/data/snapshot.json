@@ -1,0 +1,453 @@
+{
+  "company": {
+    "name": "Midwest Design Group LLC",
+    "industry": "Commercial and Institutional Building Construction",
+    "naics": "236220",
+    "state": "IN"
+  },
+  "asOf": "2026-05-07",
+  "generatedAt": "2026-05-07T04:02:32.164249+00:00",
+  "source": "QuickBooks Online (live, via QuickBooks MCP)",
+  "personas": [
+    {
+      "id": "cfo",
+      "label": "CFO",
+      "kpis": [
+        "revenue",
+        "grossProfit",
+        "netIncome",
+        "netMarginPct",
+        "cashEnding",
+        "yearEndForecast"
+      ]
+    },
+    {
+      "id": "fpa",
+      "label": "FP&A",
+      "kpis": [
+        "revenue",
+        "grossMarginPct",
+        "operatingExpenses",
+        "yearEndForecast",
+        "varianceVsForecast",
+        "monthlyTrend"
+      ]
+    },
+    {
+      "id": "controller",
+      "label": "Controller",
+      "kpis": [
+        "netIncome",
+        "operatingExpenses",
+        "ar",
+        "ap",
+        "retainage",
+        "wipNet"
+      ]
+    },
+    {
+      "id": "strategy",
+      "label": "Strategy",
+      "kpis": [
+        "revenue",
+        "yoyGrowth",
+        "twoYearCagr",
+        "vsRegional",
+        "segmentMix",
+        "marginExpansion"
+      ]
+    },
+    {
+      "id": "treasury",
+      "label": "Treasury",
+      "kpis": [
+        "cashEnding",
+        "operatingCash",
+        "lineOfCreditDraw",
+        "yearEndCash",
+        "ar",
+        "ap"
+      ]
+    }
+  ],
+  "periods": {
+    "current": {
+      "periodStart": "2026-01-01",
+      "periodEnd": "2026-05-07",
+      "revenue": 19376770.19,
+      "cogs": 14108989.66,
+      "grossProfit": 5267780.53,
+      "operatingExpenses": 3480138.73,
+      "netIncome": 1661587.75,
+      "grossMarginPct": 0.2718606082616702,
+      "netMarginPct": 0.08575153308354315,
+      "segments": {
+        "incomeAccounts": [
+          {
+            "account": "Drywall Division Material Income",
+            "amount": 20720.33
+          },
+          {
+            "account": "Drywall Supply Arbor Income",
+            "amount": 571765.41
+          },
+          {
+            "account": "Drywall Supply Pulte Income",
+            "amount": 16823.83
+          },
+          {
+            "account": "Engineering Project Income",
+            "amount": 206725.0
+          },
+          {
+            "account": "Sales",
+            "amount": 4820.0
+          },
+          {
+            "account": "Service/Fee Income",
+            "amount": 15924134.62
+          },
+          {
+            "account": "WIP Adj - Net change",
+            "amount": 2347599.0
+          }
+        ],
+        "cogsBuckets": [
+          {
+            "bucket": "Labor (contractors + direct)",
+            "amount": 6261029.85
+          },
+          {
+            "bucket": "Materials & supply",
+            "amount": 2745051.1
+          },
+          {
+            "bucket": "Job site & rental",
+            "amount": 529849.5
+          }
+        ],
+        "opexBuckets": [
+          {
+            "bucket": "Payroll & benefits",
+            "amount": 1928101.09
+          },
+          {
+            "bucket": "Facilities (rent + utilities)",
+            "amount": 757455.81
+          },
+          {
+            "bucket": "Vehicle / fleet",
+            "amount": 72850.52
+          },
+          {
+            "bucket": "Insurance & professional",
+            "amount": 191337.16
+          },
+          {
+            "bucket": "G&A (office, IT, dues, travel, M&E)",
+            "amount": 64541.24
+          },
+          {
+            "bucket": "Other OpEx",
+            "amount": 221218.59
+          }
+        ]
+      }
+    },
+    "prior": {
+      "periodStart": "2025-01-01",
+      "periodEnd": "2025-12-31",
+      "revenue": 40491815.42,
+      "cogs": 27755136.44,
+      "grossProfit": 12736678.98,
+      "operatingExpenses": 9925912.36,
+      "netIncome": 2810766.62,
+      "grossMarginPct": 0.314549467537803,
+      "netMarginPct": 0.06941567304022843,
+      "segments": {
+        "incomeAccounts": [
+          {
+            "account": "Billable Expense Income",
+            "amount": 543.0
+          },
+          {
+            "account": "Doors and Windows",
+            "amount": 4594.5
+          },
+          {
+            "account": "Drywall Division Delivery Income",
+            "amount": 201.04
+          },
+          {
+            "account": "Drywall Division Material Income",
+            "amount": 2824148.9
+          },
+          {
+            "account": "Drywall Supply Arbor Income",
+            "amount": 959002.74
+          },
+          {
+            "account": "Drywall Supply Century Income",
+            "amount": 105734.39
+          },
+          {
+            "account": "Drywall Supply HD Boom Scatter Income",
+            "amount": 174372.44
+          },
+          {
+            "account": "Drywall Supply Pulte Income",
+            "amount": 6230.22
+          },
+          {
+            "account": "Drywall Tax",
+            "amount": 67.77
+          },
+          {
+            "account": "Engineering Project Income",
+            "amount": 709295.0
+          },
+          {
+            "account": "Finishes",
+            "amount": 76310.01
+          },
+          {
+            "account": "Sales",
+            "amount": 13469.39
+          },
+          {
+            "account": "Service/Fee Income",
+            "amount": 33721642.66
+          },
+          {
+            "account": "Specialties",
+            "amount": 2713.5
+          },
+          {
+            "account": "WIP Adj - Net change",
+            "amount": -1464686.27
+          }
+        ],
+        "cogsBuckets": [
+          {
+            "bucket": "Labor (contractors + direct)",
+            "amount": 213374.44
+          },
+          {
+            "bucket": "Materials & supply",
+            "amount": 9213980.66
+          },
+          {
+            "bucket": "Job site & rental",
+            "amount": 734785.45
+          },
+          {
+            "bucket": "Other COGS",
+            "amount": -11150.24
+          }
+        ],
+        "opexBuckets": [
+          {
+            "bucket": "Payroll & benefits",
+            "amount": 5521265.96
+          },
+          {
+            "bucket": "Facilities (rent + utilities)",
+            "amount": 1286006.54
+          },
+          {
+            "bucket": "Vehicle / fleet",
+            "amount": 267046.97
+          },
+          {
+            "bucket": "Insurance & professional",
+            "amount": 823266.0
+          },
+          {
+            "bucket": "G&A (office, IT, dues, travel, M&E)",
+            "amount": 157841.59
+          },
+          {
+            "bucket": "Other OpEx",
+            "amount": 981759.21
+          }
+        ]
+      }
+    },
+    "prior2": {
+      "periodStart": "2024-01-01",
+      "periodEnd": "2024-12-31",
+      "revenue": 39537774.9,
+      "cogs": 28435216.93,
+      "grossProfit": 11102557.97,
+      "operatingExpenses": 8249044.14,
+      "netIncome": 2899162.56,
+      "grossMarginPct": 0.28080887197321786,
+      "netMarginPct": 0.07332639652415061
+    }
+  },
+  "cashFlow": {
+    "current": {
+      "periodStart": "2026-01-01",
+      "periodEnd": "2026-05-07",
+      "operating": 760034.3,
+      "investing": 212852.1,
+      "financing": -1330991.51,
+      "netCashChange": -358105.11,
+      "cashBeginning": -243937.55,
+      "cashEnding": -602042.66,
+      "netIncome": 1661587.75,
+      "workingCapital": {
+        "accountsPayableChange": 286831.19,
+        "accountsReceivableChange": -649262.07,
+        "retainageReceivableChange": -837450.48,
+        "inventoryDrywallChange": 193111.88,
+        "wipOverbillingsChange": -1073267.83,
+        "wipUnderbillingsChange": -1274331.17,
+        "accruedBonusesChange": 224000.0,
+        "accruedPayrollChange": -149000.0,
+        "lineOfCreditDraw": 2536373.04,
+        "lineOfCreditCapXChange": -27802.23
+      }
+    },
+    "prior": {
+      "periodStart": "2025-01-01",
+      "periodEnd": "2025-12-31",
+      "operating": 1607367.49,
+      "investing": 179545.59,
+      "financing": -1432655.18,
+      "netCashChange": 354257.9,
+      "cashBeginning": -598195.45,
+      "cashEnding": -243937.55,
+      "netIncome": 2810766.62,
+      "workingCapital": {
+        "accountsPayableChange": 712464.46,
+        "accountsReceivableChange": -733947.11,
+        "retainageReceivableChange": -2438809.88,
+        "inventoryDrywallChange": 362396.12,
+        "wipOverbillingsChange": 1249606.34,
+        "wipUnderbillingsChange": 215079.93,
+        "accruedBonusesChange": -9352.09,
+        "accruedPayrollChange": 11000.0,
+        "accruedCommissionsChange": -37000.0,
+        "lineOfCreditDraw": -460964.34,
+        "lineOfCreditCapXChange": -67265.76,
+        "leaseLiabilityCurrentChange": -112868.0,
+        "leaseLiabilityNoncurrentChange": -959670.0,
+        "rouAssetOperatingLeasesChange": 967660.0
+      }
+    }
+  },
+  "workingCapital": {
+    "current": {
+      "ar": -649262.07,
+      "ap": 286831.19,
+      "retainage": -837450.48,
+      "inventory": 193111.88,
+      "wipOverbillings": -1073267.83,
+      "wipUnderbillings": -1274331.17,
+      "lineOfCreditDraw": 2536373.04,
+      "totalWorkingCapitalChange": -3354368.48
+    },
+    "prior": {
+      "ar": -733947.11,
+      "ap": 712464.46,
+      "retainage": -2438809.88,
+      "inventory": 362396.12,
+      "wipOverbillings": 1249606.34,
+      "wipUnderbillings": 215079.93,
+      "lineOfCreditDraw": -460964.34,
+      "totalWorkingCapitalChange": -633210.1399999997
+    }
+  },
+  "forecast": {
+    "completedMonths": 5,
+    "remainingMonths": 7,
+    "ytdRevenue": 19376770.19,
+    "ytdGrossProfit": 5267780.53,
+    "ytdOperatingExpenses": 3480138.73,
+    "ytdNetIncome": 1661587.75,
+    "avgMonthlyRevenue": 3875354.04,
+    "avgMonthlyGrossProfit": 1053556.11,
+    "avgMonthlyOperatingExpenses": 696027.75,
+    "avgMonthlyNetIncome": 332317.55,
+    "yearEndRevenue": 46504248.46,
+    "yearEndGrossProfit": 12642673.27,
+    "yearEndOperatingExpenses": 8352332.95,
+    "yearEndNetIncome": 3987810.6,
+    "runRateRevenue": 46504248.46,
+    "runRateGrossProfit": 12642673.27,
+    "runRateOperatingExpenses": 8352332.95,
+    "runRateNetIncome": 3987810.6,
+    "yearEndGrossMarginPct": 0.2718606081952797,
+    "yearEndNetMarginPct": 0.08575153307616747,
+    "yearEndCash": -1103389.81,
+    "yearEndOperatingCash": 1824082.32
+  },
+  "verifiedMonths": [
+    {
+      "periodStart": "2025-01-01",
+      "periodEnd": "2025-01-31",
+      "revenue": 2041295.53,
+      "cogs": 1705779.19,
+      "grossProfit": 335516.34,
+      "operatingExpenses": 917633.43,
+      "netIncome": -582117.0,
+      "grossMarginPct": 0.16436441224167087,
+      "netMarginPct": -0.28517036923115197,
+      "month": "2025-01"
+    },
+    {
+      "periodStart": "2025-04-01",
+      "periodEnd": "2025-04-30",
+      "revenue": 2424157.48,
+      "cogs": 1668995.34,
+      "grossProfit": 755162.14,
+      "operatingExpenses": 836162.72,
+      "netIncome": -69968.27,
+      "grossMarginPct": 0.31151529809028744,
+      "netMarginPct": -0.028862922717380557,
+      "month": "2025-04"
+    },
+    {
+      "periodStart": "2026-03-01",
+      "periodEnd": "2026-03-31",
+      "revenue": 5290349.77,
+      "cogs": 3616852.68,
+      "grossProfit": 1673497.09,
+      "operatingExpenses": 897079.72,
+      "netIncome": 790908.56,
+      "grossMarginPct": 0.31633014124886494,
+      "netMarginPct": 0.14950023994349246,
+      "month": "2026-03"
+    },
+    {
+      "periodStart": "2026-04-01",
+      "periodEnd": "2026-04-30",
+      "revenue": 4593904.49,
+      "cogs": 3242912.67,
+      "grossProfit": 1350991.82,
+      "operatingExpenses": 713341.59,
+      "netIncome": 677429.81,
+      "grossMarginPct": 0.29408356724455975,
+      "netMarginPct": 0.14746275449884244,
+      "month": "2026-04"
+    }
+  ],
+  "benchmark": {
+    "companyName": "Midwest Design Group LLC",
+    "metricType": "profit",
+    "metricLabel": "Yearly Profit",
+    "metricValue": 3757685.49,
+    "regionalAverage": 101486.51,
+    "nationalAverage": null,
+    "vsRegionalPercent": 3602.65,
+    "vsNationalPercent": 0,
+    "isAboveRegional": true,
+    "isAboveNational": false,
+    "location": "IN",
+    "naicsCode": "236220",
+    "industryType": "Commercial And Institutional Building Construction",
+    "benchmarkPeriodRange": "Mar 2025 - Feb 2026",
+    "reportDate": "2026-05-07"
+  }
+}
