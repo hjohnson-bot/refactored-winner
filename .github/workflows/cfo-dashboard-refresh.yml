@@ -1,0 +1,108 @@
+name: CFO Dashboard — Daily QuickBooks Refresh
+
+# Runs every day at 4:00 AM US Eastern Time, year-round, by triggering at
+# both 08:00 UTC (= 4 AM EDT, March–November) and 09:00 UTC (= 4 AM EST,
+# November–March) and gating which run actually executes via the
+# `should-run` step. GitHub Actions cron is UTC-only, so this is the
+# standard pattern for "X AM Eastern, year-round."
+on:
+  schedule:
+    - cron: '0 8 * * *'   # 4 AM EDT (US daylight time)
+    - cron: '0 9 * * *'   # 4 AM EST (US standard time)
+  workflow_dispatch:        # allow manual runs from the Actions tab
+
+permissions:
+  contents: write           # we commit the refreshed snapshot back to main
+
+concurrency:
+  group: cfo-dashboard-refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    name: Pull QuickBooks → rebuild snapshot
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Decide whether this scheduled trigger is 4 AM ET
+        id: should-run
+        run: |
+          set -euo pipefail
+          # Manual dispatches always run.
+          if [[ "${{ github.event_name }}" != "schedule" ]]; then
+            echo "run=true" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          # For scheduled triggers, only run if America/New_York is currently 4 AM.
+          NY_HOUR=$(TZ=America/New_York date +%H)
+          echo "America/New_York hour: $NY_HOUR"
+          if [[ "$NY_HOUR" == "04" ]]; then
+            echo "run=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "run=false" >> "$GITHUB_OUTPUT"
+            echo "Skipping — not 4 AM ET right now."
+          fi
+
+      - name: Checkout
+        if: steps.should-run.outputs.run == 'true'
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+
+      - name: Set up Node 22
+        if: steps.should-run.outputs.run == 'true'
+        uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+
+      - name: Set up Python 3.11
+        if: steps.should-run.outputs.run == 'true'
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+
+      - name: Install Python deps
+        if: steps.should-run.outputs.run == 'true'
+        run: pip install openpyxl
+
+      - name: Pull QuickBooks data + rebuild snapshot
+        if: steps.should-run.outputs.run == 'true'
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          QB_MCP_URL: ${{ secrets.QB_MCP_URL }}
+        run: node cfo-dashboard/scripts/refresh-quickbooks.mjs
+
+      - name: Commit & push if anything changed
+        if: steps.should-run.outputs.run == 'true'
+        run: |
+          set -euo pipefail
+          git config user.name 'cfo-dashboard-bot'
+          git config user.email 'cfo-dashboard-bot@users.noreply.github.com'
+          git add cfo-dashboard/data/ cfo-dashboard/downloads/
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+          AS_OF=$(TZ=America/New_York date +%F)
+          git commit -m "chore(cfo-dashboard): daily QuickBooks refresh ${AS_OF}"
+          # Retry push on transient failures
+          for i in 1 2 3 4; do
+            if git push origin HEAD:${{ github.ref_name }}; then
+              exit 0
+            fi
+            echo "push failed, retrying in $((2 ** i))s"
+            sleep $((2 ** i))
+          done
+          exit 1
+
+      - name: Upload distributables as artifact (always, for debugging)
+        if: steps.should-run.outputs.run == 'true' && always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cfo-dashboard-${{ github.run_id }}
+          path: |
+            cfo-dashboard/data/snapshot.json
+            cfo-dashboard/downloads/cfo-dashboard.html
+            cfo-dashboard/downloads/cfo-dashboard.xlsx
+          retention-days: 14
+          if-no-files-found: warn
