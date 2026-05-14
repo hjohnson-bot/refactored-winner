@@ -1,6 +1,7 @@
 ---
+name: fpa-board-brief
 allowed-tools: Read, Write, Edit
-argument-hint: [period-file] [--tone <voice>] [--max-words <n>]
+argument-hint: '[period-file] [--tone <voice>] [--max-words <n>]'
 description: Render the FP&A board brief into CFO-grade narrative
 ---
 

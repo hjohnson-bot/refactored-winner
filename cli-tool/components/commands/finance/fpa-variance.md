@@ -1,6 +1,7 @@
 ---
+name: fpa-variance
 allowed-tools: Read, Bash
-argument-hint: [period-file] [--baseline budget|forecast|prior_month|prior_year_month]
+argument-hint: '[period-file] [--baseline budget|forecast|prior_month|prior_year_month]'
 description: Generate a variance memo for a construction finance monthly close
 ---
 

@@ -1,6 +1,7 @@
 ---
+name: fpa-qa
 allowed-tools: Read, Bash
-argument-hint: "<question>" --period <period-file>
+argument-hint: '"<question>" --period <period-file>'
 description: Ask a finance question grounded in the FP&A workflow artifacts
 ---
 

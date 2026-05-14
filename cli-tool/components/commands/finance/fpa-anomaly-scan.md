@@ -1,6 +1,7 @@
 ---
+name: fpa-anomaly-scan
 allowed-tools: Read, Bash
-argument-hint: [period-file] [--severity critical|warning|info|all]
+argument-hint: '[period-file] [--severity critical|warning|info|all]'
 description: Triage FP&A anomaly flags for a construction monthly close
 ---
 

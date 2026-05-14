@@ -1,6 +1,7 @@
 ---
+name: fpa-scenario
 allowed-tools: Read, Write, Edit, Bash
-argument-hint: [period-file] [--lever name=value] [--lever name=value]...
+argument-hint: '[period-file] [--lever name=value] [--lever name=value]...'
 description: Run a custom FP&A scenario for a construction finance team
 ---
 

@@ -1,6 +1,7 @@
 ---
+name: fpa-monthly-close
 allowed-tools: Read, Write, Bash, Glob
-argument-hint: [period-file] [--out <dir>] [--skip <step,step>]
+argument-hint: '[period-file] [--out <dir>] [--skip <step,step>]'
 description: Run the full AI-native FP&A monthly close workflow on a construction period pack
 ---
 
