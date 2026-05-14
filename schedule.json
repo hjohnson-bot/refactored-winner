@@ -1,5 +1,14 @@
 {
-  "run": "/knowify-report",
-  "cron": "35 23 * * *",
-  "description": "Runs /knowify-report every day at 11:35pm"
+  "jobs": [
+    {
+      "run": "/knowify-report",
+      "cron": "35 23 * * *",
+      "description": "Runs /knowify-report every day at 11:35pm"
+    },
+    {
+      "run": "/fpa-refresh",
+      "cron": "0 6 * * *",
+      "description": "Daily FP&A refresh — pulls QuickBooks + Knowify, rebuilds period pack, runs the workflow. Fires every 24 hours at 06:00 UTC."
+    }
+  ]
 }
