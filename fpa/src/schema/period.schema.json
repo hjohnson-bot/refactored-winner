@@ -1,0 +1,138 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "title": "FP&A Construction Period Pack",
+  "description": "Structured input for one monthly close of a construction finance team. Every downstream workflow step reads this contract.",
+  "type": "object",
+  "required": ["company", "period", "actuals", "plan", "jobs"],
+  "properties": {
+    "company": {
+      "type": "object",
+      "required": ["name", "industry", "fiscal_year_end", "currency"],
+      "properties": {
+        "name": { "type": "string" },
+        "industry": { "type": "string", "enum": ["construction-general", "construction-specialty", "construction-residential", "construction-commercial", "construction-industrial"] },
+        "fiscal_year_end": { "type": "string", "pattern": "^\\d{2}-\\d{2}$" },
+        "currency": { "type": "string", "minLength": 3, "maxLength": 3 }
+      }
+    },
+    "period": {
+      "type": "object",
+      "required": ["label", "start", "end", "type"],
+      "properties": {
+        "label": { "type": "string" },
+        "type": { "type": "string", "enum": ["month", "quarter", "ytd"] },
+        "start": { "type": "string", "format": "date" },
+        "end": { "type": "string", "format": "date" },
+        "completed_months_ytd": { "type": "integer", "minimum": 1, "maximum": 12 }
+      }
+    },
+    "actuals": {
+      "type": "object",
+      "required": ["pnl", "balance_sheet", "cash_flow"],
+      "properties": {
+        "pnl": {
+          "type": "object",
+          "required": ["revenue", "cogs", "gross_profit", "opex_total", "net_income"],
+          "properties": {
+            "revenue": { "type": "number" },
+            "cogs": {
+              "type": "object",
+              "properties": {
+                "total": { "type": "number" },
+                "materials": { "type": "number" },
+                "labor": { "type": "number" },
+                "subcontractors": { "type": "number" },
+                "equipment": { "type": "number" },
+                "other": { "type": "number" }
+              }
+            },
+            "gross_profit": { "type": "number" },
+            "opex": {
+              "type": "object",
+              "additionalProperties": { "type": "number" }
+            },
+            "opex_total": { "type": "number" },
+            "net_income": { "type": "number" }
+          }
+        },
+        "balance_sheet": {
+          "type": "object",
+          "properties": {
+            "cash": { "type": "number" },
+            "ar": { "type": "number" },
+            "underbillings": { "type": "number" },
+            "overbillings": { "type": "number" },
+            "ap": { "type": "number" },
+            "retainage_held": { "type": "number" },
+            "retainage_payable": { "type": "number" },
+            "debt": { "type": "number" }
+          }
+        },
+        "cash_flow": {
+          "type": "object",
+          "properties": {
+            "operating": { "type": "number" },
+            "investing": { "type": "number" },
+            "financing": { "type": "number" },
+            "net_change": { "type": "number" }
+          }
+        },
+        "ar_aging": {
+          "type": "object",
+          "properties": {
+            "current": { "type": "number" },
+            "d1_30": { "type": "number" },
+            "d31_60": { "type": "number" },
+            "d61_90": { "type": "number" },
+            "d90_plus": { "type": "number" }
+          }
+        },
+        "headcount": { "type": "integer" }
+      }
+    },
+    "plan": {
+      "type": "object",
+      "description": "Comparison baselines for variance analysis",
+      "properties": {
+        "budget": { "$ref": "#/properties/actuals/properties/pnl" },
+        "forecast": { "$ref": "#/properties/actuals/properties/pnl" },
+        "prior_month": { "$ref": "#/properties/actuals/properties/pnl" },
+        "prior_year_month": { "$ref": "#/properties/actuals/properties/pnl" }
+      }
+    },
+    "jobs": {
+      "type": "array",
+      "description": "Active jobs (work-in-progress schedule)",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "contract_value", "cost_to_date", "eac", "billings_to_date"],
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "customer": { "type": "string" },
+          "type": { "type": "string", "enum": ["fixed-price", "cost-plus", "time-and-materials", "unit-price"] },
+          "start_date": { "type": "string", "format": "date" },
+          "scheduled_completion": { "type": "string", "format": "date" },
+          "contract_value": { "type": "number" },
+          "original_contract_value": { "type": "number" },
+          "change_orders_approved": { "type": "number" },
+          "change_orders_pending": { "type": "number" },
+          "bid_gross_margin": { "type": "number", "description": "Expected GM% at bid, decimal" },
+          "cost_to_date": { "type": "number" },
+          "etc": { "type": "number", "description": "Estimate to complete" },
+          "eac": { "type": "number", "description": "Estimate at completion" },
+          "billings_to_date": { "type": "number" },
+          "retainage": { "type": "number" }
+        }
+      }
+    },
+    "backlog": {
+      "type": "object",
+      "properties": {
+        "total_backlog": { "type": "number" },
+        "signed_not_started": { "type": "number" },
+        "verbal_commitments": { "type": "number" }
+      }
+    }
+  }
+}

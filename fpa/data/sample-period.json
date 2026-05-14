@@ -1,0 +1,237 @@
+{
+  "company": {
+    "name": "Keystone Builders LLC",
+    "industry": "construction-commercial",
+    "fiscal_year_end": "12-31",
+    "currency": "USD"
+  },
+  "period": {
+    "label": "2026-04",
+    "type": "month",
+    "start": "2026-04-01",
+    "end": "2026-04-30",
+    "completed_months_ytd": 4
+  },
+  "actuals": {
+    "pnl": {
+      "revenue": 4280000,
+      "cogs": {
+        "total": 3510000,
+        "materials": 1190000,
+        "labor": 1145000,
+        "subcontractors": 905000,
+        "equipment": 175000,
+        "other": 95000
+      },
+      "gross_profit": 770000,
+      "opex": {
+        "salaries_g_and_a": 215000,
+        "office_rent": 28000,
+        "insurance": 41000,
+        "professional_fees": 22000,
+        "vehicles_fuel": 36000,
+        "software": 11000,
+        "travel": 8500,
+        "marketing": 6500,
+        "other_g_and_a": 14000
+      },
+      "opex_total": 382000,
+      "net_income": 388000
+    },
+    "balance_sheet": {
+      "cash": 1985000,
+      "ar": 3420000,
+      "underbillings": 612000,
+      "overbillings": 295000,
+      "ap": 1740000,
+      "retainage_held": 540000,
+      "retainage_payable": 180000,
+      "debt": 850000
+    },
+    "cash_flow": {
+      "operating": 142000,
+      "investing": -38000,
+      "financing": -25000,
+      "net_change": 79000
+    },
+    "ar_aging": {
+      "current": 1880000,
+      "d1_30": 920000,
+      "d31_60": 350000,
+      "d61_90": 175000,
+      "d90_plus": 95000
+    },
+    "headcount": 58
+  },
+  "plan": {
+    "budget": {
+      "revenue": 4500000,
+      "cogs": { "total": 3600000, "materials": 1170000, "labor": 1170000, "subcontractors": 990000, "equipment": 180000, "other": 90000 },
+      "gross_profit": 900000,
+      "opex": {
+        "salaries_g_and_a": 220000,
+        "office_rent": 28000,
+        "insurance": 38000,
+        "professional_fees": 18000,
+        "vehicles_fuel": 32000,
+        "software": 11000,
+        "travel": 9000,
+        "marketing": 8000,
+        "other_g_and_a": 12000
+      },
+      "opex_total": 376000,
+      "net_income": 524000
+    },
+    "forecast": {
+      "revenue": 4350000,
+      "cogs": { "total": 3525000, "materials": 1175000, "labor": 1155000, "subcontractors": 940000, "equipment": 175000, "other": 80000 },
+      "gross_profit": 825000,
+      "opex": {
+        "salaries_g_and_a": 218000,
+        "office_rent": 28000,
+        "insurance": 40000,
+        "professional_fees": 20000,
+        "vehicles_fuel": 34000,
+        "software": 11000,
+        "travel": 8500,
+        "marketing": 7500,
+        "other_g_and_a": 13000
+      },
+      "opex_total": 380000,
+      "net_income": 445000
+    },
+    "prior_month": {
+      "revenue": 3950000,
+      "cogs": { "total": 3210000, "materials": 1080000, "labor": 1045000, "subcontractors": 855000, "equipment": 150000, "other": 80000 },
+      "gross_profit": 740000,
+      "opex": {
+        "salaries_g_and_a": 212000,
+        "office_rent": 28000,
+        "insurance": 38000,
+        "professional_fees": 19000,
+        "vehicles_fuel": 31000,
+        "software": 11000,
+        "travel": 7000,
+        "marketing": 6500,
+        "other_g_and_a": 11500
+      },
+      "opex_total": 364000,
+      "net_income": 376000
+    },
+    "prior_year_month": {
+      "revenue": 3720000,
+      "cogs": { "total": 2935000, "materials": 985000, "labor": 970000, "subcontractors": 760000, "equipment": 145000, "other": 75000 },
+      "gross_profit": 785000,
+      "opex": {
+        "salaries_g_and_a": 195000,
+        "office_rent": 25000,
+        "insurance": 33000,
+        "professional_fees": 16000,
+        "vehicles_fuel": 28000,
+        "software": 9000,
+        "travel": 7500,
+        "marketing": 5500,
+        "other_g_and_a": 9000
+      },
+      "opex_total": 328000,
+      "net_income": 457000
+    }
+  },
+  "jobs": [
+    {
+      "id": "J-2419",
+      "name": "Riverside Medical Office Building",
+      "customer": "Mercy Health Systems",
+      "type": "fixed-price",
+      "start_date": "2025-09-15",
+      "scheduled_completion": "2026-12-30",
+      "contract_value": 14200000,
+      "original_contract_value": 13800000,
+      "change_orders_approved": 400000,
+      "change_orders_pending": 285000,
+      "bid_gross_margin": 0.18,
+      "cost_to_date": 6840000,
+      "etc": 5610000,
+      "eac": 12450000,
+      "billings_to_date": 8120000,
+      "retainage": 406000
+    },
+    {
+      "id": "J-2422",
+      "name": "Northgate Logistics Warehouse",
+      "customer": "Northgate Industrial REIT",
+      "type": "fixed-price",
+      "start_date": "2025-11-01",
+      "scheduled_completion": "2026-08-15",
+      "contract_value": 8650000,
+      "original_contract_value": 8650000,
+      "change_orders_approved": 0,
+      "change_orders_pending": 0,
+      "bid_gross_margin": 0.16,
+      "cost_to_date": 4920000,
+      "etc": 2580000,
+      "eac": 7500000,
+      "billings_to_date": 4380000,
+      "retainage": 219000
+    },
+    {
+      "id": "J-2427",
+      "name": "Cedar Park Retail Center Phase II",
+      "customer": "Anchor Retail Partners",
+      "type": "fixed-price",
+      "start_date": "2026-01-20",
+      "scheduled_completion": "2026-11-30",
+      "contract_value": 6450000,
+      "original_contract_value": 6450000,
+      "change_orders_approved": 0,
+      "change_orders_pending": 120000,
+      "bid_gross_margin": 0.19,
+      "cost_to_date": 2480000,
+      "etc": 3120000,
+      "eac": 5600000,
+      "billings_to_date": 2210000,
+      "retainage": 110500
+    },
+    {
+      "id": "J-2430",
+      "name": "Linden Avenue Mixed-Use",
+      "customer": "Linden Development Group",
+      "type": "fixed-price",
+      "start_date": "2026-03-01",
+      "scheduled_completion": "2027-04-30",
+      "contract_value": 11900000,
+      "original_contract_value": 11900000,
+      "change_orders_approved": 0,
+      "change_orders_pending": 0,
+      "bid_gross_margin": 0.17,
+      "cost_to_date": 1180000,
+      "etc": 8720000,
+      "eac": 9900000,
+      "billings_to_date": 1080000,
+      "retainage": 54000
+    },
+    {
+      "id": "J-2415",
+      "name": "Westside Industrial Tenant Improvement",
+      "customer": "Westside Capital Holdings",
+      "type": "cost-plus",
+      "start_date": "2025-07-10",
+      "scheduled_completion": "2026-05-31",
+      "contract_value": 3380000,
+      "original_contract_value": 3100000,
+      "change_orders_approved": 280000,
+      "change_orders_pending": 0,
+      "bid_gross_margin": 0.12,
+      "cost_to_date": 2960000,
+      "etc": 220000,
+      "eac": 3180000,
+      "billings_to_date": 2960000,
+      "retainage": 148000
+    }
+  ],
+  "backlog": {
+    "total_backlog": 28400000,
+    "signed_not_started": 5200000,
+    "verbal_commitments": 6900000
+  }
+}
