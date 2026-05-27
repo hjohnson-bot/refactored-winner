@@ -1,0 +1,17 @@
+# Source materials and analysis notes stay local — they may contain
+# financials, employee data, or partner-level numbers. Only folder
+# structure (.gitkeep) and committed templates/inventory/drafts ship.
+
+INBOX/*
+!INBOX/.gitkeep
+
+notes/*
+!notes/.gitkeep
+
+# Discovery manifest contains absolute paths and SHA hashes of local files
+INBOX/_discovery-manifest.tsv
+
+# Generated binary deliverables — regenerated locally, not version-controlled
+drafts/*.xlsx
+drafts/*.pdf
+drafts/*.docx
