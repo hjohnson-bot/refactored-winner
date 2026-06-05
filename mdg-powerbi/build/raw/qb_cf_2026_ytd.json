@@ -1,0 +1,15 @@
+{
+  "periodStart": "2026-01-01", "periodEnd": "2026-06-04",
+  "operatingActivities": 1417890.04, "investingActivities": 212852.10,
+  "financingActivities": -1401536.77, "netCashIncrease": 229205.37,
+  "cashAtBeginning": -243937.55, "cashAtEnd": -14732.18,
+  "netIncome": 3010486.42,
+  "workingCapital": {
+    "accountsPayableChange": 1059808.24, "accountsReceivableChange": -2189336.13,
+    "retainageReceivableChange": -1144366.60, "inventoryDrywallChange": 239925.52,
+    "wipOverbillingsChange": -1120729.02, "wipUnderbillingsChange": -1730880.81,
+    "accruedBonusesChange": 280000.00, "accruedPayrollChange": -149000.00,
+    "accruedCommissionsChange": -39048.85,
+    "lineOfCreditDraw": 3328466.23, "lineOfCreditCapXChange": -27802.23
+  }
+}

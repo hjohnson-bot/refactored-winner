@@ -1,0 +1,161 @@
+// MDG Executive Model — DAX measure library
+// Paste into Tabular Editor or recreate in Power BI Desktop.
+
+GL Amount =
+SUM ( Fact_GL[Amount] )
+
+Total Revenue =
+CALCULATE ( [GL Amount], Dim_Account[Category] = "Revenue" )
+
+Total COGS =
+CALCULATE ( [GL Amount], Dim_Account[Category] = "COGS" )
+
+Gross Profit =
+[Total Revenue] - [Total COGS]
+
+Gross Margin % =
+DIVIDE ( [Gross Profit], [Total Revenue] )
+
+Total OpEx =
+CALCULATE ( [GL Amount], Dim_Account[Category] = "Operating Expense" )
+
+Other Income =
+CALCULATE ( [GL Amount], Dim_Account[Category] = "Other Income" )
+
+Other Expense =
+CALCULATE ( [GL Amount], Dim_Account[Category] = "Other Expense" )
+
+Net Income =
+[Gross Profit] - [Total OpEx] + [Other Income] - [Other Expense]
+
+Net Margin % =
+DIVIDE ( [Net Income], [Total Revenue] )
+
+Revenue (Monthly) =
+SUM ( Fact_PL_Monthly[Revenue] )
+
+Net Income (Monthly) =
+SUM ( Fact_PL_Monthly[NetIncome] )
+
+Revenue YTD =
+TOTALYTD ( [Revenue (Monthly)], Dim_Date[Date] )
+
+Revenue PY =
+CALCULATE ( [Revenue (Monthly)], SAMEPERIODLASTYEAR ( Dim_Date[Date] ) )
+
+Revenue YoY % =
+DIVIDE ( [Revenue (Monthly)] - [Revenue PY], [Revenue PY] )
+
+Revenue TTM =
+CALCULATE ( [Revenue (Monthly)], DATESINPERIOD ( Dim_Date[Date], MAX ( Dim_Date[Date] ), -12, MONTH ) )
+
+Contract Total =
+SUM ( Fact_WIP[ContractTotal] )
+
+Invoiced =
+SUM ( Fact_WIP[Invoiced] )
+
+Earned Revenue =
+SUM ( Fact_WIP[EarnedRevenue] )
+
+WIP Net =
+SUM ( Fact_WIP[WIPNet] )
+
+Overbilling =
+SUM ( Fact_WIP[Overbilled] )
+
+Underbilling =
+SUM ( Fact_WIP[Underbilled] )
+
+Backlog =
+[Contract Total] - [Invoiced]
+
+Job Profit $ =
+SUM ( Fact_WIP[ProfitAmount] )
+
+Projected Profit $ =
+SUM ( Fact_WIP[ProjectedProfit] )
+
+Job Profit % =
+DIVIDE ( [Job Profit $], [Contract Total] )
+
+Avg Profit Fade % =
+AVERAGEX ( FILTER ( Fact_WIP, Fact_WIP[Managed] = "TRUE" ), Fact_WIP[ProfitFadePct] )
+
+Jobs Fading =
+CALCULATE ( COUNTROWS ( Fact_WIP ), Fact_WIP[Managed] = "TRUE", Fact_WIP[ProfitFadePct] < -0.02 )
+
+Managed Jobs =
+CALCULATE ( COUNTROWS ( Fact_WIP ), Fact_WIP[Managed] = "TRUE" )
+
+Active Jobs =
+COUNTROWS ( Fact_WIP )
+
+Retainage (WIP) =
+SUM ( Fact_WIP[Retainage] )
+
+Total AR =
+CALCULATE ( SUM ( Fact_AR[Amount] ), Fact_AR[IsRetainage] = "FALSE" )
+
+AR Retainage =
+CALCULATE ( SUM ( Fact_AR[Amount] ), Fact_AR[IsRetainage] = "TRUE" )
+
+AR Current =
+CALCULATE ( SUM ( Fact_AR[Amount] ), Fact_AR[Bucket] = "Current", Fact_AR[IsRetainage] = "FALSE" )
+
+AR 1-30 =
+CALCULATE ( SUM ( Fact_AR[Amount] ), Fact_AR[Bucket] = "1-30", Fact_AR[IsRetainage] = "FALSE" )
+
+AR 31-60 =
+CALCULATE ( SUM ( Fact_AR[Amount] ), Fact_AR[Bucket] = "31-60", Fact_AR[IsRetainage] = "FALSE" )
+
+AR 61-90 =
+CALCULATE ( SUM ( Fact_AR[Amount] ), Fact_AR[Bucket] = "61-90", Fact_AR[IsRetainage] = "FALSE" )
+
+AR 91+ =
+CALCULATE ( SUM ( Fact_AR[Amount] ), Fact_AR[Bucket] = "91+", Fact_AR[IsRetainage] = "FALSE" )
+
+AR % of Revenue =
+DIVIDE ( [Total AR], [Total Revenue] )
+
+Total AP =
+SUM ( Fact_AP[Amount] )
+
+Cash Balance =
+SUM ( Fact_Cash[CashBalance] )
+
+LOC Drawn =
+SUM ( Fact_Cash[LOCDrawn] )
+
+LOC Limit =
+SUM ( Fact_Cash[LOCLimit] )
+
+LOC Utilization % =
+DIVIDE ( [LOC Drawn], [LOC Limit] )
+
+Operating Cash Flow =
+SUM ( Fact_Cash[OperatingCF] )
+
+BBC Availability =
+VAR _base = SUMX ( Fact_Cash, Fact_Cash[EligibleAR] * Fact_Cash[AdvanceRate] )
+VAR _cap = MIN ( _base, [LOC Limit] )
+RETURN _cap - [LOC Drawn]
+
+Liquidity Status =
+SWITCH ( TRUE(), [LOC Utilization %] >= 0.90, "Critical", [LOC Utilization %] >= 0.75, "Watch", "Healthy" )
+
+Budget Cost =
+SUM ( Fact_Budget[BudgetTotal] )
+
+Actual Cost =
+SUM ( Fact_Budget[ActualCost] )
+
+Cost Variance $ =
+[Budget Cost] - [Actual Cost]
+
+Unallocated GL =
+CALCULATE ( [GL Amount], Dim_Division[DivKey] = "UN" )
+
+Jobs Missing PM =
+CALCULATE ( COUNTROWS ( Fact_WIP ), Fact_WIP[PMName] = "(Unassigned)" )
+

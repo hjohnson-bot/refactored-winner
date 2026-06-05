@@ -1,0 +1,1234 @@
+{
+  "name": "MDG Executive Model",
+  "compatibilityLevel": 1567,
+  "model": {
+    "culture": "en-US",
+    "expressions": [
+      {
+        "name": "DataFolder",
+        "kind": "m",
+        "expression": "\"C:\\MDG\\PowerBI\\data\" meta [IsParameterQuery=true, Type=\"Text\", IsParameterQueryRequired=true]"
+      }
+    ],
+    "tables": [
+      {
+        "name": "Dim_Date",
+        "columns": [
+          {
+            "name": "Date",
+            "dataType": "dateTime",
+            "sourceColumn": "Date",
+            "isKey": true
+          },
+          {
+            "name": "Year",
+            "dataType": "int64",
+            "sourceColumn": "Year"
+          },
+          {
+            "name": "Quarter",
+            "dataType": "string",
+            "sourceColumn": "Quarter"
+          },
+          {
+            "name": "QuarterNum",
+            "dataType": "int64",
+            "sourceColumn": "QuarterNum"
+          },
+          {
+            "name": "Month",
+            "dataType": "string",
+            "sourceColumn": "Month"
+          },
+          {
+            "name": "MonthNum",
+            "dataType": "int64",
+            "sourceColumn": "MonthNum"
+          },
+          {
+            "name": "MonthYear",
+            "dataType": "string",
+            "sourceColumn": "MonthYear"
+          },
+          {
+            "name": "YearMonth",
+            "dataType": "string",
+            "sourceColumn": "YearMonth"
+          },
+          {
+            "name": "IsCurrentMonth",
+            "dataType": "string",
+            "sourceColumn": "IsCurrentMonth"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Dim_Date",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": "let\n    Source = Csv.Document(File.Contents(DataFolder & \"\\Dim_Date.csv\"), [Delimiter=\",\", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),\n    Prom = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),\n    Typed = Table.TransformColumnTypes(Prom, {{\"Date\", type date}, {\"Year\", Int64.Type}, {\"Quarter\", type text}, {\"QuarterNum\", Int64.Type}, {\"Month\", type text}, {\"MonthNum\", Int64.Type}, {\"MonthYear\", type text}, {\"YearMonth\", type text}, {\"IsCurrentMonth\", type text}})\nin\n    Typed"
+            }
+          }
+        ],
+        "dataCategory": "Time"
+      },
+      {
+        "name": "Dim_Division",
+        "columns": [
+          {
+            "name": "DivKey",
+            "dataType": "string",
+            "sourceColumn": "DivKey"
+          },
+          {
+            "name": "Division",
+            "dataType": "string",
+            "sourceColumn": "Division"
+          },
+          {
+            "name": "Sort",
+            "dataType": "int64",
+            "sourceColumn": "Sort"
+          },
+          {
+            "name": "Color",
+            "dataType": "string",
+            "sourceColumn": "Color"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Dim_Division",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": "let\n    Source = Csv.Document(File.Contents(DataFolder & \"\\Dim_Division.csv\"), [Delimiter=\",\", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),\n    Prom = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),\n    Typed = Table.TransformColumnTypes(Prom, {{\"DivKey\", type text}, {\"Division\", type text}, {\"Sort\", Int64.Type}, {\"Color\", type text}})\nin\n    Typed"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Dim_PM",
+        "columns": [
+          {
+            "name": "PMName",
+            "dataType": "string",
+            "sourceColumn": "PMName"
+          },
+          {
+            "name": "ActiveJobs",
+            "dataType": "int64",
+            "sourceColumn": "ActiveJobs"
+          },
+          {
+            "name": "Active",
+            "dataType": "string",
+            "sourceColumn": "Active"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Dim_PM",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": "let\n    Source = Csv.Document(File.Contents(DataFolder & \"\\Dim_PM.csv\"), [Delimiter=\",\", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),\n    Prom = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),\n    Typed = Table.TransformColumnTypes(Prom, {{\"PMName\", type text}, {\"ActiveJobs\", Int64.Type}, {\"Active\", type text}})\nin\n    Typed"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Dim_Job",
+        "columns": [
+          {
+            "name": "Job",
+            "dataType": "string",
+            "sourceColumn": "Job"
+          },
+          {
+            "name": "ProjectId",
+            "dataType": "int64",
+            "sourceColumn": "ProjectId"
+          },
+          {
+            "name": "DivKey",
+            "dataType": "string",
+            "sourceColumn": "DivKey"
+          },
+          {
+            "name": "PMName",
+            "dataType": "string",
+            "sourceColumn": "PMName"
+          },
+          {
+            "name": "Customer",
+            "dataType": "string",
+            "sourceColumn": "Customer"
+          },
+          {
+            "name": "Status",
+            "dataType": "string",
+            "sourceColumn": "Status"
+          },
+          {
+            "name": "ContractType",
+            "dataType": "string",
+            "sourceColumn": "ContractType"
+          },
+          {
+            "name": "City",
+            "dataType": "string",
+            "sourceColumn": "City"
+          },
+          {
+            "name": "State",
+            "dataType": "string",
+            "sourceColumn": "State"
+          },
+          {
+            "name": "DateActive",
+            "dataType": "string",
+            "sourceColumn": "DateActive"
+          },
+          {
+            "name": "StartDate",
+            "dataType": "string",
+            "sourceColumn": "StartDate"
+          },
+          {
+            "name": "EndDate",
+            "dataType": "string",
+            "sourceColumn": "EndDate"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Dim_Job",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": "let\n    Source = Csv.Document(File.Contents(DataFolder & \"\\Dim_Job.csv\"), [Delimiter=\",\", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),\n    Prom = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),\n    Typed = Table.TransformColumnTypes(Prom, {{\"Job\", type text}, {\"ProjectId\", Int64.Type}, {\"DivKey\", type text}, {\"PMName\", type text}, {\"Customer\", type text}, {\"Status\", type text}, {\"ContractType\", type text}, {\"City\", type text}, {\"State\", type text}, {\"DateActive\", type text}, {\"StartDate\", type text}, {\"EndDate\", type text}})\nin\n    Typed"
+            }
+          }
+        ],
+        "hierarchies": [
+          {
+            "name": "Org Hierarchy",
+            "levels": [
+              {
+                "name": "Division",
+                "ordinal": 0,
+                "column": "DivKey"
+              },
+              {
+                "name": "Project Manager",
+                "ordinal": 1,
+                "column": "PMName"
+              },
+              {
+                "name": "Job",
+                "ordinal": 2,
+                "column": "Job"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Dim_Account",
+        "columns": [
+          {
+            "name": "Account",
+            "dataType": "string",
+            "sourceColumn": "Account"
+          },
+          {
+            "name": "Statement",
+            "dataType": "string",
+            "sourceColumn": "Statement"
+          },
+          {
+            "name": "Category",
+            "dataType": "string",
+            "sourceColumn": "Category"
+          },
+          {
+            "name": "Subcategory",
+            "dataType": "string",
+            "sourceColumn": "Subcategory"
+          },
+          {
+            "name": "DivKey",
+            "dataType": "string",
+            "sourceColumn": "DivKey"
+          },
+          {
+            "name": "Sort",
+            "dataType": "int64",
+            "sourceColumn": "Sort"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Dim_Account",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": "let\n    Source = Csv.Document(File.Contents(DataFolder & \"\\Dim_Account.csv\"), [Delimiter=\",\", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),\n    Prom = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),\n    Typed = Table.TransformColumnTypes(Prom, {{\"Account\", type text}, {\"Statement\", type text}, {\"Category\", type text}, {\"Subcategory\", type text}, {\"DivKey\", type text}, {\"Sort\", Int64.Type}})\nin\n    Typed"
+            }
+          }
+        ],
+        "hierarchies": [
+          {
+            "name": "Account Hierarchy",
+            "levels": [
+              {
+                "name": "Category",
+                "ordinal": 0,
+                "column": "Category"
+              },
+              {
+                "name": "Subcategory",
+                "ordinal": 1,
+                "column": "Subcategory"
+              },
+              {
+                "name": "Account",
+                "ordinal": 2,
+                "column": "Account"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Dim_Customer",
+        "columns": [
+          {
+            "name": "Customer",
+            "dataType": "string",
+            "sourceColumn": "Customer"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Dim_Customer",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": "let\n    Source = Csv.Document(File.Contents(DataFolder & \"\\Dim_Customer.csv\"), [Delimiter=\",\", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),\n    Prom = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),\n    Typed = Table.TransformColumnTypes(Prom, {{\"Customer\", type text}})\nin\n    Typed"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Dim_Vendor",
+        "columns": [
+          {
+            "name": "Vendor",
+            "dataType": "string",
+            "sourceColumn": "Vendor"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Dim_Vendor",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": "let\n    Source = Csv.Document(File.Contents(DataFolder & \"\\Dim_Vendor.csv\"), [Delimiter=\",\", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),\n    Prom = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),\n    Typed = Table.TransformColumnTypes(Prom, {{\"Vendor\", type text}})\nin\n    Typed"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Fact_GL",
+        "columns": [
+          {
+            "name": "Account",
+            "dataType": "string",
+            "sourceColumn": "Account"
+          },
+          {
+            "name": "Period",
+            "dataType": "string",
+            "sourceColumn": "Period"
+          },
+          {
+            "name": "PeriodEnd",
+            "dataType": "dateTime",
+            "sourceColumn": "PeriodEnd"
+          },
+          {
+            "name": "DivKey",
+            "dataType": "string",
+            "sourceColumn": "DivKey"
+          },
+          {
+            "name": "Amount",
+            "dataType": "double",
+            "sourceColumn": "Amount"
+          },
+          {
+            "name": "Category",
+            "dataType": "string",
+            "sourceColumn": "Category"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Fact_GL",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": "let\n    Source = Csv.Document(File.Contents(DataFolder & \"\\Fact_GL.csv\"), [Delimiter=\",\", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),\n    Prom = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),\n    Typed = Table.TransformColumnTypes(Prom, {{\"Account\", type text}, {\"Period\", type text}, {\"PeriodEnd\", type date}, {\"DivKey\", type text}, {\"Amount\", type number}, {\"Category\", type text}})\nin\n    Typed"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Fact_PL_Monthly",
+        "columns": [
+          {
+            "name": "MonthEnd",
+            "dataType": "dateTime",
+            "sourceColumn": "MonthEnd"
+          },
+          {
+            "name": "Revenue",
+            "dataType": "double",
+            "sourceColumn": "Revenue"
+          },
+          {
+            "name": "COGS",
+            "dataType": "double",
+            "sourceColumn": "COGS"
+          },
+          {
+            "name": "GrossProfit",
+            "dataType": "double",
+            "sourceColumn": "GrossProfit"
+          },
+          {
+            "name": "OpEx",
+            "dataType": "double",
+            "sourceColumn": "OpEx"
+          },
+          {
+            "name": "NetIncome",
+            "dataType": "double",
+            "sourceColumn": "NetIncome"
+          },
+          {
+            "name": "GrossMarginPct",
+            "dataType": "double",
+            "sourceColumn": "GrossMarginPct"
+          },
+          {
+            "name": "NetMarginPct",
+            "dataType": "double",
+            "sourceColumn": "NetMarginPct"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Fact_PL_Monthly",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": "let\n    Source = Csv.Document(File.Contents(DataFolder & \"\\Fact_PL_Monthly.csv\"), [Delimiter=\",\", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),\n    Prom = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),\n    Typed = Table.TransformColumnTypes(Prom, {{\"MonthEnd\", type date}, {\"Revenue\", type number}, {\"COGS\", type number}, {\"GrossProfit\", type number}, {\"OpEx\", type number}, {\"NetIncome\", type number}, {\"GrossMarginPct\", type number}, {\"NetMarginPct\", type number}})\nin\n    Typed"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Fact_WIP",
+        "columns": [
+          {
+            "name": "SnapshotDate",
+            "dataType": "dateTime",
+            "sourceColumn": "SnapshotDate"
+          },
+          {
+            "name": "ProjectId",
+            "dataType": "int64",
+            "sourceColumn": "ProjectId"
+          },
+          {
+            "name": "Job",
+            "dataType": "string",
+            "sourceColumn": "Job"
+          },
+          {
+            "name": "DivKey",
+            "dataType": "string",
+            "sourceColumn": "DivKey"
+          },
+          {
+            "name": "PMName",
+            "dataType": "string",
+            "sourceColumn": "PMName"
+          },
+          {
+            "name": "Customer",
+            "dataType": "string",
+            "sourceColumn": "Customer"
+          },
+          {
+            "name": "Status",
+            "dataType": "string",
+            "sourceColumn": "Status"
+          },
+          {
+            "name": "ContractTotal",
+            "dataType": "double",
+            "sourceColumn": "ContractTotal"
+          },
+          {
+            "name": "ChangeOrders",
+            "dataType": "double",
+            "sourceColumn": "ChangeOrders"
+          },
+          {
+            "name": "Invoiced",
+            "dataType": "double",
+            "sourceColumn": "Invoiced"
+          },
+          {
+            "name": "PaymentsInvoices",
+            "dataType": "double",
+            "sourceColumn": "PaymentsInvoices"
+          },
+          {
+            "name": "BudgetTotal",
+            "dataType": "double",
+            "sourceColumn": "BudgetTotal"
+          },
+          {
+            "name": "ActualCost",
+            "dataType": "double",
+            "sourceColumn": "ActualCost"
+          },
+          {
+            "name": "PctComplete",
+            "dataType": "double",
+            "sourceColumn": "PctComplete"
+          },
+          {
+            "name": "EarnedRevenue",
+            "dataType": "double",
+            "sourceColumn": "EarnedRevenue"
+          },
+          {
+            "name": "WIPNet",
+            "dataType": "double",
+            "sourceColumn": "WIPNet"
+          },
+          {
+            "name": "KnowifyWIP",
+            "dataType": "double",
+            "sourceColumn": "KnowifyWIP"
+          },
+          {
+            "name": "Overbilled",
+            "dataType": "double",
+            "sourceColumn": "Overbilled"
+          },
+          {
+            "name": "Underbilled",
+            "dataType": "double",
+            "sourceColumn": "Underbilled"
+          },
+          {
+            "name": "ProfitAmount",
+            "dataType": "double",
+            "sourceColumn": "ProfitAmount"
+          },
+          {
+            "name": "ProfitPct",
+            "dataType": "double",
+            "sourceColumn": "ProfitPct"
+          },
+          {
+            "name": "ProjectedProfit",
+            "dataType": "double",
+            "sourceColumn": "ProjectedProfit"
+          },
+          {
+            "name": "ProjectedProfitPct",
+            "dataType": "double",
+            "sourceColumn": "ProjectedProfitPct"
+          },
+          {
+            "name": "EstMarginPct",
+            "dataType": "double",
+            "sourceColumn": "EstMarginPct"
+          },
+          {
+            "name": "ProfitFadePct",
+            "dataType": "double",
+            "sourceColumn": "ProfitFadePct"
+          },
+          {
+            "name": "Retainage",
+            "dataType": "double",
+            "sourceColumn": "Retainage"
+          },
+          {
+            "name": "OpenAR",
+            "dataType": "double",
+            "sourceColumn": "OpenAR"
+          },
+          {
+            "name": "HasBudget",
+            "dataType": "string",
+            "sourceColumn": "HasBudget"
+          },
+          {
+            "name": "Managed",
+            "dataType": "string",
+            "sourceColumn": "Managed"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Fact_WIP",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": "let\n    Source = Csv.Document(File.Contents(DataFolder & \"\\Fact_WIP.csv\"), [Delimiter=\",\", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),\n    Prom = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),\n    Typed = Table.TransformColumnTypes(Prom, {{\"SnapshotDate\", type date}, {\"ProjectId\", Int64.Type}, {\"Job\", type text}, {\"DivKey\", type text}, {\"PMName\", type text}, {\"Customer\", type text}, {\"Status\", type text}, {\"ContractTotal\", type number}, {\"ChangeOrders\", type number}, {\"Invoiced\", type number}, {\"PaymentsInvoices\", type number}, {\"BudgetTotal\", type number}, {\"ActualCost\", type number}, {\"PctComplete\", type number}, {\"EarnedRevenue\", type number}, {\"WIPNet\", type number}, {\"KnowifyWIP\", type number}, {\"Overbilled\", type number}, {\"Underbilled\", type number}, {\"ProfitAmount\", type number}, {\"ProfitPct\", type number}, {\"ProjectedProfit\", type number}, {\"ProjectedProfitPct\", type number}, {\"EstMarginPct\", type number}, {\"ProfitFadePct\", type number}, {\"Retainage\", type number}, {\"OpenAR\", type number}, {\"HasBudget\", type text}, {\"Managed\", type text}})\nin\n    Typed"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Fact_AR",
+        "columns": [
+          {
+            "name": "Customer",
+            "dataType": "string",
+            "sourceColumn": "Customer"
+          },
+          {
+            "name": "Bucket",
+            "dataType": "string",
+            "sourceColumn": "Bucket"
+          },
+          {
+            "name": "Amount",
+            "dataType": "double",
+            "sourceColumn": "Amount"
+          },
+          {
+            "name": "IsRetainage",
+            "dataType": "string",
+            "sourceColumn": "IsRetainage"
+          },
+          {
+            "name": "AsOfDate",
+            "dataType": "dateTime",
+            "sourceColumn": "AsOfDate"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Fact_AR",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": "let\n    Source = Csv.Document(File.Contents(DataFolder & \"\\Fact_AR.csv\"), [Delimiter=\",\", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),\n    Prom = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),\n    Typed = Table.TransformColumnTypes(Prom, {{\"Customer\", type text}, {\"Bucket\", type text}, {\"Amount\", type number}, {\"IsRetainage\", type text}, {\"AsOfDate\", type date}})\nin\n    Typed"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Fact_AP",
+        "columns": [
+          {
+            "name": "Vendor",
+            "dataType": "string",
+            "sourceColumn": "Vendor"
+          },
+          {
+            "name": "Bucket",
+            "dataType": "string",
+            "sourceColumn": "Bucket"
+          },
+          {
+            "name": "Amount",
+            "dataType": "double",
+            "sourceColumn": "Amount"
+          },
+          {
+            "name": "AsOfDate",
+            "dataType": "dateTime",
+            "sourceColumn": "AsOfDate"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Fact_AP",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": "let\n    Source = Csv.Document(File.Contents(DataFolder & \"\\Fact_AP.csv\"), [Delimiter=\",\", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),\n    Prom = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),\n    Typed = Table.TransformColumnTypes(Prom, {{\"Vendor\", type text}, {\"Bucket\", type text}, {\"Amount\", type number}, {\"AsOfDate\", type date}})\nin\n    Typed"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Fact_Cash",
+        "columns": [
+          {
+            "name": "Date",
+            "dataType": "dateTime",
+            "sourceColumn": "Date"
+          },
+          {
+            "name": "CashBalance",
+            "dataType": "double",
+            "sourceColumn": "CashBalance"
+          },
+          {
+            "name": "LOCDrawn",
+            "dataType": "double",
+            "sourceColumn": "LOCDrawn"
+          },
+          {
+            "name": "LOCCapX",
+            "dataType": "double",
+            "sourceColumn": "LOCCapX"
+          },
+          {
+            "name": "OperatingCF",
+            "dataType": "double",
+            "sourceColumn": "OperatingCF"
+          },
+          {
+            "name": "InvestingCF",
+            "dataType": "double",
+            "sourceColumn": "InvestingCF"
+          },
+          {
+            "name": "FinancingCF",
+            "dataType": "double",
+            "sourceColumn": "FinancingCF"
+          },
+          {
+            "name": "NetCashChange",
+            "dataType": "double",
+            "sourceColumn": "NetCashChange"
+          },
+          {
+            "name": "LOCLimit",
+            "dataType": "double",
+            "sourceColumn": "LOCLimit"
+          },
+          {
+            "name": "AdvanceRate",
+            "dataType": "double",
+            "sourceColumn": "AdvanceRate"
+          },
+          {
+            "name": "EligibleAR",
+            "dataType": "double",
+            "sourceColumn": "EligibleAR"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Fact_Cash",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": "let\n    Source = Csv.Document(File.Contents(DataFolder & \"\\Fact_Cash.csv\"), [Delimiter=\",\", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),\n    Prom = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),\n    Typed = Table.TransformColumnTypes(Prom, {{\"Date\", type date}, {\"CashBalance\", type number}, {\"LOCDrawn\", type number}, {\"LOCCapX\", type number}, {\"OperatingCF\", type number}, {\"InvestingCF\", type number}, {\"FinancingCF\", type number}, {\"NetCashChange\", type number}, {\"LOCLimit\", type number}, {\"AdvanceRate\", type number}, {\"EligibleAR\", type number}})\nin\n    Typed"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Fact_Budget",
+        "columns": [
+          {
+            "name": "DivKey",
+            "dataType": "string",
+            "sourceColumn": "DivKey"
+          },
+          {
+            "name": "Period",
+            "dataType": "string",
+            "sourceColumn": "Period"
+          },
+          {
+            "name": "ContractTotal",
+            "dataType": "double",
+            "sourceColumn": "ContractTotal"
+          },
+          {
+            "name": "BudgetTotal",
+            "dataType": "double",
+            "sourceColumn": "BudgetTotal"
+          },
+          {
+            "name": "ActualCost",
+            "dataType": "double",
+            "sourceColumn": "ActualCost"
+          },
+          {
+            "name": "Invoiced",
+            "dataType": "double",
+            "sourceColumn": "Invoiced"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Fact_Budget",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": "let\n    Source = Csv.Document(File.Contents(DataFolder & \"\\Fact_Budget.csv\"), [Delimiter=\",\", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),\n    Prom = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),\n    Typed = Table.TransformColumnTypes(Prom, {{\"DivKey\", type text}, {\"Period\", type text}, {\"ContractTotal\", type number}, {\"BudgetTotal\", type number}, {\"ActualCost\", type number}, {\"Invoiced\", type number}})\nin\n    Typed"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Fact_BalanceSheet",
+        "columns": [
+          {
+            "name": "Account",
+            "dataType": "string",
+            "sourceColumn": "Account"
+          },
+          {
+            "name": "Section",
+            "dataType": "string",
+            "sourceColumn": "Section"
+          },
+          {
+            "name": "Amount",
+            "dataType": "double",
+            "sourceColumn": "Amount"
+          },
+          {
+            "name": "AsOfDate",
+            "dataType": "dateTime",
+            "sourceColumn": "AsOfDate"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Fact_BalanceSheet",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": "let\n    Source = Csv.Document(File.Contents(DataFolder & \"\\Fact_BalanceSheet.csv\"), [Delimiter=\",\", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),\n    Prom = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),\n    Typed = Table.TransformColumnTypes(Prom, {{\"Account\", type text}, {\"Section\", type text}, {\"Amount\", type number}, {\"AsOfDate\", type date}})\nin\n    Typed"
+            }
+          }
+        ]
+      },
+      {
+        "name": "_Measures",
+        "columns": [
+          {
+            "name": "_",
+            "dataType": "int64",
+            "sourceColumn": "_",
+            "isHidden": true
+          }
+        ],
+        "partitions": [
+          {
+            "name": "_Measures",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": "let Source = #table({\"_\"},{{1}}) in Source"
+            }
+          }
+        ],
+        "measures": [
+          {
+            "name": "GL Amount",
+            "expression": "SUM ( Fact_GL[Amount] )",
+            "formatString": "#,##0"
+          },
+          {
+            "name": "Total Revenue",
+            "expression": "CALCULATE ( [GL Amount], Dim_Account[Category] = \"Revenue\" )",
+            "formatString": "\\$#,##0"
+          },
+          {
+            "name": "Total COGS",
+            "expression": "CALCULATE ( [GL Amount], Dim_Account[Category] = \"COGS\" )",
+            "formatString": "\\$#,##0"
+          },
+          {
+            "name": "Gross Profit",
+            "expression": "[Total Revenue] - [Total COGS]",
+            "formatString": "\\$#,##0"
+          },
+          {
+            "name": "Gross Margin %",
+            "expression": "DIVIDE ( [Gross Profit], [Total Revenue] )",
+            "formatString": "0.0%"
+          },
+          {
+            "name": "Total OpEx",
+            "expression": "CALCULATE ( [GL Amount], Dim_Account[Category] = \"Operating Expense\" )",
+            "formatString": "\\$#,##0"
+          },
+          {
+            "name": "Other Income",
+            "expression": "CALCULATE ( [GL Amount], Dim_Account[Category] = \"Other Income\" )",
+            "formatString": "\\$#,##0"
+          },
+          {
+            "name": "Other Expense",
+            "expression": "CALCULATE ( [GL Amount], Dim_Account[Category] = \"Other Expense\" )",
+            "formatString": "\\$#,##0"
+          },
+          {
+            "name": "Net Income",
+            "expression": "[Gross Profit] - [Total OpEx] + [Other Income] - [Other Expense]",
+            "formatString": "\\$#,##0"
+          },
+          {
+            "name": "Net Margin %",
+            "expression": "DIVIDE ( [Net Income], [Total Revenue] )",
+            "formatString": "0.0%"
+          },
+          {
+            "name": "Revenue (Monthly)",
+            "expression": "SUM ( Fact_PL_Monthly[Revenue] )",
+            "formatString": "\\$#,##0"
+          },
+          {
+            "name": "Net Income (Monthly)",
+            "expression": "SUM ( Fact_PL_Monthly[NetIncome] )",
+            "formatString": "\\$#,##0"
+          },
+          {
+            "name": "Revenue YTD",
+            "expression": "TOTALYTD ( [Revenue (Monthly)], Dim_Date[Date] )",
+            "formatString": "\\$#,##0"
+          },
+          {
+            "name": "Revenue PY",
+            "expression": "CALCULATE ( [Revenue (Monthly)], SAMEPERIODLASTYEAR ( Dim_Date[Date] ) )",
+            "formatString": "\\$#,##0"
+          },
+          {
+            "name": "Revenue YoY %",
+            "expression": "DIVIDE ( [Revenue (Monthly)] - [Revenue PY], [Revenue PY] )",
+            "formatString": "0.0%"
+          },
+          {
+            "name": "Revenue TTM",
+            "expression": "CALCULATE ( [Revenue (Monthly)], DATESINPERIOD ( Dim_Date[Date], MAX ( Dim_Date[Date] ), -12, MONTH ) )",
+            "formatString": "\\$#,##0"
+          },
+          {
+            "name": "Contract Total",
+            "expression": "SUM ( Fact_WIP[ContractTotal] )",
+            "formatString": "\\$#,##0"
+          },
+          {
+            "name": "Invoiced",
+            "expression": "SUM ( Fact_WIP[Invoiced] )",
+            "formatString": "\\$#,##0"
+          },
+          {
+            "name": "Earned Revenue",
+            "expression": "SUM ( Fact_WIP[EarnedRevenue] )",
+            "formatString": "\\$#,##0"
+          },
+          {
+            "name": "WIP Net",
+            "expression": "SUM ( Fact_WIP[WIPNet] )",
+            "formatString": "\\$#,##0"
+          },
+          {
+            "name": "Overbilling",
+            "expression": "SUM ( Fact_WIP[Overbilled] )",
+            "formatString": "\\$#,##0"
+          },
+          {
+            "name": "Underbilling",
+            "expression": "SUM ( Fact_WIP[Underbilled] )",
+            "formatString": "\\$#,##0"
+          },
+          {
+            "name": "Backlog",
+            "expression": "[Contract Total] - [Invoiced]",
+            "formatString": "\\$#,##0"
+          },
+          {
+            "name": "Job Profit $",
+            "expression": "SUM ( Fact_WIP[ProfitAmount] )",
+            "formatString": "\\$#,##0"
+          },
+          {
+            "name": "Projected Profit $",
+            "expression": "SUM ( Fact_WIP[ProjectedProfit] )",
+            "formatString": "\\$#,##0"
+          },
+          {
+            "name": "Job Profit %",
+            "expression": "DIVIDE ( [Job Profit $], [Contract Total] )",
+            "formatString": "0.0%"
+          },
+          {
+            "name": "Avg Profit Fade %",
+            "expression": "AVERAGEX ( FILTER ( Fact_WIP, Fact_WIP[Managed] = \"TRUE\" ), Fact_WIP[ProfitFadePct] )",
+            "formatString": "0.0%"
+          },
+          {
+            "name": "Jobs Fading",
+            "expression": "CALCULATE ( COUNTROWS ( Fact_WIP ), Fact_WIP[Managed] = \"TRUE\", Fact_WIP[ProfitFadePct] < -0.02 )",
+            "formatString": "#,##0"
+          },
+          {
+            "name": "Managed Jobs",
+            "expression": "CALCULATE ( COUNTROWS ( Fact_WIP ), Fact_WIP[Managed] = \"TRUE\" )",
+            "formatString": "#,##0"
+          },
+          {
+            "name": "Active Jobs",
+            "expression": "COUNTROWS ( Fact_WIP )",
+            "formatString": "#,##0"
+          },
+          {
+            "name": "Retainage (WIP)",
+            "expression": "SUM ( Fact_WIP[Retainage] )",
+            "formatString": "\\$#,##0"
+          },
+          {
+            "name": "Total AR",
+            "expression": "CALCULATE ( SUM ( Fact_AR[Amount] ), Fact_AR[IsRetainage] = \"FALSE\" )",
+            "formatString": "\\$#,##0"
+          },
+          {
+            "name": "AR Retainage",
+            "expression": "CALCULATE ( SUM ( Fact_AR[Amount] ), Fact_AR[IsRetainage] = \"TRUE\" )",
+            "formatString": "\\$#,##0"
+          },
+          {
+            "name": "AR Current",
+            "expression": "CALCULATE ( SUM ( Fact_AR[Amount] ), Fact_AR[Bucket] = \"Current\", Fact_AR[IsRetainage] = \"FALSE\" )",
+            "formatString": "\\$#,##0"
+          },
+          {
+            "name": "AR 1-30",
+            "expression": "CALCULATE ( SUM ( Fact_AR[Amount] ), Fact_AR[Bucket] = \"1-30\", Fact_AR[IsRetainage] = \"FALSE\" )",
+            "formatString": "\\$#,##0"
+          },
+          {
+            "name": "AR 31-60",
+            "expression": "CALCULATE ( SUM ( Fact_AR[Amount] ), Fact_AR[Bucket] = \"31-60\", Fact_AR[IsRetainage] = \"FALSE\" )",
+            "formatString": "\\$#,##0"
+          },
+          {
+            "name": "AR 61-90",
+            "expression": "CALCULATE ( SUM ( Fact_AR[Amount] ), Fact_AR[Bucket] = \"61-90\", Fact_AR[IsRetainage] = \"FALSE\" )",
+            "formatString": "\\$#,##0"
+          },
+          {
+            "name": "AR 91+",
+            "expression": "CALCULATE ( SUM ( Fact_AR[Amount] ), Fact_AR[Bucket] = \"91+\", Fact_AR[IsRetainage] = \"FALSE\" )",
+            "formatString": "\\$#,##0"
+          },
+          {
+            "name": "AR % of Revenue",
+            "expression": "DIVIDE ( [Total AR], [Total Revenue] )",
+            "formatString": "0.0%"
+          },
+          {
+            "name": "Total AP",
+            "expression": "SUM ( Fact_AP[Amount] )",
+            "formatString": "\\$#,##0"
+          },
+          {
+            "name": "Cash Balance",
+            "expression": "SUM ( Fact_Cash[CashBalance] )",
+            "formatString": "\\$#,##0"
+          },
+          {
+            "name": "LOC Drawn",
+            "expression": "SUM ( Fact_Cash[LOCDrawn] )",
+            "formatString": "\\$#,##0"
+          },
+          {
+            "name": "LOC Limit",
+            "expression": "SUM ( Fact_Cash[LOCLimit] )",
+            "formatString": "\\$#,##0"
+          },
+          {
+            "name": "LOC Utilization %",
+            "expression": "DIVIDE ( [LOC Drawn], [LOC Limit] )",
+            "formatString": "0.0%"
+          },
+          {
+            "name": "Operating Cash Flow",
+            "expression": "SUM ( Fact_Cash[OperatingCF] )",
+            "formatString": "\\$#,##0"
+          },
+          {
+            "name": "BBC Availability",
+            "expression": "VAR _base = SUMX ( Fact_Cash, Fact_Cash[EligibleAR] * Fact_Cash[AdvanceRate] )\nVAR _cap = MIN ( _base, [LOC Limit] )\nRETURN _cap - [LOC Drawn]",
+            "formatString": "\\$#,##0"
+          },
+          {
+            "name": "Liquidity Status",
+            "expression": "SWITCH ( TRUE(), [LOC Utilization %] >= 0.90, \"Critical\", [LOC Utilization %] >= 0.75, \"Watch\", \"Healthy\" )"
+          },
+          {
+            "name": "Budget Cost",
+            "expression": "SUM ( Fact_Budget[BudgetTotal] )",
+            "formatString": "\\$#,##0"
+          },
+          {
+            "name": "Actual Cost",
+            "expression": "SUM ( Fact_Budget[ActualCost] )",
+            "formatString": "\\$#,##0"
+          },
+          {
+            "name": "Cost Variance $",
+            "expression": "[Budget Cost] - [Actual Cost]",
+            "formatString": "\\$#,##0"
+          },
+          {
+            "name": "Unallocated GL",
+            "expression": "CALCULATE ( [GL Amount], Dim_Division[DivKey] = \"UN\" )",
+            "formatString": "\\$#,##0"
+          },
+          {
+            "name": "Jobs Missing PM",
+            "expression": "CALCULATE ( COUNTROWS ( Fact_WIP ), Fact_WIP[PMName] = \"(Unassigned)\" )",
+            "formatString": "#,##0"
+          }
+        ]
+      }
+    ],
+    "relationships": [
+      {
+        "name": "rel_0",
+        "fromTable": "Fact_GL",
+        "fromColumn": "PeriodEnd",
+        "toTable": "Dim_Date",
+        "toColumn": "Date",
+        "crossFilteringBehavior": "oneDirection"
+      },
+      {
+        "name": "rel_1",
+        "fromTable": "Fact_PL_Monthly",
+        "fromColumn": "MonthEnd",
+        "toTable": "Dim_Date",
+        "toColumn": "Date",
+        "crossFilteringBehavior": "oneDirection"
+      },
+      {
+        "name": "rel_2",
+        "fromTable": "Fact_WIP",
+        "fromColumn": "SnapshotDate",
+        "toTable": "Dim_Date",
+        "toColumn": "Date",
+        "crossFilteringBehavior": "oneDirection"
+      },
+      {
+        "name": "rel_3",
+        "fromTable": "Fact_AR",
+        "fromColumn": "AsOfDate",
+        "toTable": "Dim_Date",
+        "toColumn": "Date",
+        "crossFilteringBehavior": "oneDirection"
+      },
+      {
+        "name": "rel_4",
+        "fromTable": "Fact_AP",
+        "fromColumn": "AsOfDate",
+        "toTable": "Dim_Date",
+        "toColumn": "Date",
+        "crossFilteringBehavior": "oneDirection"
+      },
+      {
+        "name": "rel_5",
+        "fromTable": "Fact_Cash",
+        "fromColumn": "Date",
+        "toTable": "Dim_Date",
+        "toColumn": "Date",
+        "crossFilteringBehavior": "oneDirection"
+      },
+      {
+        "name": "rel_6",
+        "fromTable": "Fact_GL",
+        "fromColumn": "DivKey",
+        "toTable": "Dim_Division",
+        "toColumn": "DivKey",
+        "crossFilteringBehavior": "oneDirection"
+      },
+      {
+        "name": "rel_7",
+        "fromTable": "Fact_WIP",
+        "fromColumn": "DivKey",
+        "toTable": "Dim_Division",
+        "toColumn": "DivKey",
+        "crossFilteringBehavior": "oneDirection"
+      },
+      {
+        "name": "rel_8",
+        "fromTable": "Fact_Budget",
+        "fromColumn": "DivKey",
+        "toTable": "Dim_Division",
+        "toColumn": "DivKey",
+        "crossFilteringBehavior": "oneDirection"
+      },
+      {
+        "name": "rel_9",
+        "fromTable": "Fact_WIP",
+        "fromColumn": "PMName",
+        "toTable": "Dim_PM",
+        "toColumn": "PMName",
+        "crossFilteringBehavior": "oneDirection"
+      },
+      {
+        "name": "rel_10",
+        "fromTable": "Fact_WIP",
+        "fromColumn": "Job",
+        "toTable": "Dim_Job",
+        "toColumn": "Job",
+        "crossFilteringBehavior": "oneDirection"
+      },
+      {
+        "name": "rel_11",
+        "fromTable": "Fact_GL",
+        "fromColumn": "Account",
+        "toTable": "Dim_Account",
+        "toColumn": "Account",
+        "crossFilteringBehavior": "oneDirection"
+      },
+      {
+        "name": "rel_12",
+        "fromTable": "Fact_AR",
+        "fromColumn": "Customer",
+        "toTable": "Dim_Customer",
+        "toColumn": "Customer",
+        "crossFilteringBehavior": "oneDirection"
+      },
+      {
+        "name": "rel_13",
+        "fromTable": "Fact_AP",
+        "fromColumn": "Vendor",
+        "toTable": "Dim_Vendor",
+        "toColumn": "Vendor",
+        "crossFilteringBehavior": "oneDirection"
+      }
+    ],
+    "annotations": [
+      {
+        "name": "BuildSource",
+        "value": "QuickBooks Online + Knowify (live MCP)"
+      }
+    ]
+  }
+}

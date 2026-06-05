@@ -1,0 +1,109 @@
+Account,Statement,Category,Subcategory,DivKey,Sort
+Billable Expense Income,P&L,Revenue,Income,ALL,1
+Doors and Windows,P&L,Revenue,Income,ALL,2
+Drywall Division Delivery Income,P&L,Revenue,Drywall Service Income,DW,3
+Drywall Division Material Income,P&L,Revenue,Drywall Service Income,DW,4
+Drywall Sales Income,P&L,Revenue,Income,DW,5
+Drywall Service Income,P&L,Revenue,Income,DW,6
+Drywall Supply Arbor Income,P&L,Revenue,Drywall Service Income,DW,7
+Drywall Supply Century Income,P&L,Revenue,Drywall Service Income,DW,8
+Drywall Supply HD Boom Scatter Income,P&L,Revenue,Drywall Service Income,DW,9
+Drywall Supply Pulte Income,P&L,Revenue,Drywall Service Income,DW,10
+Drywall Tax,P&L,Revenue,Drywall Service Income,DW,11
+Engineering Project Income,P&L,Revenue,Income,EN,12
+Finishes,P&L,Revenue,Income,ALL,13
+Metals,P&L,Revenue,Income,ALL,14
+Sales,P&L,Revenue,Income,ALL,15
+Service/Fee Income,P&L,Revenue,Income,ALL,16
+Specialties,P&L,Revenue,Income,ALL,17
+Thermal and Moisture Control,P&L,Revenue,Income,ALL,18
+WIP Adj - Net change,P&L,Revenue,Income,ALL,19
+Wood and Plastics,P&L,Revenue,Income,ALL,20
+Cost of labor - Contractors,P&L,COGS,Cost of Goods Sold,ALL,21
+Cost of labor - Direct Labor,P&L,COGS,Cost of Goods Sold,ALL,22
+Drywall Project (Material) Expense - Internal,P&L,COGS,Job Site Expenses,DW,23
+Drywall Project (Tax) Expense - Internal,P&L,COGS,Job Site Expenses,DW,24
+Drywall Supply Arbor Expense,P&L,COGS,Cost of Goods Sold,DW,25
+Drywall Supply Century Expense,P&L,COGS,Cost of Goods Sold,DW,26
+Drywall Supply External Expense,P&L,COGS,Cost of Goods Sold,DW,27
+Drywall Supply Internal Expense,P&L,COGS,Cost of Goods Sold,DW,28
+Drywall Supply Pulte Expense,P&L,COGS,Cost of Goods Sold,DW,29
+Equipment Rental,P&L,COGS,Job Site Expenses,ALL,30
+Job Site Expenses,P&L,COGS,Cost of Goods Sold,ALL,31
+Per Diem Job Expense,P&L,COGS,Cost of Goods Sold,ALL,32
+"Shipping, Freight & Delivery - COS",P&L,COGS,Cost of Goods Sold,ALL,33
+Vendor Discounts,P&L,COGS,Cost of Goods Sold,ALL,34
+Warranty Labor Expense,P&L,COGS,Cost of labor - Contractors,ALL,35
+Warranty Material Expense,P&L,COGS,Job Site Expenses,ALL,36
+Advertising & Marketing,P&L,Operating Expense,Expenses,ALL,37
+Ask My Accountant,P&L,Operating Expense,Expenses,ALL,38
+Bad Debt,P&L,Operating Expense,Expenses,ALL,39
+Bank Charges & Fees,P&L,Operating Expense,Expenses,ALL,40
+Bonus,P&L,Operating Expense,Payroll Expenses,ALL,41
+Bonus Accrual Expense,P&L,Operating Expense,Bonus & Commission Expense,ALL,42
+Car & Truck,P&L,Operating Expense,Expenses,ALL,43
+Charitable Contributions,P&L,Operating Expense,Expenses,ALL,44
+Charitable Contributions - Non-Deductible,P&L,Operating Expense,Charitable Contributions,ALL,45
+Commission,P&L,Operating Expense,Payroll Expenses,ALL,46
+Contractors,P&L,Operating Expense,Expenses,ALL,47
+DEF - Boom Truck,P&L,Operating Expense,Car & Truck,ALL,48
+DOT Boom Trucks Compliance,P&L,Operating Expense,Car & Truck,ALL,49
+Depreciation,P&L,Operating Expense,Expenses,ALL,50
+Drywall Division Labor - Subcontractors,P&L,Operating Expense,Expenses,DW,51
+Drywall Division Supplies Expense,P&L,Operating Expense,Expenses,DW,52
+Drywall Supply HD Boom Scatter Diesel - Boom Truck,P&L,Operating Expense,Fuel Diesel - Boom Truck,DW,53
+Drywall Supply HD Boom Scatter Expense,P&L,Operating Expense,Expenses,DW,54
+Drywall Supply HD Boom Scatter Labor,P&L,Operating Expense,Expenses,DW,55
+Drywall Supply HD Boom Scatter Travel,P&L,Operating Expense,Expenses,DW,56
+Dues & subscriptions,P&L,Operating Expense,Expenses,ALL,57
+Employee Benefits,P&L,Operating Expense,Payroll Expenses,ALL,58
+Entertainment,P&L,Operating Expense,Meals & Entertainment,ALL,59
+Equipment/Vehicle Rental,P&L,Operating Expense,Expenses,ALL,60
+Expenses — Unitemized,P&L,Operating Expense,Expenses,ALL,61
+Freight,P&L,Operating Expense,Expenses,ALL,62
+Fuel Diesel - Boom Truck,P&L,Operating Expense,Car & Truck,ALL,63
+Fuel Truck - Company Pickup,P&L,Operating Expense,Car & Truck,ALL,64
+Health Insurance,P&L,Operating Expense,Employee Benefits,ALL,65
+Insurance,P&L,Operating Expense,Expenses,ALL,66
+Interest Paid,P&L,Operating Expense,Expenses,ALL,67
+Job Supplies,P&L,Operating Expense,Expenses,ALL,68
+Legal & Professional Services,P&L,Operating Expense,Expenses,ALL,69
+Meals,P&L,Operating Expense,Meals & Entertainment,ALL,70
+Meals & Entertainment,P&L,Operating Expense,Expenses,ALL,71
+Melio Credit card fee,P&L,Operating Expense,Expenses,ALL,72
+Misc / Spot Bonus Expense,P&L,Operating Expense,Bonus & Commission Expense,ALL,73
+Office Supplies & Software,P&L,Operating Expense,Expenses,ALL,74
+Other Business Expenses,P&L,Operating Expense,Expenses,ALL,75
+Outsourced IT Services,P&L,Operating Expense,Expenses,ALL,76
+Outsourced Safety,P&L,Operating Expense,Expenses,ALL,77
+Payroll Fees,P&L,Operating Expense,Payroll Expenses,ALL,78
+Property Tax,P&L,Operating Expense,Expenses,ALL,79
+Reimbursable Expenses,P&L,Operating Expense,Expenses,ALL,80
+Rent & Lease,P&L,Operating Expense,Expenses,ALL,81
+Repairs & Maintenance,P&L,Operating Expense,Expenses,ALL,82
+Service - Boom Truck,P&L,Operating Expense,Car & Truck,ALL,83
+Service - Boom Truck 1103 Volvo,P&L,Operating Expense,Car & Truck,ALL,84
+Service - Boom Truck 1107 Western Star,P&L,Operating Expense,Car & Truck,ALL,85
+Service - Boom Truck 1109 Freightliner 16,P&L,Operating Expense,Car & Truck,ALL,86
+Service - Boom Truck 1110 Peterbilt 18,P&L,Operating Expense,Car & Truck,ALL,87
+Service - Boom Truck 1111 Freightliner,P&L,Operating Expense,Car & Truck,ALL,88
+Service - Boom Truck 1112 Peterbilt 17,P&L,Operating Expense,Car & Truck,ALL,89
+Service - Company Truck,P&L,Operating Expense,Car & Truck,ALL,90
+Small Tools & Equipment,P&L,Operating Expense,Expenses,ALL,91
+Software Subscription/Use Fee,P&L,Operating Expense,Office Supplies & Software,ALL,92
+Taxes,P&L,Operating Expense,Payroll Expenses,ALL,93
+Taxes & Licenses,P&L,Operating Expense,Expenses,ALL,94
+Training & Education,P&L,Operating Expense,Expenses,ALL,95
+Travel,P&L,Operating Expense,Expenses,ALL,96
+Travel - Fuel,P&L,Operating Expense,Travel,ALL,97
+Travel - Meals,P&L,Operating Expense,Travel,ALL,98
+Uncategorized Expense,P&L,Operating Expense,Expenses,ALL,99
+Utilities,P&L,Operating Expense,Expenses,ALL,100
+Wages,P&L,Operating Expense,Payroll Expenses,ALL,101
+Credit Card Rewards,P&L,Other Income,Other Income,ALL,102
+Interest Earned,P&L,Other Income,Other Income,ALL,103
+Other Income,P&L,Other Income,Other Income,ALL,104
+Subletter Rent Income,P&L,Other Income,Other Income,ALL,105
+Subletter Utility Income,P&L,Other Income,Other Income,ALL,106
+Vendor Rebate Income,P&L,Other Income,Other Income,ALL,107
+Gain or Loss on Assets,P&L,Other Expense,Other Expenses,ALL,108

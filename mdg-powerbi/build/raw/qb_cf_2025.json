@@ -1,0 +1,29 @@
+{
+  "periodStart": "2025-01-01",
+  "periodEnd": "2025-12-31",
+  "reportTitle": "Statement of Cash Flows",
+  "companyName": "Midwest Design Group LLC",
+  "operatingActivities": 1607367.49,
+  "investingActivities": 179545.59,
+  "financingActivities": -1432655.18,
+  "netCashIncrease": 354257.90,
+  "cashAtBeginning": -598195.45,
+  "cashAtEnd": -243937.55,
+  "netIncome": 2810766.62,
+  "workingCapital": {
+    "accountsPayableChange": 712464.46,
+    "accountsReceivableChange": -733947.11,
+    "retainageReceivableChange": -2438809.88,
+    "inventoryDrywallChange": 362396.12,
+    "wipOverbillingsChange": 1249606.34,
+    "wipUnderbillingsChange": 215079.93,
+    "accruedBonusesChange": -9352.09,
+    "accruedPayrollChange": 11000.00,
+    "accruedCommissionsChange": -37000.00,
+    "lineOfCreditDraw": -460964.34,
+    "lineOfCreditCapXChange": -67265.76,
+    "leaseLiabilityCurrentChange": -112868.00,
+    "leaseLiabilityNoncurrentChange": -959670.00,
+    "rouAssetOperatingLeasesChange": 967660.00
+  }
+}

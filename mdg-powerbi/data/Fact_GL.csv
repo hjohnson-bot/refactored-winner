@@ -1,0 +1,228 @@
+Account,Period,PeriodEnd,DivKey,Amount,Category
+Billable Expense Income,FY2024,2024-12-31,ALL,10032.0,Revenue
+Doors and Windows,FY2024,2024-12-31,ALL,237386.66,Revenue
+Drywall Sales Income,FY2024,2024-12-31,DW,-6863.55,Revenue
+Drywall Service Income,FY2024,2024-12-31,DW,3983560.92,Revenue
+Drywall Division Delivery Income,FY2024,2024-12-31,DW,1062721.25,Revenue
+Drywall Division Material Income,FY2024,2024-12-31,DW,2840679.74,Revenue
+Drywall Tax,FY2024,2024-12-31,DW,348.74,Revenue
+Engineering Project Income,FY2024,2024-12-31,EN,16000.0,Revenue
+Finishes,FY2024,2024-12-31,ALL,1499889.18,Revenue
+Metals,FY2024,2024-12-31,ALL,1715940.63,Revenue
+Sales,FY2024,2024-12-31,ALL,4079740.08,Revenue
+Service/Fee Income,FY2024,2024-12-31,ALL,22772419.95,Revenue
+Specialties,FY2024,2024-12-31,ALL,87799.97,Revenue
+Thermal and Moisture Control,FY2024,2024-12-31,ALL,401319.14,Revenue
+WIP Adj - Net change,FY2024,2024-12-31,ALL,67516.35,Revenue
+Wood and Plastics,FY2024,2024-12-31,ALL,769283.84,Revenue
+Cost of labor - Contractors,FY2024,2024-12-31,ALL,8808010.66,COGS
+Cost of labor - Direct Labor,FY2024,2024-12-31,ALL,184100.65,COGS
+Drywall Supply External Expense,FY2024,2024-12-31,DW,5816123.6,COGS
+Drywall Supply Internal Expense,FY2024,2024-12-31,DW,3968871.29,COGS
+Job Site Expenses,FY2024,2024-12-31,ALL,8775597.67,COGS
+Equipment Rental,FY2024,2024-12-31,ALL,920967.55,COGS
+Per Diem Job Expense,FY2024,2024-12-31,ALL,1500.0,COGS
+"Shipping, Freight & Delivery - COS",FY2024,2024-12-31,ALL,50.0,COGS
+Vendor Discounts,FY2024,2024-12-31,ALL,-40004.49,COGS
+Advertising & Marketing,FY2024,2024-12-31,ALL,95529.38,Operating Expense
+Bad Debt,FY2024,2024-12-31,ALL,23833.47,Operating Expense
+Bank Charges & Fees,FY2024,2024-12-31,ALL,6245.61,Operating Expense
+Car & Truck,FY2024,2024-12-31,ALL,295631.01,Operating Expense
+DEF - Boom Truck,FY2024,2024-12-31,ALL,53.48,Operating Expense
+DOT Boom Trucks Compliance,FY2024,2024-12-31,ALL,156.66,Operating Expense
+Fuel Diesel - Boom Truck,FY2024,2024-12-31,ALL,43432.76,Operating Expense
+Fuel Truck - Company Pickup,FY2024,2024-12-31,ALL,602.67,Operating Expense
+Service - Boom Truck,FY2024,2024-12-31,ALL,8302.63,Operating Expense
+Charitable Contributions,FY2024,2024-12-31,ALL,9650.0,Operating Expense
+Contractors,FY2024,2024-12-31,ALL,29907.28,Operating Expense
+Depreciation,FY2024,2024-12-31,ALL,159278.79,Operating Expense
+Drywall Division Labor - Subcontractors,FY2024,2024-12-31,DW,147790.5,Operating Expense
+Dues & subscriptions,FY2024,2024-12-31,ALL,4350.79,Operating Expense
+Equipment/Vehicle Rental,FY2024,2024-12-31,ALL,8828.66,Operating Expense
+Freight,FY2024,2024-12-31,ALL,1800.0,Operating Expense
+Insurance,FY2024,2024-12-31,ALL,186947.02,Operating Expense
+Interest Paid,FY2024,2024-12-31,ALL,240799.34,Operating Expense
+Job Supplies,FY2024,2024-12-31,ALL,31581.94,Operating Expense
+Legal & Professional Services,FY2024,2024-12-31,ALL,236680.09,Operating Expense
+Meals & Entertainment,FY2024,2024-12-31,ALL,166308.92,Operating Expense
+Melio Credit card fee,FY2024,2024-12-31,ALL,60.0,Operating Expense
+Office Supplies & Software,FY2024,2024-12-31,ALL,171877.26,Operating Expense
+Software Subscription/Use Fee,FY2024,2024-12-31,ALL,249.99,Operating Expense
+Other Business Expenses,FY2024,2024-12-31,ALL,3875.79,Operating Expense
+Outsourced IT Services,FY2024,2024-12-31,ALL,49394.22,Operating Expense
+Bonus,FY2024,2024-12-31,ALL,307801.24,Operating Expense
+Commission,FY2024,2024-12-31,ALL,95163.98,Operating Expense
+Employee Benefits,FY2024,2024-12-31,ALL,222721.47,Operating Expense
+Health Insurance,FY2024,2024-12-31,ALL,18452.01,Operating Expense
+Payroll Fees,FY2024,2024-12-31,ALL,50898.56,Operating Expense
+Taxes,FY2024,2024-12-31,ALL,359219.18,Operating Expense
+Wages,FY2024,2024-12-31,ALL,4255653.27,Operating Expense
+Property Tax,FY2024,2024-12-31,ALL,26000.0,Operating Expense
+Reimbursable Expenses,FY2024,2024-12-31,ALL,12195.98,Operating Expense
+Rent & Lease,FY2024,2024-12-31,ALL,553295.17,Operating Expense
+Repairs & Maintenance,FY2024,2024-12-31,ALL,100368.49,Operating Expense
+Small Tools & Equipment,FY2024,2024-12-31,ALL,67494.59,Operating Expense
+Taxes & Licenses,FY2024,2024-12-31,ALL,82933.23,Operating Expense
+Travel,FY2024,2024-12-31,ALL,133886.05,Operating Expense
+Utilities,FY2024,2024-12-31,ALL,39792.66,Operating Expense
+Credit Card Rewards,FY2024,2024-12-31,ALL,1630.56,Other Income
+Interest Earned,FY2024,2024-12-31,ALL,0.18,Other Income
+Other Income,FY2024,2024-12-31,ALL,45680.23,Other Income
+Subletter Rent Income,FY2024,2024-12-31,ALL,19535.36,Other Income
+Subletter Utility Income,FY2024,2024-12-31,ALL,2000.0,Other Income
+Gain or Loss on Assets,FY2024,2024-12-31,ALL,23197.6,Other Expense
+Billable Expense Income,FY2025,2025-12-31,ALL,543.0,Revenue
+Doors and Windows,FY2025,2025-12-31,ALL,4594.5,Revenue
+Drywall Service Income,FY2025,2025-12-31,DW,3358176.13,Revenue
+Drywall Division Delivery Income,FY2025,2025-12-31,DW,201.04,Revenue
+Drywall Division Material Income,FY2025,2025-12-31,DW,2824148.9,Revenue
+Drywall Supply Arbor Income,FY2025,2025-12-31,DW,959002.74,Revenue
+Drywall Supply Century Income,FY2025,2025-12-31,DW,105734.39,Revenue
+Drywall Supply HD Boom Scatter Income,FY2025,2025-12-31,DW,174372.44,Revenue
+Drywall Supply Pulte Income,FY2025,2025-12-31,DW,6230.22,Revenue
+Drywall Tax,FY2025,2025-12-31,DW,67.77,Revenue
+Engineering Project Income,FY2025,2025-12-31,EN,709295.0,Revenue
+Finishes,FY2025,2025-12-31,ALL,76310.01,Revenue
+Sales,FY2025,2025-12-31,ALL,13469.39,Revenue
+Service/Fee Income,FY2025,2025-12-31,ALL,33721642.66,Revenue
+Specialties,FY2025,2025-12-31,ALL,2713.5,Revenue
+WIP Adj - Net change,FY2025,2025-12-31,ALL,-1464686.27,Revenue
+Cost of labor - Contractors,FY2025,2025-12-31,ALL,9409610.39,COGS
+Warranty Labor Expense,FY2025,2025-12-31,ALL,471.77,COGS
+Cost of labor - Direct Labor,FY2025,2025-12-31,ALL,212902.67,COGS
+Drywall Supply Arbor Expense,FY2025,2025-12-31,DW,753899.54,COGS
+Drywall Supply Century Expense,FY2025,2025-12-31,DW,103164.28,COGS
+Drywall Supply External Expense,FY2025,2025-12-31,DW,2526119.47,COGS
+Drywall Supply Internal Expense,FY2025,2025-12-31,DW,2861149.12,COGS
+Drywall Supply Pulte Expense,FY2025,2025-12-31,DW,5904.27,COGS
+Job Site Expenses,FY2025,2025-12-31,ALL,8194535.74,COGS
+Drywall Project (Material) Expense - Internal,FY2025,2025-12-31,DW,2788639.15,COGS
+Drywall Project (Tax) Expense - Internal,FY2025,2025-12-31,DW,174956.68,COGS
+Equipment Rental,FY2025,2025-12-31,ALL,669802.45,COGS
+Warranty Material Expense,FY2025,2025-12-31,ALL,148.15,COGS
+Per Diem Job Expense,FY2025,2025-12-31,ALL,64983.0,COGS
+Vendor Discounts,FY2025,2025-12-31,ALL,-11150.24,COGS
+Advertising & Marketing,FY2025,2025-12-31,ALL,109327.23,Operating Expense
+Bad Debt,FY2025,2025-12-31,ALL,4583.55,Operating Expense
+Bank Charges & Fees,FY2025,2025-12-31,ALL,7808.93,Operating Expense
+Car & Truck,FY2025,2025-12-31,ALL,26351.78,Operating Expense
+DEF - Boom Truck,FY2025,2025-12-31,ALL,2696.79,Operating Expense
+DOT Boom Trucks Compliance,FY2025,2025-12-31,ALL,10905.77,Operating Expense
+Fuel Diesel - Boom Truck,FY2025,2025-12-31,ALL,104966.51,Operating Expense
+Drywall Supply HD Boom Scatter Diesel - Boom Truck,FY2025,2025-12-31,DW,7361.89,Operating Expense
+Fuel Truck - Company Pickup,FY2025,2025-12-31,ALL,14158.5,Operating Expense
+Service - Boom Truck,FY2025,2025-12-31,ALL,84192.67,Operating Expense
+Service - Boom Truck 1103 Volvo,FY2025,2025-12-31,ALL,34700.32,Operating Expense
+Service - Boom Truck 1107 Western Star,FY2025,2025-12-31,ALL,25081.77,Operating Expense
+Service - Boom Truck 1109 Freightliner 16,FY2025,2025-12-31,ALL,24433.04,Operating Expense
+Service - Boom Truck 1110 Peterbilt 18,FY2025,2025-12-31,ALL,20257.62,Operating Expense
+Service - Boom Truck 1111 Freightliner,FY2025,2025-12-31,ALL,518.59,Operating Expense
+Service - Boom Truck 1112 Peterbilt 17,FY2025,2025-12-31,ALL,23433.72,Operating Expense
+Service - Company Truck,FY2025,2025-12-31,ALL,19306.29,Operating Expense
+Charitable Contributions,FY2025,2025-12-31,ALL,3313.04,Operating Expense
+Contractors,FY2025,2025-12-31,ALL,51647.33,Operating Expense
+Depreciation,FY2025,2025-12-31,ALL,190161.95,Operating Expense
+Drywall Division Labor - Subcontractors,FY2025,2025-12-31,DW,697055.0,Operating Expense
+Drywall Division Supplies Expense,FY2025,2025-12-31,DW,19211.23,Operating Expense
+Drywall Supply HD Boom Scatter Expense,FY2025,2025-12-31,DW,14857.55,Operating Expense
+Drywall Supply HD Boom Scatter Labor,FY2025,2025-12-31,DW,145428.75,Operating Expense
+Drywall Supply HD Boom Scatter Travel,FY2025,2025-12-31,DW,24614.8,Operating Expense
+Dues & subscriptions,FY2025,2025-12-31,ALL,5234.38,Operating Expense
+Equipment/Vehicle Rental,FY2025,2025-12-31,ALL,5868.22,Operating Expense
+Insurance,FY2025,2025-12-31,ALL,248733.08,Operating Expense
+Interest Paid,FY2025,2025-12-31,ALL,286637.57,Operating Expense
+Job Supplies,FY2025,2025-12-31,ALL,32962.99,Operating Expense
+Legal & Professional Services,FY2025,2025-12-31,ALL,213655.55,Operating Expense
+Meals & Entertainment,FY2025,2025-12-31,ALL,192274.77,Operating Expense
+Entertainment,FY2025,2025-12-31,ALL,18665.18,Operating Expense
+Office Supplies & Software,FY2025,2025-12-31,ALL,62125.49,Operating Expense
+Software Subscription/Use Fee,FY2025,2025-12-31,ALL,111775.41,Operating Expense
+Other Business Expenses,FY2025,2025-12-31,ALL,9413.48,Operating Expense
+Outsourced IT Services,FY2025,2025-12-31,ALL,74239.8,Operating Expense
+Outsourced Safety,FY2025,2025-12-31,ALL,2775.39,Operating Expense
+Bonus,FY2025,2025-12-31,ALL,374819.06,Operating Expense
+Commission,FY2025,2025-12-31,ALL,30018.33,Operating Expense
+Employee Benefits,FY2025,2025-12-31,ALL,281502.41,Operating Expense
+Health Insurance,FY2025,2025-12-31,ALL,12490.53,Operating Expense
+Payroll Fees,FY2025,2025-12-31,ALL,58838.35,Operating Expense
+Taxes,FY2025,2025-12-31,ALL,395840.67,Operating Expense
+Wages,FY2025,2025-12-31,ALL,4495102.3,Operating Expense
+Property Tax,FY2025,2025-12-31,ALL,34572.38,Operating Expense
+Reimbursable Expenses,FY2025,2025-12-31,ALL,510.9,Operating Expense
+Rent & Lease,FY2025,2025-12-31,ALL,1089976.37,Operating Expense
+Expenses — Unitemized,FY2025,2025-12-31,ALL,328196.88,Operating Expense
+Drywall Service Income,YTD2026,2026-06-04,DW,387300.34,Revenue
+Drywall Division Material Income,YTD2026,2026-06-04,DW,20720.33,Revenue
+Drywall Supply Arbor Income,YTD2026,2026-06-04,DW,778141.36,Revenue
+Drywall Supply Pulte Income,YTD2026,2026-06-04,DW,16826.62,Revenue
+Engineering Project Income,YTD2026,2026-06-04,EN,310125.0,Revenue
+Sales,YTD2026,2026-06-04,ALL,4820.0,Revenue
+Service/Fee Income,YTD2026,2026-06-04,ALL,20632250.27,Revenue
+WIP Adj - Net change,YTD2026,2026-06-04,ALL,2851609.83,Revenue
+Cost of labor - Contractors,YTD2026,2026-06-04,ALL,7439143.8,COGS
+Cost of labor - Direct Labor,YTD2026,2026-06-04,ALL,51161.4,COGS
+Drywall Supply External Expense,YTD2026,2026-06-04,DW,1044464.67,COGS
+Drywall Supply Internal Expense,YTD2026,2026-06-04,DW,2394399.57,COGS
+Job Site Expenses,YTD2026,2026-06-04,ALL,6032541.2,COGS
+Drywall Project (Material) Expense - Internal,YTD2026,2026-06-04,DW,2700.9,COGS
+Equipment Rental,YTD2026,2026-06-04,ALL,658905.91,COGS
+Per Diem Job Expense,YTD2026,2026-06-04,ALL,16370.0,COGS
+Advertising & Marketing,YTD2026,2026-06-04,ALL,49681.39,Operating Expense
+Ask My Accountant,YTD2026,2026-06-04,ALL,6775.88,Operating Expense
+Bad Debt,YTD2026,2026-06-04,ALL,129.56,Operating Expense
+Bank Charges & Fees,YTD2026,2026-06-04,ALL,1010.91,Operating Expense
+Car & Truck,YTD2026,2026-06-04,ALL,9851.92,Operating Expense
+DEF - Boom Truck,YTD2026,2026-06-04,ALL,789.69,Operating Expense
+Fuel Diesel - Boom Truck,YTD2026,2026-06-04,ALL,46139.04,Operating Expense
+Fuel Truck - Company Pickup,YTD2026,2026-06-04,ALL,14864.02,Operating Expense
+Service - Boom Truck,YTD2026,2026-06-04,ALL,4144.78,Operating Expense
+Service - Boom Truck 1109 Freightliner 16,YTD2026,2026-06-04,ALL,20089.71,Operating Expense
+Service - Boom Truck 1110 Peterbilt 18,YTD2026,2026-06-04,ALL,1744.4,Operating Expense
+Service - Boom Truck 1111 Freightliner,YTD2026,2026-06-04,ALL,4073.21,Operating Expense
+Service - Boom Truck 1112 Peterbilt 17,YTD2026,2026-06-04,ALL,7459.29,Operating Expense
+Service - Company Truck,YTD2026,2026-06-04,ALL,18202.24,Operating Expense
+Charitable Contributions,YTD2026,2026-06-04,ALL,2500.0,Operating Expense
+Charitable Contributions - Non-Deductible,YTD2026,2026-06-04,ALL,1000.0,Operating Expense
+Contractors,YTD2026,2026-06-04,ALL,19000.0,Operating Expense
+Depreciation,YTD2026,2026-06-04,ALL,65448.11,Operating Expense
+Drywall Division Labor - Subcontractors,YTD2026,2026-06-04,DW,277564.45,Operating Expense
+Drywall Division Supplies Expense,YTD2026,2026-06-04,DW,1145.07,Operating Expense
+Drywall Supply HD Boom Scatter Labor,YTD2026,2026-06-04,DW,6750.0,Operating Expense
+Dues & subscriptions,YTD2026,2026-06-04,ALL,9937.75,Operating Expense
+Equipment/Vehicle Rental,YTD2026,2026-06-04,ALL,38424.43,Operating Expense
+Insurance,YTD2026,2026-06-04,ALL,67365.99,Operating Expense
+Interest Paid,YTD2026,2026-06-04,ALL,112616.06,Operating Expense
+Job Supplies,YTD2026,2026-06-04,ALL,10135.83,Operating Expense
+Legal & Professional Services,YTD2026,2026-06-04,ALL,61725.77,Operating Expense
+Meals & Entertainment,YTD2026,2026-06-04,ALL,51854.83,Operating Expense
+Entertainment,YTD2026,2026-06-04,ALL,39782.22,Operating Expense
+Meals,YTD2026,2026-06-04,ALL,9809.44,Operating Expense
+Office Supplies & Software,YTD2026,2026-06-04,ALL,69611.54,Operating Expense
+Software Subscription/Use Fee,YTD2026,2026-06-04,ALL,18150.82,Operating Expense
+Other Business Expenses,YTD2026,2026-06-04,ALL,672.0,Operating Expense
+Outsourced IT Services,YTD2026,2026-06-04,ALL,30498.71,Operating Expense
+Outsourced Safety,YTD2026,2026-06-04,ALL,3690.86,Operating Expense
+Bonus Accrual Expense,YTD2026,2026-06-04,ALL,283000.0,Operating Expense
+Commission,YTD2026,2026-06-04,ALL,-36779.33,Operating Expense
+Misc / Spot Bonus Expense,YTD2026,2026-06-04,ALL,12913.44,Operating Expense
+Employee Benefits,YTD2026,2026-06-04,ALL,80297.79,Operating Expense
+Health Insurance,YTD2026,2026-06-04,ALL,5980.99,Operating Expense
+Payroll Fees,YTD2026,2026-06-04,ALL,16307.34,Operating Expense
+Taxes,YTD2026,2026-06-04,ALL,129049.37,Operating Expense
+Wages,YTD2026,2026-06-04,ALL,1688063.73,Operating Expense
+Property Tax,YTD2026,2026-06-04,ALL,2415.99,Operating Expense
+Rent & Lease,YTD2026,2026-06-04,ALL,730466.97,Operating Expense
+Repairs & Maintenance,YTD2026,2026-06-04,ALL,63252.16,Operating Expense
+Small Tools & Equipment,YTD2026,2026-06-04,ALL,8304.62,Operating Expense
+Taxes & Licenses,YTD2026,2026-06-04,ALL,32244.63,Operating Expense
+Training & Education,YTD2026,2026-06-04,ALL,3986.1,Operating Expense
+Travel,YTD2026,2026-06-04,ALL,73701.35,Operating Expense
+Travel - Fuel,YTD2026,2026-06-04,ALL,854.75,Operating Expense
+Travel - Meals,YTD2026,2026-06-04,ALL,4074.98,Operating Expense
+Uncategorized Expense,YTD2026,2026-06-04,ALL,263.49,Operating Expense
+Utilities,YTD2026,2026-06-04,ALL,44927.99,Operating Expense
+Credit Card Rewards,YTD2026,2026-06-04,ALL,1236.4,Other Income
+Interest Earned,YTD2026,2026-06-04,ALL,0.09,Other Income
+Other Income,YTD2026,2026-06-04,ALL,318.41,Other Income
+Vendor Rebate Income,YTD2026,2026-06-04,ALL,53642.01,Other Income
+Gain or Loss on Assets,YTD2026,2026-06-04,ALL,180850.51,Other Expense
