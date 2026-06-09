@@ -56,22 +56,25 @@ Hierarchies: **Org** (Division→PM→Job on `Dim_Job`), **Account**
 (Category→Subcategory→Account on `Dim_Account`). All relationships single-direction
 dimension→fact.
 
-## Refresh (the genuine auto-update path)
+## Refresh
+
+**Option B — scripted, one command** (use this today):
 
 ```bash
-# 1) Re-pull live data into build/raw/ via QuickBooks + Knowify MCP
-#    (P&L FY+monthly, balance sheet, AR/AP aging, cash flow, JobsReport active)
-# 2) Rebuild the star-schema CSVs + reconciliation
-python3 scripts/build_dashboard.py
-# 3) Rebuild the Excel workbook
-python3 scripts/build_excel.py
-# 4) (optional) regenerate the Power BI kit if the schema changed
-python3 scripts/build_powerbi.py
+./scripts/refresh.sh prompt   # prints the exact QuickBooks + Knowify pull steps
+#   ...run those pulls in a Claude Code session (saves raw JSON to build/raw/)...
+./scripts/refresh.sh build    # rebuilds CSVs + Excel + Power BI kit + zip
 ```
 
-For scheduled Power BI refresh: install the On-premises Data Gateway on a machine that
-sees the CSV folder, publish the dataset, and schedule daily refresh after the export
-job runs (spec §9). The CSV folder is the contract between the export job and Power BI.
+The as-of date is derived automatically from the live pull (the YTD P&L `periodEnd`) —
+no code edits needed. `build` reconciles every figure to source and writes
+`data/_reconciliation.json`.
+
+**Option C — fully automated, zero-click** (scheduled nightly refresh via the
+On-premises Data Gateway + Power BI Service): follow
+[`SOP_Automated_Refresh.md`](SOP_Automated_Refresh.md) — a complete step-by-step runbook
+covering the pull job, landing folder, gateway, dataset binding, scheduled refresh,
+validation gate, RLS, monitoring, and rollback.
 
 ## Data sources & notes
 

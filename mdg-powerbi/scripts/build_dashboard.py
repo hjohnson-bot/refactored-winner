@@ -24,12 +24,19 @@ RAW  = os.path.join(ROOT, "build", "raw")
 OUT  = os.path.join(ROOT, "data")
 os.makedirs(OUT, exist_ok=True)
 
-AS_OF = "2026-06-09"          # report as-of date (matches the live pulls)
-TODAY = dt.date(2026, 6, 9)
-
 def load(p):
     with open(os.path.join(RAW, p), encoding="utf-8") as f:
         return json.load(f)
+
+# Report as-of date is derived from the live pull itself (the YTD P&L periodEnd),
+# so a refresh needs no code edits — just re-pull and rebuild.
+def _derive_as_of():
+    try:
+        return load("qb_pl_2026_ytd.json").get("periodEnd") or dt.date.today().isoformat()
+    except Exception:
+        return dt.date.today().isoformat()
+AS_OF = _derive_as_of()
+TODAY = dt.date.fromisoformat(AS_OF)
 
 def num(x):
     if x is None or x == "":
