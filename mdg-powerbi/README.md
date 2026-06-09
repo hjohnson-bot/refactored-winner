@@ -4,7 +4,7 @@ A drillable CEO/CFO financial dashboard for **Midwest Design Group LLC**, built 
 star-schema model from **live QuickBooks Online + Knowify** data. Implements the
 Power BI Build Specification v1.0 (Hunter Johnson, VP Financial Operations).
 
-**Everything here is real, reconciled data — no dummy values.** As of **2026-06-04**.
+**Everything here is real, reconciled data — no dummy values.** As of **2026-06-09**.
 See [`RECONCILIATION.md`](RECONCILIATION.md) for every number tied back to source.
 
 ## What you get
@@ -22,12 +22,12 @@ Command Center (CEO landing) · P&L · Division Performance · Project Tracker
 Cash & Liquidity · Balance Sheet · Data Health · plus `» Fact_*` / `» Dim_*`
 raw tables (formatted as Excel Tables for instant PivotTables).
 
-## Headline numbers (real, 2026-06-04)
+## Headline numbers (real, 2026-06-09)
 
-- YTD 2026 Revenue **$25.00M** · Gross Margin **29.4%** · Net Income **$3.01M** (12.0%)
-- Active backlog **$22.4M** across **297** active jobs (**81** managed)
-- Trade A/R **$10.93M** (+ **$3.58M** retainage) · A/P **$3.50M**
-- Cash **-$0.27M** · LOC drawn **$5.95M** · worst profit-fade under **Tommy Cohoat / Spencer Anderson**
+- YTD 2026 Revenue **$25.19M** · Gross Margin **28.8%** · Net Income **$2.90M** (11.5%)
+- Active backlog **$22.5M** across **301** active jobs (**81** managed)
+- Trade A/R **$10.49M** (+ **$3.18M** retainage) · A/P **$3.81M**
+- Cash **-$1.18M** · LOC drawn **$4.40M** · worst profit-fade under **Tommy Cohoat / Spencer Anderson**
 
 ## Build the Power BI file (.pbix)
 

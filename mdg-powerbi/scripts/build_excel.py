@@ -536,13 +536,13 @@ ws=sheet("Data Health",AMBER)
 title_block(ws,"Data Health & Refresh","Trust panel — surfaces data-hygiene issues that would distort the numbers")
 checks=[
     ("Last data refresh (as-of)",AS_OF,""),
-    ("Active jobs (Knowify)",len(wip),"JobsReport Total = 297"),
+    ("Active jobs (Knowify)",len(wip),f"JobsReport Total = {recon.get('qb_jobs_total','')}"),
     ("Managed jobs (PM + budget + ≥$1k)",len(managed),""),
     ("Active jobs missing a PM",len(no_pm),"assign in Knowify"),
     ("Active jobs missing a budget",len(no_budget),"load budget in Knowify"),
     ("GL $ in UNALLOCATED division",f"${unalloc:,.0f}","fix QuickBooks Class tagging"),
-    ("YTD2026 Revenue ties to QB",f"${y['rev']:,.0f}","QB P&L 25,001,793.75"),
-    ("YTD2026 Net Income ties to QB",f"${y['ni']:,.0f}","QB cash flow 3,010,486.42"),
+    ("YTD2026 Revenue ties to QB",f"${y['rev']:,.0f}",f"QB P&L {recon.get('qb_pl_income',0):,.2f}"),
+    ("YTD2026 Net Income ties to QB",f"${y['ni']:,.0f}",f"QB cash flow {recon.get('qb_cf_netincome',0):,.2f}"),
     ("Trade A/R ties to balance sheet",f"${ar_total:,.0f}",f"QB BS A/R {recon['ar_balance_sheet']:,.0f}"),
     ("A/P ties to balance sheet",f"${ap_total:,.0f}",f"QB BS A/P {recon['ap_balance_sheet']:,.0f}"),
     ("Total assets (QB)",f"${recon['total_assets']:,.0f}",""),

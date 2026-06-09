@@ -24,8 +24,8 @@ RAW  = os.path.join(ROOT, "build", "raw")
 OUT  = os.path.join(ROOT, "data")
 os.makedirs(OUT, exist_ok=True)
 
-AS_OF = "2026-06-04"          # report as-of date (matches the live pulls)
-TODAY = dt.date(2026, 6, 4)
+AS_OF = "2026-06-09"          # report as-of date (matches the live pulls)
+TODAY = dt.date(2026, 6, 9)
 
 def load(p):
     with open(os.path.join(RAW, p), encoding="utf-8") as f:
@@ -222,7 +222,7 @@ for r in month_rows:
 # 3. Knowify jobs -> Fact_WIP + Dim_Job + Dim_PM
 # ---------------------------------------------------------------------------
 print("Parsing Knowify jobs (AJR)...")
-job_files = ["knowify_jobs_active.json", "knowify_jobs_p2.json", "knowify_jobs_p3.json"]
+job_files = ["knowify_jobs_active.json", "knowify_jobs_p2.json", "knowify_jobs_p3.json", "knowify_jobs_p4.json"]
 jobs = []
 seen = set()
 for jf in job_files:
@@ -529,17 +529,23 @@ recon = {
     "total_assets": round(num(bs_summary.get("totalAssets")), 2),
     "total_liabilities": round(num(bs_summary.get("totalLiabilities")), 2),
     "total_equity": round(num(bs_summary.get("totalEquity")), 2),
+    "qb_pl_income": round(num(load("qb_pl_2026_ytd.json").get("totalIncome")), 2),
+    "qb_cf_netincome": round(num(cf.get("netIncome")), 2),
+    "qb_jobs_total": max((load(jf).get("Total", 0) for jf in job_files if os.path.exists(os.path.join(RAW, jf))), default=len(jobs)),
 }
 with open(os.path.join(OUT, "_reconciliation.json"), "w") as f:
     json.dump(recon, f, indent=2)
 
+qb_pl_income = num(load("qb_pl_2026_ytd.json").get("totalIncome"))
+qb_cf_ni = num(cf.get("netIncome"))
+qb_jobs_total = max((load(jf).get("Total", 0) for jf in job_files if os.path.exists(os.path.join(RAW, jf))), default=len(jobs))
 print("\n=== RECONCILIATION ===")
-print(f"  YTD2026 Revenue (Fact_GL)         {period_totals['YTD2026']['revenue']:>16,.2f}   QB P&L totalIncome 25,001,793.75")
-print(f"  YTD2026 Net Income (Fact_GL)      {period_totals['YTD2026']['netIncome']:>16,.2f}   QB cashflow NetIncome 3,010,486.42")
+print(f"  YTD2026 Revenue (Fact_GL)         {period_totals['YTD2026']['revenue']:>16,.2f}   QB P&L totalIncome {qb_pl_income:,.2f}")
+print(f"  YTD2026 Net Income (Fact_GL)      {period_totals['YTD2026']['netIncome']:>16,.2f}   QB cashflow NetIncome {qb_cf_ni:,.2f}")
 print(f"  AR trade (Fact_AR dedup)          {ar_total:>16,.2f}   QB balance sheet A/R {num(ab.get('accountsReceivable')):,.2f}")
 print(f"  Retainage                         {retainage:>16,.2f}   (balance sheet)")
 print(f"  AP (Fact_AP dedup)                {ap_total:>16,.2f}   QB balance sheet A/P {num(lb.get('accountsPayable')):,.2f}")
-print(f"  Active jobs                        {len(jobs):>16}   Knowify JobsReport Total 297")
+print(f"  Active jobs                        {len(jobs):>16}   Knowify JobsReport Total {qb_jobs_total}")
 print(f"  WIP contract total                {wip_contract:>16,.2f}")
 print(f"  LOC drawn                         {loc_drawn:>16,.2f}   balance sheet Forum LOC 0874")
 print(f"  Total assets                      {num(bs_summary.get('totalAssets')):>16,.2f}")
