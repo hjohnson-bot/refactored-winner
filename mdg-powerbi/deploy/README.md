@@ -5,9 +5,31 @@ Put these on the always-on Windows gateway host.
 
 | File | Role |
 |---|---|
-| `refresh_job.cmd` | The nightly job: pull → `refresh.sh build` → **validate** → promote CSVs to the Power BI landing folder. Aborts (no promote) if validation fails. |
+| `refresh_job.cmd` | The nightly job: pull → **self-healing** build/validate/promote (`refresh_safe.py`) → CSVs land for Power BI. |
 | `install_task.ps1` | Registers `refresh_job.cmd` as a Windows Scheduled Task (daily 03:30, service account, auto-retry). |
+| `../scripts/refresh_safe.py` | **Self-healing orchestrator**: build → validate → on failure *diagnose + auto-fix + rebuild*, loop, then promote. Escalates only when it can't heal — with the exact fix. |
 | `../scripts/validate_refresh.py` | Phase-7 gate: asserts the model ties to QuickBooks + Knowify; exit 1 blocks promotion. |
+| `../scripts/dry_run.sh` | Smoke test: proves healthy → self-heal → blocked-with-solution on this host. |
+| `mock_repull.sh` | Test stub for `MDG_REPULL_CMD` used by `dry_run.sh`. |
+
+## Self-healing (don't just report failures — fix them)
+
+When a check fails, `refresh_safe.py` **diagnoses the cause and applies a targeted fix
+before alerting**:
+
+| Failing check | Auto-fix |
+|---|---|
+| Knowify job pages incomplete (e.g. a paging race dropped a page) | re-pull the exact offsets with a stable order, rebuild, re-validate |
+| Revenue / Net Income don't tie to QB | re-pull QB P&L + Cash Flow, rebuild |
+| A/R or A/P don't tie to the balance sheet | re-pull balance sheet + the aging report, rebuild |
+
+Auto-fixes need `REPULL_CMD` set (a token-aware re-pull: `<cmd> jobs:200` etc.). Without
+it, the job still **prints the precise manual fix** and preserves yesterday's good data —
+it never silently publishes broken numbers. Validate the loop on the host:
+
+```
+./scripts/dry_run.sh      # Scenario A healthy, B self-heal, C blocked-with-solution
+```
 
 ## 15-minute setup
 

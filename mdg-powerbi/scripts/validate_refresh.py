@@ -16,15 +16,8 @@ TOL_PL   = 1.0      # revenue / net income vs QB
 TOL_AR   = 50.0     # trade A/R vs balance sheet (penny-invoice residuals)
 TOL_AP   = 50.0     # A/P vs balance sheet
 
-def main():
-    path = sys.argv[1] if len(sys.argv) > 1 else os.path.join(
-        os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data", "_reconciliation.json")
-    try:
-        r = json.load(open(path, encoding="utf-8"))
-    except Exception as e:
-        print(f"FAIL: cannot read {path}: {e}")
-        return 1
-
+def evaluate(r):
+    """Return (ok, checks) where checks is a list of (name, passed, model, source)."""
     y = r.get("periods", {}).get("YTD2026", {})
     checks = [
         ("YTD revenue ties to QB P&L",
@@ -43,11 +36,19 @@ def main():
          r.get("jobs", -1) == r.get("qb_jobs_total", -2),
          r.get("jobs"), r.get("qb_jobs_total")),
     ]
+    return all(c[1] for c in checks), checks
 
+def main():
+    path = sys.argv[1] if len(sys.argv) > 1 else os.path.join(
+        os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data", "_reconciliation.json")
+    try:
+        r = json.load(open(path, encoding="utf-8"))
+    except Exception as e:
+        print(f"FAIL: cannot read {path}: {e}")
+        return 1
+    ok, checks = evaluate(r)
     print(f"Validation of refresh as-of {r.get('as_of','?')}:")
-    ok = True
     for name, passed, model, source in checks:
-        ok = ok and passed
         flag = "PASS" if passed else "FAIL"
         print(f"  [{flag}] {name:42s} model={model!s:>16}  source={source!s:>16}")
     print("RESULT:", "PASS — safe to promote." if ok else "FAIL — DO NOT promote; investigate.")

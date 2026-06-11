@@ -156,9 +156,22 @@ If you prefer to remove the Claude/MCP dependency:
 
 ---
 
-## Phase 7 — Validation gate (runs every cycle)
+## Phase 7 — Validation gate + self-healing (runs every cycle)
 
-The pull job must **block promotion of bad data**. After `build_dashboard.py`:
+The job runs through `scripts/refresh_safe.py`, which **diagnoses and auto-corrects**
+known failures before alerting, and never promotes bad data:
+
+- Knowify job pages incomplete (paging race) → re-pull the exact offsets (stable
+  `ProjectId DESC` order), rebuild, re-validate.
+- Revenue / Net Income off vs QB → re-pull P&L + Cash Flow, rebuild.
+- A/R or A/P off vs balance sheet → re-pull balance sheet + the aging report, rebuild.
+
+It loops up to `MDG_MAX_RETRIES` (default 3). Auto-fixes require `MDG_REPULL_CMD`
+(a token-aware re-pull: `<cmd> jobs:200|pl|cf|bs|ar|ap`). If it still can't heal, it
+**escalates with the exact manual fix** and leaves the prior good CSVs in place.
+Smoke-test it with `./scripts/dry_run.sh` (healthy / self-heal / blocked-with-solution).
+
+The underlying gate (`validate_refresh.py`) asserts, after `build_dashboard.py`:
 1. Read `data/_reconciliation.json` and assert:
    - `periods.YTD2026.revenue` == `qb_pl_income` (QB P&L) within $1.
    - `periods.YTD2026.netIncome` == `qb_cf_netincome` (QB cash flow) within $1.

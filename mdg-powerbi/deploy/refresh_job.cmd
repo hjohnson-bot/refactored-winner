@@ -17,6 +17,11 @@ REM Set PULL_CMD to your data-pull command (Option 2A: a headless Claude Code ru
 REM that executes scripts\refresh.sh prompt and saves raw JSON to build\raw\).
 REM Leave blank to skip the pull and only rebuild from whatever is in build\raw\.
 set "PULL_CMD="
+REM Set REPULL_CMD to a TOKEN-AWARE re-pull (called as: <cmd> <token>, where token
+REM is jobs:<offset> | pl | cf | bs | ar | ap) so the self-healer can auto-correct
+REM a single bad source. Leave blank to disable auto-heal (job still reports the
+REM exact manual fix). See deploy\mock_repull.sh for the contract.
+set "REPULL_CMD="
 REM ---------------------------------------------------------------------------
 
 REM timestamp (locale-independent) for the log file
@@ -38,20 +43,17 @@ if defined PULL_CMD (
   echo [skip] PULL_CMD not set - rebuilding from existing build\raw\ >> "%LOG%"
 )
 
-echo [step] build (refresh.sh build) >> "%LOG%"
-"%BASH%" -lc "cd '%REPO%' && ./scripts/refresh.sh build" >> "%LOG%" 2>&1
-if errorlevel 1 ( echo [FAIL] build >> "%LOG%" & goto :fail )
+echo [step] self-healing build + validate + promote (refresh_safe.py) >> "%LOG%"
+REM refresh_safe.py: build -> validate -> on failure DIAGNOSE + auto-fix + rebuild,
+REM then promote CSVs to MDG_LANDING. Only fails (errorlevel 1) if it cannot heal,
+REM and then it logs the exact manual fix. Set MDG_REPULL_CMD to your data-pull so
+REM known issues (e.g. a dropped Knowify page) self-correct hands-free.
+set "MDG_LANDING=%LANDING%"
+if defined REPULL_CMD set "MDG_REPULL_CMD=%REPULL_CMD%"
+python "%REPO%\scripts\refresh_safe.py" >> "%LOG%" 2>&1
+if errorlevel 1 ( echo [FAIL] could not heal - NOT promoting; see exact fix in log >> "%LOG%" & goto :fail )
 
-echo [step] validate >> "%LOG%"
-python "%REPO%\scripts\validate_refresh.py" >> "%LOG%" 2>&1
-if errorlevel 1 ( echo [FAIL] validation gate - NOT promoting CSVs >> "%LOG%" & goto :fail )
-
-echo [step] promote CSVs to landing folder >> "%LOG%"
-if not exist "%LANDING%" mkdir "%LANDING%"
-copy /Y "%REPO%\data\*.csv" "%LANDING%\" >> "%LOG%" 2>&1
-if errorlevel 1 ( echo [FAIL] copy to landing >> "%LOG%" & goto :fail )
-
-echo [DONE] refresh succeeded - Power BI scheduled refresh will pick up the new CSVs >> "%LOG%"
+echo [DONE] refresh valid and promoted - Power BI scheduled refresh will pick up the new CSVs >> "%LOG%"
 echo SUCCESS - see %LOG%
 exit /b 0
 

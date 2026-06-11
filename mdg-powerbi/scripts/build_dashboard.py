@@ -229,7 +229,7 @@ for r in month_rows:
 # 3. Knowify jobs -> Fact_WIP + Dim_Job + Dim_PM
 # ---------------------------------------------------------------------------
 print("Parsing Knowify jobs (AJR)...")
-job_files = ["knowify_jobs_active.json", "knowify_jobs_p2.json", "knowify_jobs_p3.json", "knowify_jobs_p4.json"]
+job_files = sorted(os.path.basename(p) for p in glob.glob(os.path.join(RAW, "knowify_jobs_*.json")))
 jobs = []
 seen = set()
 for jf in job_files:
