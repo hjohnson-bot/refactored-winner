@@ -43,16 +43,22 @@ params = rd("Param_Cash.csv")
 recon = json.load(open(os.path.join(DATA, "_reconciliation.json")))
 AS_OF = recon["as_of"]
 
-# ---- Tableau-style palette ----
-FONT="Trebuchet MS"                       # Tableau's UI typeface (Segoe UI fallback on render)
-INK="2A2A2A"; SUBINK="6B7785"; RULE="D7DBDD"; PANEL="F4F6F8"; HEADER="E8EBEE"; WHITE="FFFFFF"
-# Tableau 10 categorical
-BLUE="4E79A7"; ORANGE="F28E2B"; RED="E15759"; TEAL="76B7B2"; GREEN="59A14F"
-YELLOW="EDC948"; PURPLE="B07AA1"; PINK="FF9DA7"; BROWN="9C755F"; GRAYM="BAB0AC"
-# semantic + back-compat aliases (inline usages adopt the Tableau scheme automatically)
-GOOD=GREEN; BAD=RED; WARN=ORANGE
-NAVY="31435F"; NAVY2=BLUE; LIGHT=PANEL; GREY=SUBINK; AMBER=ORANGE
-DIV_COLORS={"TI":BLUE,"MF":ORANGE,"DW":PURPLE,"EN":GREEN,"UN":GRAYM}
+# ---- Dark, restrained dashboard palette (3-color discipline: accent / neutral / base) ----
+FONT="Segoe UI"
+BASE="15171F"      # base background
+CARD="1E222D"      # card surface
+CARD2="262B38"     # header / elevated surface
+RULE="313747"      # hairline borders
+ACCENT="029CF5"    # the ONE emphasis color
+NEUTRAL="6E7585"   # all non-highlighted data
+INK="FFFFFF"; SUBINK="9AA3B2"           # text: primary / muted label
+GOOD="35C77F"; BAD="FF6B6B"; WARN="F4B740"
+WHITE="FFFFFF"
+# back-compat aliases — inline fills/text across the sheets adopt the dark scheme
+NAVY=CARD2; NAVY2=CARD2; TEAL=ACCENT; ORANGE=NEUTRAL; PURPLE=NEUTRAL
+GREEN=GOOD; RED=BAD; AMBER=WARN; LIGHT=CARD; GREY=SUBINK; HEADER=CARD2
+# divisions: accent for the lead, grayscale ramp for the rest (no rainbow)
+DIV_COLORS={"TI":ACCENT,"MF":"4F8FC7","DW":NEUTRAL,"EN":"515967","UN":"3A4150"}
 
 thin=Side(style="thin",color=RULE)
 border=Border(left=thin,right=thin,top=thin,bottom=thin)
@@ -61,36 +67,38 @@ def money(cell): cell.number_format='#,##0'
 def money2(cell): cell.number_format='$#,##0'
 def pct(cell): cell.number_format='0.0%'
 
+from openpyxl.chart.shapes import GraphicalProperties
+from openpyxl.drawing.line import LineProperties
+
 wb=Workbook()
 
-def sheet(title, tab=BLUE):
+def sheet(title, tab=ACCENT):
     ws=wb.create_sheet(title)
     ws.sheet_properties.tabColor=tab
     ws.sheet_view.showGridLines=False
     return ws
 
 def title_block(ws, title, sub):
-    # Tableau worksheet header: white ground, dark title, blue accent rule under the subtitle
+    # Dark header: base ground, white title, muted subtitle, accent rule
     ws.merge_cells("A1:N1"); c=ws["A1"]
-    c.value=title; c.font=Font(name=FONT,size=18,bold=True,color=INK); c.fill=fill(WHITE)
+    c.value=title; c.font=Font(name=FONT,size=18,bold=True,color=INK); c.fill=fill(BASE)
     c.alignment=Alignment(vertical="center",horizontal="left",indent=1)
     ws.row_dimensions[1].height=32
     ws.merge_cells("A2:N2"); s=ws["A2"]
-    s.value=sub; s.font=Font(name=FONT,size=10,color=SUBINK); s.fill=fill(WHITE)
+    s.value=sub; s.font=Font(name=FONT,size=10,color=SUBINK); s.fill=fill(BASE)
     s.alignment=Alignment(vertical="center",horizontal="left",indent=1)
     ws.row_dimensions[2].height=17
-    accent=Side(style="medium",color=BLUE)
+    accent=Side(style="medium",color=ACCENT)
     for col in range(1,15):
-        cc=ws.cell(row=2,column=col)
-        cc.border=Border(bottom=accent)
+        ws.cell(row=2,column=col).border=Border(bottom=accent)
 
-def hdr(ws,row,cols,startcol=1,fillc=HEADER):
-    # Tableau crosstab header: light-gray ground, dark bold labels, thin rule
+def hdr(ws,row,cols,startcol=1,fillc=CARD2):
+    # Quiet header: elevated dark ground, muted-gray labels, hairline rule
     for i,h in enumerate(cols):
         cell=ws.cell(row=row,column=startcol+i,value=h)
-        cell.font=Font(name=FONT,bold=True,color=INK,size=10); cell.fill=fill(fillc)
+        cell.font=Font(name=FONT,bold=True,color=SUBINK,size=9); cell.fill=fill(fillc)
         cell.alignment=Alignment(horizontal="center",vertical="center",wrap_text=True)
-        cell.border=border
+        cell.border=Border(bottom=Side(style="thin",color=RULE))
     ws.row_dimensions[row].height=26
 
 # ===========================================================================
@@ -149,28 +157,26 @@ ws.sheet_view.showGridLines=False
 title_block(ws,"MIDWEST DESIGN GROUP — Executive Command Center",
             f"CEO / CFO view  •  Live QuickBooks + Knowify  •  As of {AS_OF}  •  All figures real, reconciled to source")
 
-def _ban(ws,col,label,value,fmt,sub,color=None,r0=4,vsize=18):
-    # Tableau BAN tile: white card, small gray label, big number, left colored accent.
-    accent=color or BLUE; vcolor=color or INK
-    left=Side(style="medium",color=accent); edge=Side(style="thin",color=RULE)
+def _ban(ws,col,label,value,fmt,sub,color=None,r0=4,vsize=20):
+    # KPI card (BAN): dark card, muted uppercase label, big white number, colored delta line.
+    vcolor=color or INK; edge=Side(style="thin",color=RULE)
     ws.merge_cells(start_row=r0,start_column=col,end_row=r0,end_column=col+1)
-    c=ws.cell(row=r0,column=col,value=label); c.font=Font(name=FONT,bold=True,size=9,color=SUBINK)
-    c.fill=fill(WHITE); c.alignment=Alignment(horizontal="left",vertical="center",indent=1)
-    ws.cell(row=r0,column=col+1).fill=fill(WHITE)
+    c=ws.cell(row=r0,column=col,value=label.upper()); c.font=Font(name=FONT,bold=True,size=8,color=SUBINK)
+    c.fill=fill(CARD); c.alignment=Alignment(horizontal="left",vertical="center",indent=1)
+    ws.cell(row=r0,column=col+1).fill=fill(CARD)
     ws.merge_cells(start_row=r0+1,start_column=col,end_row=r0+2,end_column=col+1)
     v=ws.cell(row=r0+1,column=col,value=value); v.font=Font(name=FONT,bold=True,size=vsize,color=vcolor)
-    v.alignment=Alignment(horizontal="left",vertical="center",indent=1); v.number_format=fmt; v.fill=fill(WHITE)
-    ws.cell(row=r0+2,column=col).fill=fill(WHITE); ws.cell(row=r0+1,column=col+1).fill=fill(WHITE); ws.cell(row=r0+2,column=col+1).fill=fill(WHITE)
+    v.alignment=Alignment(horizontal="left",vertical="center",indent=1); v.number_format=fmt; v.fill=fill(CARD)
+    ws.cell(row=r0+2,column=col).fill=fill(CARD); ws.cell(row=r0+1,column=col+1).fill=fill(CARD); ws.cell(row=r0+2,column=col+1).fill=fill(CARD)
     ws.merge_cells(start_row=r0+3,start_column=col,end_row=r0+3,end_column=col+1)
-    s=ws.cell(row=r0+3,column=col,value=sub); s.font=Font(name=FONT,size=8,color=SUBINK)
-    s.alignment=Alignment(horizontal="left",vertical="center",indent=1)
-    # card outline + left accent
+    s=ws.cell(row=r0+3,column=col,value=sub); s.font=Font(name=FONT,bold=bool(color),size=8,color=(color or SUBINK))
+    s.alignment=Alignment(horizontal="left",vertical="center",indent=1); s.fill=fill(CARD)
+    ws.cell(row=r0+3,column=col+1).fill=fill(CARD)
     for rr in range(r0,r0+4):
         for cc in (col,col+1):
             cell=ws.cell(row=rr,column=cc)
-            top=edge if rr==r0 else None; bot=edge if rr==r0+3 else None
-            lft=left if cc==col else None; rgt=edge if cc==col+1 else None
-            cell.border=Border(top=top,bottom=bot,left=lft,right=rgt)
+            cell.border=Border(top=edge if rr==r0 else None, bottom=edge if rr==r0+3 else None,
+                               left=edge if cc==col else None, right=edge if cc==col+1 else None)
 
 def kpi(ws,col,label,value,fmt,sub,color=None):
     _ban(ws,col,label,value,fmt,sub,color,r0=4,vsize=18)
@@ -634,8 +640,54 @@ if os.path.exists(_jrev):
     ws.freeze_panes = "B5"
     ws.conditional_formatting.add(f"G5:G{r-1}", DataBarRule(start_type="min", end_type="max", color=TEAL))
 
-# ---- Tableau font pass: normalize every populated cell to the DS typeface ----
-from copy import copy as _copy
+# ---- Dark-theme pass: paint presentation sheets, flip dark text to light, de-junk charts ----
+PRES={"Command Center","P&L","Division Performance","Project Tracker","WIP & Profit Fade",
+      "AR Aging","AP Aging","Cash & Liquidity","Balance Sheet","Data Health","Job Revenue 2026"}
+KEEP={c.upper() for c in (ACCENT,NEUTRAL,GOOD,BAD,WARN,SUBINK,INK,WHITE,"4F8FC7","515967","3A4150")}
+def _rgb6(color):
+    rgb=getattr(color,"rgb",None)
+    return rgb[-6:].upper() if isinstance(rgb,str) else None
+for _ws in wb.worksheets:
+    if _ws.title not in PRES:
+        continue
+    maxr=_ws.max_row; maxc=max(_ws.max_column,14)
+    for rr in range(1,maxr+4):
+        for cc in range(1,maxc+2):
+            cell=_ws.cell(row=rr,column=cc)
+            if cell.fill is None or cell.fill.patternType is None:   # paint empty cells with the base
+                cell.fill=fill(BASE)
+            if _rgb6(cell.font.color) not in KEEP:                   # flip black/dark text to white
+                f0=cell.font
+                cell.font=Font(name=f0.name,size=f0.size,bold=f0.bold,italic=f0.italic,color=INK,underline=f0.underline)
+    for ch in getattr(_ws,"_charts",[]):                            # remove chart junk + recolor on-palette
+        is_line=ch.__class__.__name__.startswith("Line")
+        pal=[ACCENT,NEUTRAL,GOOD,"4F8FC7"]
+        for i,s in enumerate(ch.series):
+            gp=GraphicalProperties()
+            col=pal[i%len(pal)]
+            if is_line: gp.line=LineProperties(solidFill=col,w=26000)
+            else: gp.solidFill=col
+            s.graphicalProperties=gp
+        try:
+            from openpyxl.chart.text import RichText
+            from openpyxl.drawing.text import (Paragraph, ParagraphProperties,
+                                               CharacterProperties)
+            _lt=lambda: RichText(p=[Paragraph(pPr=ParagraphProperties(
+                defRPr=CharacterProperties(solidFill=SUBINK)), endParaRPr=CharacterProperties(solidFill=SUBINK))])
+            ch.graphical_properties=GraphicalProperties(solidFill=BASE)        # chart area = base
+            ch.plot_area.graphicalProperties=GraphicalProperties(solidFill=CARD)  # plot = card
+            for ax in (ch.x_axis, ch.y_axis):
+                ax.majorGridlines=None
+                ax.txPr=_lt()
+                ax.spPr=GraphicalProperties(ln=LineProperties(solidFill=RULE))
+            if ch.title is not None:
+                try: ch.title.tx.rich.p[0].pPr=ParagraphProperties(defRPr=CharacterProperties(solidFill=INK,b=True))
+                except Exception: pass
+        except Exception:
+            try: ch.y_axis.majorGridlines=None
+            except Exception: pass
+
+# ---- font pass: normalize every populated cell to the DS typeface ----
 for _ws in wb.worksheets:
     for _row in _ws.iter_rows():
         for _c in _row:

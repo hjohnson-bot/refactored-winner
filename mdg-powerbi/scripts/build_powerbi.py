@@ -226,15 +226,15 @@ with open(os.path.join(PBI,"powerquery_all.m"),"w",encoding="utf-8") as fh:
 print("wrote powerquery_all.m")
 
 # theme
-theme={"name":"MDG Executive (Tableau)",
- "dataColors":["#4E79A7","#F28E2B","#E15759","#76B7B2","#59A14F","#EDC948","#B07AA1","#FF9DA7","#9C755F","#BAB0AC"],
- "background":"#FFFFFF","foreground":"#2A2A2A","tableAccent":"#4E79A7",
- "good":"#59A14F","neutral":"#F28E2B","bad":"#E15759",
+theme={"name":"MDG Executive (Dark)",
+ "dataColors":["#029CF5","#6E7585","#4F8FC7","#515967","#3A4150","#35C77F","#FF6B6B","#F4B740"],
+ "background":"#15171F","foreground":"#FFFFFF","tableAccent":"#029CF5",
+ "good":"#35C77F","neutral":"#6E7585","bad":"#FF6B6B",
  "textClasses":{
-   "title":{"fontFace":"Trebuchet MS","fontSize":14,"color":"#2A2A2A"},
-   "header":{"fontFace":"Trebuchet MS","fontSize":12,"color":"#2A2A2A"},
-   "label":{"fontFace":"Segoe UI","fontSize":10,"color":"#2A2A2A"},
-   "callout":{"fontFace":"Trebuchet MS","fontSize":28,"color":"#2A2A2A"}}}
+   "title":{"fontFace":"Segoe UI Semibold","fontSize":14,"color":"#FFFFFF"},
+   "header":{"fontFace":"Segoe UI","fontSize":12,"color":"#9AA3B2"},
+   "label":{"fontFace":"Segoe UI","fontSize":10,"color":"#FFFFFF"},
+   "callout":{"fontFace":"Segoe UI Semibold","fontSize":28,"color":"#FFFFFF"}}}
 with open(os.path.join(PBI,"MDG_Theme.json"),"w",encoding="utf-8") as fh:
     json.dump(theme,fh,indent=2)
 print("wrote MDG_Theme.json")

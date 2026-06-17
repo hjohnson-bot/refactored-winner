@@ -58,12 +58,12 @@ def write_csv(name, header, rows):
 # ---------------------------------------------------------------------------
 # Division mapping  (Knowify ClassName / QB account-name  ->  canonical key)
 # ---------------------------------------------------------------------------
-DIVISIONS = [   # Tableau 10 palette
-    ("TI", "Tenant Improvement", 1, "#4E79A7"),
-    ("MF", "Multi-Family",       2, "#F28E2B"),
-    ("DW", "Drywall",            3, "#B07AA1"),
-    ("EN", "Engineering",        4, "#59A14F"),
-    ("UN", "Unallocated",        9, "#BAB0AC"),
+DIVISIONS = [   # restrained: one accent + grayscale ramp (no rainbow)
+    ("TI", "Tenant Improvement", 1, "#029CF5"),
+    ("MF", "Multi-Family",       2, "#4F8FC7"),
+    ("DW", "Drywall",            3, "#6E7585"),
+    ("EN", "Engineering",        4, "#515967"),
+    ("UN", "Unallocated",        9, "#3A4150"),
 ]
 def div_from_class(name):
     n = (name or "").lower()

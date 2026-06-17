@@ -1,43 +1,41 @@
 {
-  "name": "MDG Executive (Tableau)",
+  "name": "MDG Executive (Dark)",
   "dataColors": [
-    "#4E79A7",
-    "#F28E2B",
-    "#E15759",
-    "#76B7B2",
-    "#59A14F",
-    "#EDC948",
-    "#B07AA1",
-    "#FF9DA7",
-    "#9C755F",
-    "#BAB0AC"
+    "#029CF5",
+    "#6E7585",
+    "#4F8FC7",
+    "#515967",
+    "#3A4150",
+    "#35C77F",
+    "#FF6B6B",
+    "#F4B740"
   ],
-  "background": "#FFFFFF",
-  "foreground": "#2A2A2A",
-  "tableAccent": "#4E79A7",
-  "good": "#59A14F",
-  "neutral": "#F28E2B",
-  "bad": "#E15759",
+  "background": "#15171F",
+  "foreground": "#FFFFFF",
+  "tableAccent": "#029CF5",
+  "good": "#35C77F",
+  "neutral": "#6E7585",
+  "bad": "#FF6B6B",
   "textClasses": {
     "title": {
-      "fontFace": "Trebuchet MS",
+      "fontFace": "Segoe UI Semibold",
       "fontSize": 14,
-      "color": "#2A2A2A"
+      "color": "#FFFFFF"
     },
     "header": {
-      "fontFace": "Trebuchet MS",
+      "fontFace": "Segoe UI",
       "fontSize": 12,
-      "color": "#2A2A2A"
+      "color": "#9AA3B2"
     },
     "label": {
       "fontFace": "Segoe UI",
       "fontSize": 10,
-      "color": "#2A2A2A"
+      "color": "#FFFFFF"
     },
     "callout": {
-      "fontFace": "Trebuchet MS",
+      "fontFace": "Segoe UI Semibold",
       "fontSize": 28,
-      "color": "#2A2A2A"
+      "color": "#FFFFFF"
     }
   }
 }

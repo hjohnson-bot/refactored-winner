@@ -1,6 +1,6 @@
 DivKey,Division,Sort,Color
-TI,Tenant Improvement,1,#4E79A7
-MF,Multi-Family,2,#F28E2B
-DW,Drywall,3,#B07AA1
-EN,Engineering,4,#59A14F
-UN,Unallocated,9,#BAB0AC
+TI,Tenant Improvement,1,#029CF5
+MF,Multi-Family,2,#4F8FC7
+DW,Drywall,3,#6E7585
+EN,Engineering,4,#515967
+UN,Unallocated,9,#3A4150
