@@ -1,17 +1,17 @@
 Account,Section,Amount,AsOfDate
-Cash,Assets,-1181880.81,2026-06-09
-Accounts Receivable,Assets,10490161.86,2026-06-09
-Retainage Receivable,Assets,3181101.43,2026-06-09
-Drywall Inventory,Assets,518780.41,2026-06-09
-WIP Underbillings,Assets,2640146.9,2026-06-09
-Other Current Assets (net),Assets,36956.94,2026-06-09
-Fixed Assets,Assets,710982.72,2026-06-09
-Other Assets,Assets,2223043.34,2026-06-09
-Accounts Payable,Liabilities,3807524.75,2026-06-09
-Credit Cards,Liabilities,27648.15,2026-06-09
-Line of Credit (Forum 0874),Liabilities,4399830.67,2026-06-09
-CapX Line of Credit (Forum 1708),Liabilities,333834.01,2026-06-09
-WIP Overbillings,Liabilities,1094708.76,2026-06-09
-Other Current Liabilities (net),Liabilities,2685167.28,2026-06-09
-Long-term Liabilities,Liabilities,8372.29,2026-06-09
-Total Equity,Equity,6262206.88,2026-06-09
+Cash,Assets,-54623.3,2026-06-17
+Accounts Receivable,Assets,12986875.87,2026-06-17
+Retainage Receivable,Assets,3136194.46,2026-06-17
+Drywall Inventory,Assets,593395.59,2026-06-17
+WIP Underbillings,Assets,2889941.58,2026-06-17
+Other Current Assets (net),Assets,82113.84,2026-06-17
+Fixed Assets,Assets,694113.61,2026-06-17
+Other Assets,Assets,2223043.34,2026-06-17
+Accounts Payable,Liabilities,3655333.94,2026-06-17
+Credit Cards,Liabilities,15836.29,2026-06-17
+Line of Credit (Forum 0874),Liabilities,5440076.95,2026-06-17
+CapX Line of Credit (Forum 1708),Liabilities,333834.01,2026-06-17
+WIP Overbillings,Liabilities,1651664.83,2026-06-17
+Other Current Liabilities (net),Liabilities,2747267.42,2026-06-17
+Long-term Liabilities,Liabilities,8372.29,2026-06-17
+Total Equity,Equity,8698669.26,2026-06-17

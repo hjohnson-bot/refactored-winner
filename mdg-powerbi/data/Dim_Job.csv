@@ -1,42 +1,47 @@
 Job,ProjectId,DivKey,PMName,Customer,Status,ContractType,City,State,DateActive,StartDate,EndDate
+DS.2026.2440 Liberty Assisted Living 0612,2902164,UN,(Unassigned),Flores Drywall and Remodeling LLC,ACTIVE,FIXED_PRICE,,IN,2026-06-16,2026-06-12,
+2026.1059 Westfield Community Schools,2894730,UN,Dustin Hurt,"LTB Construction, Inc.",ACTIVE,FIXED_PRICE,,,2026-06-11,2026-06-15,
+2026.1058 Patch McCordsville Building 1,2893583,UN,Spencer Anderson,Patch Development,ACTIVE,FIXED_PRICE_WITH_AIA_BILLING,McCordsville,IN,2026-06-11,,
+DS.2026.2439 2335 Treesdale Circle,2889499,DW,(Unassigned),Precision Dry Wall,ACTIVE,FIXED_PRICE,,IN,2026-06-09,2026-06-08,
+DS.2026.2438 10806 McPherson St,2888259,DW,(Unassigned),Precision Dry Wall,ACTIVE,FIXED_PRICE,,IN,2026-06-09,2026-06-04,
+DS.2026.2437 970 Starkey Ave,2888192,DW,(Unassigned),Precision Dry Wall,ACTIVE,FIXED_PRICE,,IN,2026-06-09,2026-06-03,
 MDG Warehouse Demising Wall,2887165,UN,(Unassigned),MDG Real Estate LLC,ACTIVE,FIXED_PRICE,Noblesville,IN,2026-06-08,2026-06-08,
-DS.2026.2436 25 Harper Estates,2887151,UN,(Unassigned),Flores Drywall and Remodeling LLC,ACTIVE,FIXED_PRICE,,IN,2026-06-08,2026-06-01,
-DS.2026.2435 21 Harper Estates,2887141,UN,(Unassigned),Flores Drywall and Remodeling LLC,ACTIVE,FIXED_PRICE,,IN,2026-06-08,2026-06-01,
-DS.2026.2434 19 Harper Estates,2887107,UN,(Unassigned),Flores Drywall and Remodeling LLC,ACTIVE,FIXED_PRICE,,IN,2026-06-08,2026-06-01,
-DS.2026.2433 Liberty Assisted Living 0529,2872036,UN,(Unassigned),Flores Drywall and Remodeling LLC,ACTIVE,FIXED_PRICE,,IN,2026-06-01,2026-05-29,
-DS.2026.2432 Liberty Assisted LIving 0528,2872017,UN,(Unassigned),Flores Drywall and Remodeling LLC,ACTIVE,FIXED_PRICE,,IN,2026-06-01,2026-05-28,
-DS.2026.2431 123 Centre Place,2872004,UN,(Unassigned),Flores Drywall and Remodeling LLC,ACTIVE,FIXED_PRICE,,IN,2026-06-01,2026-05-28,
-DS.2026.2430 119 Centre Place,2871958,UN,(Unassigned),Flores Drywall and Remodeling LLC,ACTIVE,FIXED_PRICE,,IN,2026-06-01,2026-05-28,
-DS.2026.2429 108 Centre Place,2871926,UN,(Unassigned),Flores Drywall and Remodeling LLC,ACTIVE,FIXED_PRICE,,IN,2026-06-01,2026-05-28,
-DS.2026.2428 9 Centre Place,2871859,UN,(Unassigned),Flores Drywall and Remodeling LLC,ACTIVE,FIXED_PRICE,,IN,2026-06-01,2026-05-28,
-DS.2026.2427 Dapp Garage,2863766,UN,(Unassigned),Flores Drywall and Remodeling LLC,ACTIVE,FIXED_PRICE,,IN,2026-05-27,2026-05-26,
-DS.2026.2426 121 Centre Place,2863755,UN,(Unassigned),Flores Drywall and Remodeling LLC,ACTIVE,FIXED_PRICE,,IN,2026-05-27,2026-05-22,
-DS.2026.2425 14 Parks,2863752,UN,(Unassigned),Flores Drywall and Remodeling LLC,ACTIVE,FIXED_PRICE,,IN,2026-05-27,2026-05-22,
-DS.2026.2424 10566 Coppergate,2863728,UN,(Unassigned),Precision Dry Wall,ACTIVE,FIXED_PRICE,,IN,2026-05-27,2026-05-22,
-DS.2026.2423 10816 McPherson St,2863715,UN,(Unassigned),Precision Dry Wall,ACTIVE,FIXED_PRICE,,IN,2026-05-27,2026-05-21,
-DS.2026.2422 10814 McPherson St,2863703,UN,(Unassigned),Precision Dry Wall,ACTIVE,FIXED_PRICE,,IN,2026-05-27,2026-05-21,
-DS.2026.2421 Flores Ohio Job,2863678,UN,(Unassigned),Flores Drywall and Remodeling LLC,ACTIVE,FIXED_PRICE,,IN,2026-05-27,2026-05-20,
-DS.2026.2420 7508 Central Ave,2852408,UN,(Unassigned),Precision Dry Wall,ACTIVE,FIXED_PRICE,,IN,2026-05-20,2026-05-18,
-DS.2026.2419 120 Centre Place,2852375,UN,(Unassigned),Flores Drywall and Remodeling LLC,ACTIVE,FIXED_PRICE,,IN,2026-05-20,2026-05-14,
-DS.2026.2418 118 Centre Place,2844284,UN,(Unassigned),Flores Drywall and Remodeling LLC,ACTIVE,FIXED_PRICE,,IN,2026-05-15,2026-05-13,
-DS.2026.2417 117 Centre Place,2844272,UN,(Unassigned),Flores Drywall and Remodeling LLC,ACTIVE,FIXED_PRICE,,IN,2026-05-15,2026-05-13,
-DS.2026.2416 52 Centre Place,2844253,UN,(Unassigned),Flores Drywall and Remodeling LLC,ACTIVE,FIXED_PRICE,,IN,2026-05-15,2026-05-13,
-DS.2026.2415 10826 McPherson St,2844241,UN,(Unassigned),Precision Dry Wall,ACTIVE,FIXED_PRICE,,IN,2026-05-15,2026-05-15,
-DS.2026.2414 10824 McPherson St,2844222,UN,(Unassigned),Precision Dry Wall,ACTIVE,FIXED_PRICE,,IN,2026-05-15,2026-05-13,
-DS.2026.2413 Precision Pickup 0501,2834059,UN,(Unassigned),Precision Dry Wall,ACTIVE,FIXED_PRICE,,IN,2026-05-11,2026-05-01,
-DS.2026.2412 10732 Heaven Cove Way,2834016,UN,(Unassigned),Precision Dry Wall,ACTIVE,FIXED_PRICE,,IN,2026-05-11,2026-05-05,
-DS.2026.2411 Clark Remodel,2818141,UN,(Unassigned),Flores Drywall and Remodeling LLC,ACTIVE,FIXED_PRICE,,IN,2026-05-01,2026-04-30,
-2026.1055 Primo - Indy 5,2810234,UN,(Unassigned),Sulak General Contractors,ACTIVE,FIXED_PRICE_WITH_AIA_BILLING,Greenwood,IN,2026-05-29,,
+DS.2026.2436 25 Harper Estates,2887151,DW,(Unassigned),Flores Drywall and Remodeling LLC,ACTIVE,FIXED_PRICE,,IN,2026-06-08,2026-06-01,
+DS.2026.2435 21 Harper Estates,2887141,DW,(Unassigned),Flores Drywall and Remodeling LLC,ACTIVE,FIXED_PRICE,,IN,2026-06-08,2026-06-01,
+DS.2026.2434 19 Harper Estates,2887107,DW,(Unassigned),Flores Drywall and Remodeling LLC,ACTIVE,FIXED_PRICE,,IN,2026-06-08,2026-06-01,
+DS.2026.2433 Liberty Assisted Living 0529,2872036,DW,(Unassigned),Flores Drywall and Remodeling LLC,ACTIVE,FIXED_PRICE,,IN,2026-06-01,2026-05-29,
+DS.2026.2432 Liberty Assisted LIving 0528,2872017,DW,(Unassigned),Flores Drywall and Remodeling LLC,ACTIVE,FIXED_PRICE,,IN,2026-06-01,2026-05-28,
+DS.2026.2431 123 Centre Place,2872004,DW,(Unassigned),Flores Drywall and Remodeling LLC,ACTIVE,FIXED_PRICE,,IN,2026-06-01,2026-05-28,
+DS.2026.2430 119 Centre Place,2871958,DW,(Unassigned),Flores Drywall and Remodeling LLC,ACTIVE,FIXED_PRICE,,IN,2026-06-01,2026-05-28,
+DS.2026.2429 108 Centre Place,2871926,DW,(Unassigned),Flores Drywall and Remodeling LLC,ACTIVE,FIXED_PRICE,,IN,2026-06-01,2026-05-28,
+DS.2026.2428 9 Centre Place,2871859,DW,(Unassigned),Flores Drywall and Remodeling LLC,ACTIVE,FIXED_PRICE,,IN,2026-06-01,2026-05-28,
+DS.2026.2427 Dapp Garage,2863766,DW,(Unassigned),Flores Drywall and Remodeling LLC,ACTIVE,FIXED_PRICE,,IN,2026-05-27,2026-05-26,
+DS.2026.2426 121 Centre Place,2863755,DW,(Unassigned),Flores Drywall and Remodeling LLC,ACTIVE,FIXED_PRICE,,IN,2026-05-27,2026-05-22,
+DS.2026.2425 14 Parks,2863752,DW,(Unassigned),Flores Drywall and Remodeling LLC,ACTIVE,FIXED_PRICE,,IN,2026-05-27,2026-05-22,
+DS.2026.2424 10566 Coppergate,2863728,DW,(Unassigned),Precision Dry Wall,ACTIVE,FIXED_PRICE,,IN,2026-05-27,2026-05-22,
+DS.2026.2423 10816 McPherson St,2863715,DW,(Unassigned),Precision Dry Wall,ACTIVE,FIXED_PRICE,,IN,2026-05-27,2026-05-21,
+DS.2026.2422 10814 McPherson St,2863703,DW,(Unassigned),Precision Dry Wall,ACTIVE,FIXED_PRICE,,IN,2026-05-27,2026-05-21,
+DS.2026.2421 Flores Ohio Job,2863678,DW,(Unassigned),Flores Drywall and Remodeling LLC,ACTIVE,FIXED_PRICE,,IN,2026-05-27,2026-05-20,
+DS.2026.2420 7508 Central Ave,2852408,DW,(Unassigned),Precision Dry Wall,ACTIVE,FIXED_PRICE,,IN,2026-05-20,2026-05-18,
+DS.2026.2419 120 Centre Place,2852375,DW,(Unassigned),Flores Drywall and Remodeling LLC,ACTIVE,FIXED_PRICE,,IN,2026-05-20,2026-05-14,
+DS.2026.2418 118 Centre Place,2844284,DW,(Unassigned),Flores Drywall and Remodeling LLC,ACTIVE,FIXED_PRICE,,IN,2026-05-15,2026-05-13,
+DS.2026.2417 117 Centre Place,2844272,DW,(Unassigned),Flores Drywall and Remodeling LLC,ACTIVE,FIXED_PRICE,,IN,2026-05-15,2026-05-13,
+DS.2026.2416 52 Centre Place,2844253,DW,(Unassigned),Flores Drywall and Remodeling LLC,ACTIVE,FIXED_PRICE,,IN,2026-05-15,2026-05-13,
+DS.2026.2415 10826 McPherson St,2844241,DW,(Unassigned),Precision Dry Wall,ACTIVE,FIXED_PRICE,,IN,2026-05-15,2026-05-15,
+DS.2026.2414 10824 McPherson St,2844222,DW,(Unassigned),Precision Dry Wall,ACTIVE,FIXED_PRICE,,IN,2026-05-15,2026-05-13,
+DS.2026.2413 Precision Pickup 0501,2834059,DW,(Unassigned),Precision Dry Wall,ACTIVE,FIXED_PRICE,,IN,2026-05-11,2026-05-01,
+DS.2026.2412 10732 Heaven Cove Way,2834016,DW,(Unassigned),Precision Dry Wall,ACTIVE,FIXED_PRICE,,IN,2026-05-11,2026-05-05,
+DS.2026.2411 Clark Remodel,2818141,DW,(Unassigned),Flores Drywall and Remodeling LLC,ACTIVE,FIXED_PRICE,,IN,2026-05-01,2026-04-30,
 2026.1053 Lot 32 Vacant TI,2803284,TI,Spencer Anderson,Holladay Construction Group,ACTIVE,FIXED_PRICE_WITH_AIA_BILLING,Indianapolis,IN,2026-05-06,2026-05-20,2026-07-16
 DS.2026.2410 Courtyards of Russell Oaks 113,2796562,DW,(Unassigned),Big Dawg Drywall,ACTIVE,FIXED_PRICE,,IN,2026-04-21,2026-04-17,
-DS.2026.2409 Precision Pickup 0410,2796526,UN,(Unassigned),Precision Dry Wall,ACTIVE,FIXED_PRICE,,,2026-04-21,2026-04-10,
+DS.2026.2409 Precision Pickup 0410,2796526,DW,(Unassigned),Precision Dry Wall,ACTIVE,FIXED_PRICE,,,2026-04-21,2026-04-10,
 DS.2026.2408 Courtyards of Westfield 107,2782708,DW,(Unassigned),Big Dawg Drywall,ACTIVE,FIXED_PRICE,,,2026-04-14,2026-04-13,
 DS.2026.2407 Courtyards of Russel Oaks 126,2782668,DW,(Unassigned),Big Dawg Drywall,ACTIVE,FIXED_PRICE,,IN,2026-04-14,2026-04-08,
 DS.2026.2406 Premier Custom Homes Quote,2763556,UN,(Unassigned),Premier Custom Homes,ACTIVE,FIXED_PRICE,,,2026-04-09,2026-04-06,
 DS.2026.2405 21569 Anchor Bay Drive,2762554,DW,(Unassigned),Precision Dry Wall,ACTIVE,FIXED_PRICE,,IN,2026-04-03,2026-04-03,
 2026.1051 Park 130 Building 8,2761732,TI,Spencer Anderson,"The Peterson Company, LLC",ACTIVE,FIXED_PRICE_WITH_AIA_BILLING,Lebanon,IN,2026-05-06,2026-08-01,2026-11-01
 DS.2026.2404 Flores Sandhu Res,2759560,DW,(Unassigned),Flores Drywall and Remodeling LLC,ACTIVE,FIXED_PRICE,,IN,2026-04-02,2026-03-31,
-DS.2026.2403 Big Dawg Pickup 0327,2750306,UN,(Unassigned),Big Dawg Drywall,ACTIVE,FIXED_PRICE,,,2026-03-30,2026-03-27,
+DS.2026.2403 Big Dawg Pickup 0327,2750306,DW,(Unassigned),Big Dawg Drywall,ACTIVE,FIXED_PRICE,,,2026-03-30,2026-03-27,
 DS.2026.2402 Courtyards of Cielo Ranch 17,2750278,DW,(Unassigned),Big Dawg Drywall,ACTIVE,FIXED_PRICE,,IN,2026-03-30,2026-03-27,
 DS.2026.2401 Flores Kenneland,2750126,DW,(Unassigned),Flores Drywall and Remodeling LLC,ACTIVE,FIXED_PRICE,,IN,2026-03-30,2026-03-20,2026-03-20
 DS.2026.2400 Courtyards of Russell Oaks 115,2733362,DW,(Unassigned),Big Dawg Drywall,ACTIVE,FIXED_PRICE,,IN,2026-03-20,2026-03-19,
@@ -51,7 +56,7 @@ DS.2026.2395 Courtyards of Westfield 103,2702940,DW,(Unassigned),Big Dawg Drywal
 2026.1043 Deer Creek Building 1,2701256,TI,Tommy Cohoat,Patch Development,ACTIVE,FIXED_PRICE_WITH_AIA_BILLING,Noblesville,IN,2026-03-10,2026-03-09,
 DS.2026.2394 5778 Marvie Drive,2686749,DW,(Unassigned),Flores Drywall and Remodeling LLC,ACTIVE,FIXED_PRICE,,IN,2026-02-25,2026-02-24,
 DS.2026.2393 Precision Pickup 0216,2684477,DW,(Unassigned),Precision Dry Wall,ACTIVE,FIXED_PRICE,,IN,2026-02-24,2026-02-16,
-2026.1056 Senator Banks Office,2681998,UN,Dustin Hurt,"BW Facility Management, LLC",ACTIVE,FIXED_PRICE_WITH_AIA_BILLING,Fishers,IN,2026-05-08,2026-05-08,2026-07-08
+2026.1056 Senator Banks Office,2681998,TI,Dustin Hurt,"BW Facility Management, LLC",ACTIVE,FIXED_PRICE_WITH_AIA_BILLING,Fishers,IN,2026-05-08,2026-05-08,2026-07-08
 DS.2026.2392 3705 Holiday Farms Blvd - Precision,2676832,DW,(Unassigned),Precision Dry Wall,ACTIVE,FIXED_PRICE,,IN,2026-02-19,2026-02-18,
 DS.2026.2391 0218 Jose Iracheta,2676780,UN,(Unassigned),Kjt General Construction,ACTIVE,FIXED_PRICE,,IN,2026-02-19,2026-02-18,
 DS.2026.2390 510 W Pine St,2676758,DW,(Unassigned),Precision Dry Wall,ACTIVE,FIXED_PRICE,,IN,2026-02-19,2026-02-10,
@@ -69,7 +74,7 @@ DS.2026.2382 Cohoat House,2645179,DW,(Unassigned),Mendoza,ACTIVE,FIXED_PRICE,,IN
 2026.1037 CV - Castle Rock,2644918,TI,Ben Garza,"Bischoff Construction, LLC",ACTIVE,FIXED_PRICE,Castle Rock,CO,2026-02-05,2026-02-02,
 2026.1036 Port Laredo Trade Center,2644454,TI,Ben Garza,ARCO Design/Build,ACTIVE,FIXED_PRICE_WITH_AIA_BILLING,Laredo,TX,2026-02-03,2026-02-05,
 DS.2026.2381 Hunt Addition,2640941,DW,(Unassigned),Flores Drywall and Remodeling LLC,ACTIVE,FIXED_PRICE,,IN,2026-02-02,2026-01-30,
-DS.2026.2380 Mike Valentine 0129,2637503,UN,(Unassigned),Michael Valentine,ACTIVE,FIXED_PRICE,,,2026-01-29,2026-01-29,
+DS.2026.2380 Mike Valentine 0129,2637503,DW,(Unassigned),Michael Valentine,ACTIVE,FIXED_PRICE,,,2026-01-29,2026-01-29,
 DS.2026.2379 124 S A Street,2637443,DW,(Unassigned),Flores Drywall and Remodeling LLC,ACTIVE,FIXED_PRICE,,IN,2026-01-29,2026-01-29,
 DS.2026.2378 Courtyards of Westfield 108,2637384,DW,(Unassigned),Big Dawg Drywall,ACTIVE,FIXED_PRICE,,IN,2026-01-29,2026-01-29,
 DS.2026.2377 Courtyards of Cielo Ranch 38,2637358,DW,(Unassigned),Big Dawg Drywall,ACTIVE,FIXED_PRICE,,IN,2026-01-29,2026-01-28,
@@ -84,7 +89,7 @@ DS.2026.2369 Courtyards of Westfield 111,2623780,DW,(Unassigned),Big Dawg Drywal
 DS.2026.2368 Courtyards of Russell Oaks 60,2612889,DW,(Unassigned),Big Dawg Drywall,ACTIVE,FIXED_PRICE,,IN,2026-01-16,2026-01-12,
 DS.2026.2367 Courtyards of Russell Oaks 126,2607541,DW,(Unassigned),Big Dawg Drywall,ACTIVE,FIXED_PRICE,,,2026-01-14,2026-01-12,
 DS.2026.2366 Courtyards of Cielo Ranch 15,2601418,DW,(Unassigned),Big Dawg Drywall,ACTIVE,FIXED_PRICE,,IN,2026-01-12,2026-01-08,
-DS.2026.2365 GSI Sackstedor Bloomington,2594757,UN,(Unassigned),GSI - Gregory Scott Inabnit LLC,ACTIVE,FIXED_PRICE,,,2026-01-07,2026-01-06,
+DS.2026.2365 GSI Sackstedor Bloomington,2594757,DW,(Unassigned),GSI - Gregory Scott Inabnit LLC,ACTIVE,FIXED_PRICE,,,2026-01-07,2026-01-06,
 DS.2026.2364 GSI 1-6,2594626,DW,(Unassigned),GSI - Gregory Scott Inabnit LLC,ACTIVE,FIXED_PRICE,,IN,2026-01-07,2026-01-06,
 DS.2026.2363 Courtyards of Westfield 96,2594581,DW,(Unassigned),Big Dawg Drywall,ACTIVE,FIXED_PRICE,,IN,2026-01-07,2026-01-05,
 DS.2026.2362 Courtyards of Russel Oaks 127,2589539,DW,(Unassigned),Big Dawg Drywall,ACTIVE,FIXED_PRICE,,IN,2026-01-05,2026-01-02,
@@ -98,7 +103,7 @@ Priority Way Office,2579439,UN,(Unassigned),MDG Real Estate LLC,ACTIVE,FIXED_PRI
 DS.2025.2356 Courtyards of Ceilo Ranch 127,2579268,DW,(Unassigned),Big Dawg Drywall,ACTIVE,FIXED_PRICE,,IN,2025-12-23,2025-12-22,
 DS.2025.2355 Courtyards of Ceilo Ranch 36,2579242,DW,(Unassigned),Big Dawg Drywall,ACTIVE,FIXED_PRICE,,IN,2025-12-23,2025-12-22,
 DS.2025.2354 GSI Triplex,2575648,DW,(Unassigned),GSI - Gregory Scott Inabnit LLC,ACTIVE,FIXED_PRICE,,IN,2025-12-19,2025-12-11,
-DS.2025.2353 Courtyards of Westfield 95,2575437,UN,(Unassigned),Big Dawg Drywall,ACTIVE,FIXED_PRICE,,,2025-12-19,2025-12-16,
+DS.2025.2353 Courtyards of Westfield 95,2575437,DW,(Unassigned),Big Dawg Drywall,ACTIVE,FIXED_PRICE,,,2025-12-19,2025-12-16,
 DS.2025.2352 Charlstown Manor Lot 86,2569388,DW,(Unassigned),GSI - Gregory Scott Inabnit LLC,ACTIVE,FIXED_PRICE,,IN,2025-12-16,2025-12-15,
 DS.2025.2351 Courtyards of Cielo Ranch 1,2569308,DW,(Unassigned),Big Dawg Drywall,ACTIVE,FIXED_PRICE,,IN,2025-12-16,2025-12-15,
 DS.2025.2350 Courtyards of Westfield 95,2563362,DW,(Unassigned),Big Dawg Drywall,ACTIVE,FIXED_PRICE,,IN,2025-12-12,2025-12-11,
@@ -114,6 +119,7 @@ DS.2025.2341 8677 Bash St,2548714,DW,(Unassigned),Flores Drywall and Remodeling 
 DS.2025.2340 1573 Chatham Drive,2545375,DW,(Unassigned),Iracheta Drywall,ACTIVE,FIXED_PRICE,,,2025-12-02,2025-11-18,
 2025.1028 Northpoint,2545100,TI,Trevor Anderson,Patch Development,ACTIVE,FIXED_PRICE_WITH_AIA_BILLING,Westfield,IN,2025-12-29,2025-12-22,
 MF.2026.1044 Everstead Apartments,2541102,MF,Ben Garza,Grand Contracting,ACTIVE,FIXED_PRICE_WITH_AIA_BILLING,Whitestown,IN,2026-04-29,2026-05-04,
+2025.1026 HNTB Buildout (Salesforce Tower),2541097,TI,Ben Garza,Skender Construction of Indiana LLC,ACTIVE,FIXED_PRICE_WITH_AIA_BILLING,Indianapolis,IN,2025-12-08,2025-12-08,2026-05-15
 2026.1034 Stella's Ice Cream Shop,2541065,TI,Shawn Welcher,"The ACTS Collaborative, LLC",ACTIVE,FIXED_PRICE_WITH_AIA_BILLING,Westfield,IN,2026-02-27,2026-02-20,
 DS.2025.2339 1952 N Central Ave,2540055,DW,(Unassigned),"Pro Fix Drywaller, LLC",ACTIVE,FIXED_PRICE,,IN,2025-11-26,2025-11-26,
 DS.2025.2338 7655 W Julia Drive,2538950,DW,(Unassigned),GSI - Gregory Scott Inabnit LLC,ACTIVE,FIXED_PRICE,,IN,2025-11-25,2025-11-24,
@@ -190,8 +196,9 @@ DS.2025.2262 Rushville 2 house pre rock,2426804,DW,(Unassigned),GSI - Gregory Sc
 DS.2025.2258 Cavalier Res,2426715,DW,(Unassigned),Flores Drywall and Remodeling LLC,ACTIVE,FIXED_PRICE,,IN,2025-09-18,2025-09-15,
 DS.2025.2257 Courtyards of Russell Oaks 116,2426691,DW,(Unassigned),Big Dawg Drywall,ACTIVE,FIXED_PRICE,,,2025-09-22,2025-09-15,
 2025.1016 WBP Lot C,2422257,TI,Tommy Cohoat,Patch Development,ACTIVE,FIXED_PRICE_WITH_AIA_BILLING,Noblesville,IN,2025-09-16,2025-10-27,2025-12-31
+2025.1013 Lucas Oil Corydon,2414762,TI,Shawn Welcher,Meyer Najem,ACTIVE,FIXED_PRICE_WITH_AIA_BILLING,Corydon,IN,2025-10-03,2025-09-26,
 2025.1012 Airport South Logistics Bldg. B,2412851,TI,Spencer Anderson,ARCO Design/Build,ACTIVE,FIXED_PRICE_WITH_AIA_BILLING,Shepherdsville,KY,2025-09-12,2026-01-12,2026-01-30
-2025.1011 Airport South Logistics Bldg. A,2412835,TI,Spencer Anderson,ARCO Design/Build,ACTIVE,FIXED_PRICE_WITH_AIA_BILLING,Shepherdsville,KY,2025-09-12,2026-02-18,2026-02-22
+2025.1011 Airport South Logistics Bldg. A,2412835,TI,Spencer Anderson,ARCO Design/Build,ACTIVE,FIXED_PRICE_WITH_AIA_BILLING,Shepherdsville,KY,2025-09-12,2026-07-01,2026-09-01
 DS.2025.2243 5689 N Ohio Ridge Rd,2400949,DW,(Unassigned),GSI - Gregory Scott Inabnit LLC,ACTIVE,FIXED_PRICE,,IN,2025-09-02,2025-08-29,
 DS.2025.2241 6915 SR 550,2400575,DW,(Unassigned),Total Drywall Solutions Inc,ACTIVE,FIXED_PRICE,,IN,2025-09-02,2025-08-29,
 2025.1027 Indy Boat Co,2394684,TI,Trevor Anderson,"Raley Wake, LLC",ACTIVE,FIXED_PRICE_WITH_AIA_BILLING,Pendleton,IN,2026-01-05,2026-03-15,
@@ -258,7 +265,6 @@ MF.2025.963 Home 2 Suites,2009228,MF,Kelden Tyson,Meyer Najem,ACTIVE,FIXED_PRICE
 DS.2024.1656 Juan Lugo 1202 NC,1989297,DW,(Unassigned),"Lugo Contracting, LLC",ACTIVE,FIXED_PRICE,,,2024-12-26,2024-12-02,2024-12-02
 MF.2024.941 Oak Trace,1956827,MF,Dustin Hurt,"Westfield Community Management, LLC",ACTIVE,FIXED_PRICE_WITH_AIA_BILLING,Westfield,IN,2024-10-25,2024-10-28,2025-03-31
 MF.2025.972 Union Flats - Fishers,1900804,MF,Ben Garza,Thompson Thrift Construction,ACTIVE,FIXED_PRICE_WITH_AIA_BILLING,Fishers,IN,2025-06-27,2025-12-08,2026-12-31
-2025.981 Fort Ben - Foamcraft,1881543,TI,Trevor Anderson,"The Peterson Company, LLC",ACTIVE,FIXED_PRICE_WITH_AIA_BILLING,Indianapolis,IN,2025-05-07,2025-08-28,2026-01-28
 2024.929 DEEM Warehouse,1870076,TI,Tommy Cohoat,"DEEM, LLC",ACTIVE,FIXED_PRICE,Indianapolis,IN,2024-09-10,2024-08-12,2025-11-03
 MF.2024.924 Monon Trail Elementary,1854607,MF,Dustin Hurt,"LTB Construction, Inc.",ACTIVE,COST_PLUS,Westfield,IN,2024-08-07,2024-07-29,2024-08-09
 2024.920 SMC Mezzanine HVAC,1842206,TI,Trevor Anderson,"DEEM, LLC",ACTIVE,FIXED_PRICE,Noblesville,IN,2024-08-01,2024-07-26,2024-07-31
@@ -275,16 +281,17 @@ MF.2024.927 Jeffersonian Apartments,1779189,MF,Ben Garza,Stenz Corp,ACTIVE,FIXED
 DS.2024 8503 N 600 W Fountaintown QUOTE,1772287,DW,(Unassigned),TC Indy,ACTIVE,FIXED_PRICE,,,2024-05-31,2024-05-31,2024-05-31
 1234.567 Test Job,1735717,UN,(Unassigned),Sample Client,ACTIVE,FIXED_PRICE_WITH_AIA_BILLING,Indianapolis,IN,2024-11-04,,
 MF.2024.894 Hamilton County Jail Boiler Mechanical Pad,1724469,MF,Dustin Hurt,"DEEM, LLC",ACTIVE,FIXED_PRICE,,,2024-04-24,2024-06-25,2024-08-16
+MF.2024.892 The Lofts at Headwaters Park,1710251,MF,Ben Garza,"J.C. Hart Company, Inc.",ACTIVE,FIXED_PRICE_WITH_AIA_BILLING,Fort Wayne,IN,2024-09-09,2024-08-01,2026-05-15
 2025.967 Bunge Project Flex,1702352,TI,Ben Garza,"Bunge North America (East), LLC",ACTIVE,FIXED_PRICE_WITH_AIA_BILLING,Morristown,IN,2025-04-10,2025-03-01,2026-01-30
 DS.2024.1263 5188 Brighton Dr Whitestown,1683585,DW,(Unassigned),Promasters Drywall and Painting (Brian Figueroa),ACTIVE,FIXED_PRICE,,,2024-03-21,2024-03-21,2024-03-21
-2024.912 Upland Columbus,1669494,UN,Tommy Cohoat,"Bischoff Construction, LLC",ACTIVE,FIXED_PRICE,Columbus,IN,2024-07-09,2024-06-25,2024-10-31
+2024.912 Upland Columbus,1669494,TI,Tommy Cohoat,"Bischoff Construction, LLC",ACTIVE,FIXED_PRICE,Columbus,IN,2024-07-09,2024-06-25,2024-10-31
 DS.2024.1234 Pro Masters,1658900,DW,(Unassigned),Promasters Drywall and Painting (Brian Figueroa),ACTIVE,FIXED_PRICE,,,2024-02-29,2024-02-29,2024-02-29
 MF.2024.928 Holliday Farms Assisted Living - Zionsville,1607003,MF,Ben Garza,"Avenue Construction, Inc.",ACTIVE,FIXED_PRICE_WITH_AIA_BILLING,Zionsville,IN,2025-01-30,2025-03-01,2026-03-31
 DS.2023.1141 Latitude Apartments,1577552,DW,(Unassigned),Velocity Builders,ACTIVE,FIXED_PRICE,,,2023-12-13,2023-12-13,2024-04-30
 2023.847 Ireland Home,1551637,TI,Tommy Cohoat,"Bischoff Construction, LLC",ACTIVE,FIXED_PRICE,Jeffersonville,IN,2023-11-15,2023-11-15,
 2024.874 Noblesville HS Academic Addition & Renovation,1539188,TI,Trevor Anderson,"The Peterson Company, LLC",ACTIVE,FIXED_PRICE_WITH_AIA_BILLING,Noblesville,IN,2024-03-12,2024-04-01,2025-12-31
 MF.2023.840 Paint at 804 14th Ave Nashville,1536145,MF,Kelden Tyson,ZMX Inc.,ACTIVE,FIXED_PRICE_WITH_AIA_BILLING,Nashville,TN,2024-10-24,2024-10-24,2025-08-29
-2023.816 Upland Broad Ripple,1464707,UN,Tommy Cohoat,"Bischoff Construction, LLC",ACTIVE,FIXED_PRICE,Indianapolis,IN,2023-09-19,2023-08-18,
+2023.816 Upland Broad Ripple,1464707,TI,Tommy Cohoat,"Bischoff Construction, LLC",ACTIVE,FIXED_PRICE,Indianapolis,IN,2023-09-19,2023-08-18,
 2023.839 Hamilton County National Guard Readiness Center,1461734,TI,Tommy Cohoat,"Patterson Horth, Inc.",ACTIVE,FIXED_PRICE_WITH_AIA_BILLING,Atlanta,IN,2023-11-13,2024-06-04,2025-12-31
 2024.869 Prospect Lake Clean Water Center,1423094,TI,Cole Garriott,"Patterson Horth, Inc.",ACTIVE,FIXED_PRICE_WITH_AIA_BILLING,Fort Lauderdale,FL,2024-04-16,2025-01-20,2025-11-28
 2023.795 Upland Brewery Clay Terrace,1407590,TI,Tommy Cohoat,"Bischoff Construction, LLC",ACTIVE,FIXED_PRICE,Carmel,IN,2023-07-18,2023-07-05,

@@ -99,11 +99,12 @@ Travel - Fuel,P&L,Operating Expense,Travel,ALL,97
 Travel - Meals,P&L,Operating Expense,Travel,ALL,98
 Uncategorized Expense,P&L,Operating Expense,Expenses,ALL,99
 Utilities,P&L,Operating Expense,Expenses,ALL,100
-Wages,P&L,Operating Expense,Payroll Expenses,ALL,101
-Credit Card Rewards,P&L,Other Income,Other Income,ALL,102
-Interest Earned,P&L,Other Income,Other Income,ALL,103
-Other Income,P&L,Other Income,Other Income,ALL,104
-Subletter Rent Income,P&L,Other Income,Other Income,ALL,105
-Subletter Utility Income,P&L,Other Income,Other Income,ALL,106
-Vendor Rebate Income,P&L,Other Income,Other Income,ALL,107
-Gain or Loss on Assets,P&L,Other Expense,Other Expenses,ALL,108
+Wage Accrual,P&L,Operating Expense,Bonus & Commission Expense,ALL,101
+Wages,P&L,Operating Expense,Payroll Expenses,ALL,102
+Credit Card Rewards,P&L,Other Income,Other Income,ALL,103
+Interest Earned,P&L,Other Income,Other Income,ALL,104
+Other Income,P&L,Other Income,Other Income,ALL,105
+Subletter Rent Income,P&L,Other Income,Other Income,ALL,106
+Subletter Utility Income,P&L,Other Income,Other Income,ALL,107
+Vendor Rebate Income,P&L,Other Income,Other Income,ALL,108
+Gain or Loss on Assets,P&L,Other Expense,Other Expenses,ALL,109

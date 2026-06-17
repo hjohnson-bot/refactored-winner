@@ -1,6 +1,6 @@
 Param,Value,Note
 LOC Limit,8000000.0,USER INPUT — Forum line-of-credit commitment (not in QuickBooks)
 Advance Rate,0.8,USER INPUT — borrowing-base advance rate on eligible AR
-Eligible AR,10490161.860000001,Defaulted to total trade AR; refine to eligible basis
-LOC Drawn,4399830.67,"REAL — QuickBooks balance sheet, Forum LOC (0874)"
-Cash Balance,-1181880.81,REAL — QuickBooks balance sheet cash
+Eligible AR,12986875.870000001,Defaulted to total trade AR; refine to eligible basis
+LOC Drawn,5440076.95,"REAL — QuickBooks balance sheet, Forum LOC (0874)"
+Cash Balance,-54623.3,REAL — QuickBooks balance sheet cash

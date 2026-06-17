@@ -1,15 +1,2 @@
-{
-  "periodStart": "2026-01-01", "periodEnd": "2026-06-09",
-  "operatingActivities": 537698.35, "investingActivities": 212852.10,
-  "financingActivities": -1651536.77, "netCashIncrease": -900986.32,
-  "cashAtBeginning": -243937.55, "cashAtEnd": -1144923.87,
-  "netIncome": 2904853.02,
-  "workingCapital": {
-    "accountsPayableChange": 1371240.71, "accountsReceivableChange": -1748151.51,
-    "retainageReceivableChange": -742291.55, "inventoryDrywallChange": 159371.63,
-    "wipOverbillingsChange": -1120729.02, "wipUnderbillingsChange": -1730880.81,
-    "accruedBonusesChange": 280000.00, "accruedPayrollChange": -149000.00,
-    "accruedCommissionsChange": -39048.85,
-    "lineOfCreditDraw": 1477740.21, "lineOfCreditCapXChange": -27802.23
-  }
-}
+{"periodStart":"2026-01-01","periodEnd":"2026-06-17","operatingActivities":1708994.16,"investingActivities":212852.10,"financingActivities":-1650418.17,"netCashIncrease":271428.09,"cashAtBeginning":-243937.55,"cashAtEnd":27490.54,"netIncome":5340196.80,
+"workingCapital":{"accountsPayableChange":1219049.90,"accountsReceivableChange":-4244865.52,"retainageReceivableChange":-697384.58,"inventoryDrywallChange":84756.45,"wipOverbillingsChange":-563772.95,"wipUnderbillingsChange":-1980675.49,"accruedBonusesChange":280000.00,"accruedPayrollChange":-94000.00,"accruedCommissionsChange":-39048.85,"lineOfCreditDraw":2517986.49,"lineOfCreditCapXChange":-27802.23}}
