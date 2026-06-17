@@ -226,15 +226,15 @@ with open(os.path.join(PBI,"powerquery_all.m"),"w",encoding="utf-8") as fh:
 print("wrote powerquery_all.m")
 
 # theme
-theme={"name":"MDG Executive",
- "dataColors":["#0F1F3D","#1E3A5F","#4F98A3","#F0883E","#A371F7","#3FB950","#5DBBC8","#D29922"],
- "background":"#FFFFFF","foreground":"#0F1F3D","tableAccent":"#1E3A5F",
- "good":"#3FB950","neutral":"#D29922","bad":"#F85149",
+theme={"name":"MDG Executive (Tableau)",
+ "dataColors":["#4E79A7","#F28E2B","#E15759","#76B7B2","#59A14F","#EDC948","#B07AA1","#FF9DA7","#9C755F","#BAB0AC"],
+ "background":"#FFFFFF","foreground":"#2A2A2A","tableAccent":"#4E79A7",
+ "good":"#59A14F","neutral":"#F28E2B","bad":"#E15759",
  "textClasses":{
-   "title":{"fontFace":"Barlow","fontSize":14,"color":"#0F1F3D"},
-   "header":{"fontFace":"Barlow","fontSize":12,"color":"#1E3A5F"},
-   "label":{"fontFace":"Aptos","fontSize":10,"color":"#0F1F3D"},
-   "callout":{"fontFace":"Barlow","fontSize":28,"color":"#0F1F3D"}}}
+   "title":{"fontFace":"Trebuchet MS","fontSize":14,"color":"#2A2A2A"},
+   "header":{"fontFace":"Trebuchet MS","fontSize":12,"color":"#2A2A2A"},
+   "label":{"fontFace":"Segoe UI","fontSize":10,"color":"#2A2A2A"},
+   "callout":{"fontFace":"Trebuchet MS","fontSize":28,"color":"#2A2A2A"}}}
 with open(os.path.join(PBI,"MDG_Theme.json"),"w",encoding="utf-8") as fh:
     json.dump(theme,fh,indent=2)
 print("wrote MDG_Theme.json")

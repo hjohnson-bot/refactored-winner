@@ -43,12 +43,18 @@ params = rd("Param_Cash.csv")
 recon = json.load(open(os.path.join(DATA, "_reconciliation.json")))
 AS_OF = recon["as_of"]
 
-# ---- palette ----
-NAVY="0F1F3D"; NAVY2="1E3A5F"; TEAL="4F98A3"; ORANGE="F0883E"; PURPLE="A371F7"
-GREEN="3FB950"; RED="F85149"; AMBER="D29922"; LIGHT="EAF0F6"; WHITE="FFFFFF"; GREY="8B949E"
-DIV_COLORS={"TI":TEAL,"MF":ORANGE,"DW":PURPLE,"EN":GREEN,"UN":GREY}
+# ---- Tableau-style palette ----
+FONT="Trebuchet MS"                       # Tableau's UI typeface (Segoe UI fallback on render)
+INK="2A2A2A"; SUBINK="6B7785"; RULE="D7DBDD"; PANEL="F4F6F8"; HEADER="E8EBEE"; WHITE="FFFFFF"
+# Tableau 10 categorical
+BLUE="4E79A7"; ORANGE="F28E2B"; RED="E15759"; TEAL="76B7B2"; GREEN="59A14F"
+YELLOW="EDC948"; PURPLE="B07AA1"; PINK="FF9DA7"; BROWN="9C755F"; GRAYM="BAB0AC"
+# semantic + back-compat aliases (inline usages adopt the Tableau scheme automatically)
+GOOD=GREEN; BAD=RED; WARN=ORANGE
+NAVY="31435F"; NAVY2=BLUE; LIGHT=PANEL; GREY=SUBINK; AMBER=ORANGE
+DIV_COLORS={"TI":BLUE,"MF":ORANGE,"DW":PURPLE,"EN":GREEN,"UN":GRAYM}
 
-thin=Side(style="thin",color="D0D7DE")
+thin=Side(style="thin",color=RULE)
 border=Border(left=thin,right=thin,top=thin,bottom=thin)
 def fill(c): return PatternFill("solid",fgColor=c)
 def money(cell): cell.number_format='#,##0'
@@ -57,26 +63,32 @@ def pct(cell): cell.number_format='0.0%'
 
 wb=Workbook()
 
-def sheet(title, tab=NAVY):
+def sheet(title, tab=BLUE):
     ws=wb.create_sheet(title)
     ws.sheet_properties.tabColor=tab
     ws.sheet_view.showGridLines=False
     return ws
 
 def title_block(ws, title, sub):
+    # Tableau worksheet header: white ground, dark title, blue accent rule under the subtitle
     ws.merge_cells("A1:N1"); c=ws["A1"]
-    c.value=title; c.font=Font(name="Calibri",size=20,bold=True,color=WHITE); c.fill=fill(NAVY)
+    c.value=title; c.font=Font(name=FONT,size=18,bold=True,color=INK); c.fill=fill(WHITE)
     c.alignment=Alignment(vertical="center",horizontal="left",indent=1)
-    ws.row_dimensions[1].height=34
+    ws.row_dimensions[1].height=32
     ws.merge_cells("A2:N2"); s=ws["A2"]
-    s.value=sub; s.font=Font(size=10,italic=True,color=WHITE); s.fill=fill(NAVY2)
+    s.value=sub; s.font=Font(name=FONT,size=10,color=SUBINK); s.fill=fill(WHITE)
     s.alignment=Alignment(vertical="center",horizontal="left",indent=1)
-    ws.row_dimensions[2].height=18
+    ws.row_dimensions[2].height=17
+    accent=Side(style="medium",color=BLUE)
+    for col in range(1,15):
+        cc=ws.cell(row=2,column=col)
+        cc.border=Border(bottom=accent)
 
-def hdr(ws,row,cols,startcol=1,fillc=NAVY2):
+def hdr(ws,row,cols,startcol=1,fillc=HEADER):
+    # Tableau crosstab header: light-gray ground, dark bold labels, thin rule
     for i,h in enumerate(cols):
         cell=ws.cell(row=row,column=startcol+i,value=h)
-        cell.font=Font(bold=True,color=WHITE,size=10); cell.fill=fill(fillc)
+        cell.font=Font(name=FONT,bold=True,color=INK,size=10); cell.fill=fill(fillc)
         cell.alignment=Alignment(horizontal="center",vertical="center",wrap_text=True)
         cell.border=border
     ws.row_dimensions[row].height=26
@@ -137,23 +149,31 @@ ws.sheet_view.showGridLines=False
 title_block(ws,"MIDWEST DESIGN GROUP — Executive Command Center",
             f"CEO / CFO view  •  Live QuickBooks + Knowify  •  As of {AS_OF}  •  All figures real, reconciled to source")
 
-def kpi(ws,col,label,value,fmt,sub,color=NAVY):
-    r0=4
+def _ban(ws,col,label,value,fmt,sub,color=None,r0=4,vsize=18):
+    # Tableau BAN tile: white card, small gray label, big number, left colored accent.
+    accent=color or BLUE; vcolor=color or INK
+    left=Side(style="medium",color=accent); edge=Side(style="thin",color=RULE)
     ws.merge_cells(start_row=r0,start_column=col,end_row=r0,end_column=col+1)
-    c=ws.cell(row=r0,column=col,value=label); c.font=Font(bold=True,size=9,color=WHITE)
-    c.fill=fill(color); c.alignment=Alignment(horizontal="center");
-    ws.cell(row=r0,column=col+1).fill=fill(color)
+    c=ws.cell(row=r0,column=col,value=label); c.font=Font(name=FONT,bold=True,size=9,color=SUBINK)
+    c.fill=fill(WHITE); c.alignment=Alignment(horizontal="left",vertical="center",indent=1)
+    ws.cell(row=r0,column=col+1).fill=fill(WHITE)
     ws.merge_cells(start_row=r0+1,start_column=col,end_row=r0+2,end_column=col+1)
-    v=ws.cell(row=r0+1,column=col,value=value); v.font=Font(bold=True,size=18,color=NAVY)
-    v.alignment=Alignment(horizontal="center",vertical="center"); v.number_format=fmt
-    v.fill=fill(LIGHT)
-    ws.cell(row=r0+2,column=col).fill=fill(LIGHT); ws.cell(row=r0+1,column=col+1).fill=fill(LIGHT); ws.cell(row=r0+2,column=col+1).fill=fill(LIGHT)
+    v=ws.cell(row=r0+1,column=col,value=value); v.font=Font(name=FONT,bold=True,size=vsize,color=vcolor)
+    v.alignment=Alignment(horizontal="left",vertical="center",indent=1); v.number_format=fmt; v.fill=fill(WHITE)
+    ws.cell(row=r0+2,column=col).fill=fill(WHITE); ws.cell(row=r0+1,column=col+1).fill=fill(WHITE); ws.cell(row=r0+2,column=col+1).fill=fill(WHITE)
     ws.merge_cells(start_row=r0+3,start_column=col,end_row=r0+3,end_column=col+1)
-    s=ws.cell(row=r0+3,column=col,value=sub); s.font=Font(size=8,italic=True,color=GREY)
-    s.alignment=Alignment(horizontal="center")
+    s=ws.cell(row=r0+3,column=col,value=sub); s.font=Font(name=FONT,size=8,color=SUBINK)
+    s.alignment=Alignment(horizontal="left",vertical="center",indent=1)
+    # card outline + left accent
     for rr in range(r0,r0+4):
         for cc in (col,col+1):
-            ws.cell(row=rr,column=cc).border=border
+            cell=ws.cell(row=rr,column=cc)
+            top=edge if rr==r0 else None; bot=edge if rr==r0+3 else None
+            lft=left if cc==col else None; rgt=edge if cc==col+1 else None
+            cell.border=Border(top=top,bottom=bot,left=lft,right=rgt)
+
+def kpi(ws,col,label,value,fmt,sub,color=None):
+    _ban(ws,col,label,value,fmt,sub,color,r0=4,vsize=18)
 
 y=agg["YTD2026"]
 kpi(ws,1,"YTD REVENUE",y["rev"],'$#,##0',"through "+AS_OF)
@@ -165,18 +185,8 @@ kpi(ws,11,"BACKLOG",backlog,'$#,##0',f"{len(wip)} active jobs")
 kpi(ws,13,"LOC USE",loc_util,'0.0%',f"${loc_drawn:,.0f} drawn", RED if loc_util>=0.9 else (AMBER if loc_util>=0.75 else GREEN))
 
 # Forecast cards rendered in the second band (kpi2) below.
-def kpi2(ws,col,label,value,fmt,sub,color=NAVY,r0=10):
-    ws.merge_cells(start_row=r0,start_column=col,end_row=r0,end_column=col+1)
-    c=ws.cell(row=r0,column=col,value=label); c.font=Font(bold=True,size=9,color=WHITE)
-    c.fill=fill(color); c.alignment=Alignment(horizontal="center"); ws.cell(row=r0,column=col+1).fill=fill(color)
-    ws.merge_cells(start_row=r0+1,start_column=col,end_row=r0+2,end_column=col+1)
-    v=ws.cell(row=r0+1,column=col,value=value); v.font=Font(bold=True,size=16,color=NAVY)
-    v.alignment=Alignment(horizontal="center",vertical="center"); v.number_format=fmt; v.fill=fill(LIGHT)
-    ws.cell(row=r0+2,column=col).fill=fill(LIGHT); ws.cell(row=r0+1,column=col+1).fill=fill(LIGHT); ws.cell(row=r0+2,column=col+1).fill=fill(LIGHT)
-    ws.merge_cells(start_row=r0+3,start_column=col,end_row=r0+3,end_column=col+1)
-    s=ws.cell(row=r0+3,column=col,value=sub); s.font=Font(size=8,italic=True,color=GREY); s.alignment=Alignment(horizontal="center")
-    for rr in range(r0,r0+4):
-        for cc in (col,col+1): ws.cell(row=rr,column=cc).border=border
+def kpi2(ws,col,label,value,fmt,sub,color=None,r0=10):
+    _ban(ws,col,label,value,fmt,sub,color,r0=r0,vsize=16)
 kpi2(ws,1,"2026 FORECAST REV",fc_rev,'$#,##0',f"run-rate ×{months_done}mo complete")
 kpi2(ws,3,"2026 FORECAST NI",fc_ni,'$#,##0',f"{fc_ni/fc_rev*100 if fc_rev else 0:.1f}% margin")
 kpi2(ws,5,"MANAGED JOBS",len(managed),'0',f"of {len(wip)} active")
@@ -623,6 +633,17 @@ if os.path.exists(_jrev):
     for col in "BCDEFG": ws.column_dimensions[col].width = 14
     ws.freeze_panes = "B5"
     ws.conditional_formatting.add(f"G5:G{r-1}", DataBarRule(start_type="min", end_type="max", color=TEAL))
+
+# ---- Tableau font pass: normalize every populated cell to the DS typeface ----
+from copy import copy as _copy
+for _ws in wb.worksheets:
+    for _row in _ws.iter_rows():
+        for _c in _row:
+            if _c.value is None and _c.fill.fgColor.rgb in (None, "00000000"):
+                continue
+            f0=_c.font
+            _c.font=Font(name=FONT, size=f0.size, bold=f0.bold, italic=f0.italic,
+                         color=f0.color, underline=f0.underline)
 
 wb.save(OUT)
 print("Saved", OUT)
