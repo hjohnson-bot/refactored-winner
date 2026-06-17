@@ -595,6 +595,35 @@ for nm,cf in [("Fact_GL","Fact_GL.csv"),("Fact_WIP","Fact_WIP.csv"),("Fact_PL_Mo
               ("Dim_PM","Dim_PM.csv"),("Param_Cash","Param_Cash.csv")]:
     raw_sheet(nm,cf)
 
+# ===========================================================================
+# Job Revenue by Month 2026 (present only if the invoice pull produced the CSV)
+# ===========================================================================
+_jrev = os.path.join(DATA, "Job_Revenue_2026_byMonth.csv")
+if os.path.exists(_jrev):
+    from openpyxl.formatting.rule import DataBarRule
+    jr = list(csv.reader(open(_jrev)))
+    jhdr, jbody, jtot = jr[0], jr[1:-1], jr[-1]
+    ws = sheet("Job Revenue 2026", NAVY)
+    title_block(ws, "Revenue Billed by Job — 2026 (Jan–May)",
+                f"Knowify invoices by invoice date  •  {len(jbody)} jobs with 2026 revenue  •  sorted largest first")
+    hdr(ws, 4, jhdr)
+    r = 5
+    for row in jbody:
+        ws.cell(row=r, column=1, value=row[0]).border = border
+        for i in range(1, 7):
+            cell = ws.cell(row=r, column=i+1, value=float(row[i])); cell.number_format = '$#,##0'; cell.border = border
+            if i == 6: cell.font = Font(bold=True)
+        r += 1
+    ws.cell(row=r, column=1, value="TOTAL — all jobs").font = Font(bold=True, color=WHITE)
+    ws.cell(row=r, column=1).fill = fill(NAVY)
+    for i in range(1, 7):
+        cell = ws.cell(row=r, column=i+1, value=float(jtot[i])); cell.number_format = '$#,##0'
+        cell.font = Font(bold=True, color=WHITE); cell.fill = fill(NAVY); cell.border = border
+    ws.column_dimensions["A"].width = 54
+    for col in "BCDEFG": ws.column_dimensions[col].width = 14
+    ws.freeze_panes = "B5"
+    ws.conditional_formatting.add(f"G5:G{r-1}", DataBarRule(start_type="min", end_type="max", color=TEAL))
+
 wb.save(OUT)
 print("Saved", OUT)
 print(f"Sheets: {len(wb.sheetnames)} -> {wb.sheetnames}")
