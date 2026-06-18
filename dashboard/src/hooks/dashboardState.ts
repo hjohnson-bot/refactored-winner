@@ -31,7 +31,7 @@ export type ProfitFilter = "all" | "profit" | "loss" | "breakeven";
 export type Granularity = "month" | "quarter" | "year";
 
 /** Role lens used by the capacity view. */
-export type CapRole = "all" | "pm" | "foreman" | "crew";
+export type CapRole = "all" | "pm" | "foreman";
 
 /** Collapsible side panels and their open/closed state. */
 export interface PanelState {

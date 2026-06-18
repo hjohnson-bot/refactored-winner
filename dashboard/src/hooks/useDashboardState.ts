@@ -83,3 +83,6 @@ export function useDashboardState(initial?: Partial<DashboardState>) {
 
   return { state, dispatch, actions };
 }
+
+export type UseDashboardState = ReturnType<typeof useDashboardState>;
+export type DashboardActions = UseDashboardState["actions"];

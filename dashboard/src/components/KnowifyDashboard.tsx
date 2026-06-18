@@ -1,5 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useDashboardState } from '../hooks/useDashboardState';
+import type { DashboardState } from '../hooks/dashboardState';
+import JobsView from './knowify/JobsView';
+import CapacityView from './knowify/CapacityView';
+import TrendsView from './knowify/TrendsView';
 
 // ── Sample AJR Data ──────────────────────────────────────────────────────────
 const PROJECT = {
@@ -30,17 +34,12 @@ const EXPENSE_CATEGORIES = [
   { name: 'Direct Costs', amount: 50, color: '#178a6e' },
 ];
 
-const NAV_ITEMS = [
-  { label: 'Dashboard', sub: 'Project Overview', active: false },
-  { label: 'Financials', sub: 'Overview', active: true },
-  { label: 'Jobs', sub: 'Booking, Jobs & Appointments', active: false },
-  { label: 'Estimates', sub: 'Sold & Unsold Estimates', active: false },
-  { label: 'Purchasing', sub: 'Purchase Order', active: false },
-  { label: 'Technicians', sub: 'Team', active: false },
-  { label: 'Project Plan', sub: 'Tasks & Jobs', active: false },
-  { label: 'Documents', sub: 'Tasks & Jobs', active: false },
-  { label: 'Daily Log', sub: 'Daily Log', active: false },
-  { label: 'Change Orders', sub: 'Change Orders', active: false },
+// Sidebar items map directly onto the dashboard `view` state.
+const NAV_ITEMS: { label: string; sub: string; view: DashboardState['view'] }[] = [
+  { label: 'Overview', sub: 'Project Financials', view: 'overview' },
+  { label: 'Jobs', sub: 'Portfolio & Profitability', view: 'jobs' },
+  { label: 'Capacity', sub: 'Team Load', view: 'capacity' },
+  { label: 'Trends', sub: 'Performance Over Time', view: 'trends' },
 ];
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
@@ -156,7 +155,6 @@ function ExpenseBarChart({
 
 // ── Main Dashboard Component ─────────────────────────────────────────────────
 export default function KnowifyDashboard() {
-  const [activeNav, setActiveNav] = useState('Financials');
   const { state, actions } = useDashboardState({ sortKey: 'amount' });
 
   const actualMargin = FINANCIALS.actualRevenue - FINANCIALS.actualExpense;
@@ -177,7 +175,8 @@ export default function KnowifyDashboard() {
         </p>
       </div>
 
-      {/* ── Project Header ────────────────────────────────────────── */}
+      {/* ── Project Header (overview only) ────────────────────────── */}
+      {state.view === 'overview' && (
       <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 24px' }}>
         <div style={{
           display: 'flex', alignItems: 'center', backgroundColor: '#fff',
@@ -237,34 +236,43 @@ export default function KnowifyDashboard() {
           </div>
         </div>
       </div>
+      )}
 
       {/* ── Main Content Area ─────────────────────────────────────── */}
       <div style={{ maxWidth: 1200, margin: '24px auto 0', padding: '0 24px', display: 'flex', gap: 24 }}>
         {/* ── Left Sidebar Nav ──────────────────────────────────── */}
         <nav style={{ width: 180, flexShrink: 0 }}>
-          {NAV_ITEMS.map((item) => (
-            <div
-              key={item.label}
-              onClick={() => setActiveNav(item.label)}
-              style={{
-                padding: '10px 12px', cursor: 'pointer', borderRadius: 6,
-                backgroundColor: activeNav === item.label ? '#eff6ff' : 'transparent',
-                marginBottom: 2, transition: 'background-color 0.15s',
-              }}
-            >
-              <div style={{
-                fontSize: 14, fontWeight: activeNav === item.label ? 700 : 500,
-                color: activeNav === item.label ? '#2563eb' : '#374151',
-              }}>
-                {item.label}
+          {NAV_ITEMS.map((item) => {
+            const active = state.view === item.view;
+            return (
+              <div
+                key={item.view}
+                onClick={() => actions.setView(item.view)}
+                style={{
+                  padding: '10px 12px', cursor: 'pointer', borderRadius: 6,
+                  backgroundColor: active ? '#eff6ff' : 'transparent',
+                  marginBottom: 2, transition: 'background-color 0.15s',
+                }}
+              >
+                <div style={{
+                  fontSize: 14, fontWeight: active ? 700 : 500,
+                  color: active ? '#2563eb' : '#374151',
+                }}>
+                  {item.label}
+                </div>
+                <div style={{ fontSize: 11, color: '#9ca3af', marginTop: 1 }}>{item.sub}</div>
               </div>
-              <div style={{ fontSize: 11, color: '#9ca3af', marginTop: 1 }}>{item.sub}</div>
-            </div>
-          ))}
+            );
+          })}
         </nav>
 
         {/* ── Right Content ─────────────────────────────────────── */}
         <div style={{ flex: 1, minWidth: 0 }}>
+          {state.view === 'jobs' && <JobsView state={state} actions={actions} />}
+          {state.view === 'capacity' && <CapacityView state={state} actions={actions} />}
+          {state.view === 'trends' && <TrendsView state={state} actions={actions} />}
+          {state.view === 'overview' && (
+          <>
           {/* Section Title */}
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
             <div>
@@ -443,6 +451,8 @@ export default function KnowifyDashboard() {
               </div>
             </div>
           </div>
+          </>
+          )}
         </div>
       </div>
 
