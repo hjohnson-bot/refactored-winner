@@ -226,15 +226,15 @@ with open(os.path.join(PBI,"powerquery_all.m"),"w",encoding="utf-8") as fh:
 print("wrote powerquery_all.m")
 
 # theme
-theme={"name":"MDG Executive (Dark)",
- "dataColors":["#029CF5","#6E7585","#4F8FC7","#515967","#3A4150","#35C77F","#FF6B6B","#F4B740"],
- "background":"#15171F","foreground":"#FFFFFF","tableAccent":"#029CF5",
- "good":"#35C77F","neutral":"#6E7585","bad":"#FF6B6B",
+theme={"name":"MDG Executive",
+ "dataColors":["#1F4E79","#2E75B6","#6E7585","#9AA3AF","#C9D2DD","#2E7D32","#C0392B","#B7791F"],
+ "background":"#FFFFFF","foreground":"#1F2937","tableAccent":"#1F4E79",
+ "good":"#2E7D32","neutral":"#B7791F","bad":"#C0392B",
  "textClasses":{
-   "title":{"fontFace":"Segoe UI Semibold","fontSize":14,"color":"#FFFFFF"},
-   "header":{"fontFace":"Segoe UI","fontSize":12,"color":"#9AA3B2"},
-   "label":{"fontFace":"Segoe UI","fontSize":10,"color":"#FFFFFF"},
-   "callout":{"fontFace":"Segoe UI Semibold","fontSize":28,"color":"#FFFFFF"}}}
+   "title":{"fontFace":"Segoe UI Semibold","fontSize":14,"color":"#1F2937"},
+   "header":{"fontFace":"Segoe UI","fontSize":12,"color":"#1F4E79"},
+   "label":{"fontFace":"Segoe UI","fontSize":10,"color":"#1F2937"},
+   "callout":{"fontFace":"Segoe UI Semibold","fontSize":28,"color":"#1F2937"}}}
 with open(os.path.join(PBI,"MDG_Theme.json"),"w",encoding="utf-8") as fh:
     json.dump(theme,fh,indent=2)
 print("wrote MDG_Theme.json")

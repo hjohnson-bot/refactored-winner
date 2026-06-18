@@ -58,12 +58,12 @@ def write_csv(name, header, rows):
 # ---------------------------------------------------------------------------
 # Division mapping  (Knowify ClassName / QB account-name  ->  canonical key)
 # ---------------------------------------------------------------------------
-DIVISIONS = [   # restrained: one accent + grayscale ramp (no rainbow)
-    ("TI", "Tenant Improvement", 1, "#029CF5"),
-    ("MF", "Multi-Family",       2, "#4F8FC7"),
+DIVISIONS = [   # clean professional: navy lead + blue/grayscale ramp
+    ("TI", "Tenant Improvement", 1, "#1F4E79"),
+    ("MF", "Multi-Family",       2, "#2E75B6"),
     ("DW", "Drywall",            3, "#6E7585"),
-    ("EN", "Engineering",        4, "#515967"),
-    ("UN", "Unallocated",        9, "#3A4150"),
+    ("EN", "Engineering",        4, "#9AA3AF"),
+    ("UN", "Unallocated",        9, "#C9D2DD"),
 ]
 def div_from_class(name):
     n = (name or "").lower()
@@ -270,8 +270,8 @@ for r in jobs:
     pct      = num(r.get("PercCompleted"))
     pctf     = pct / 100.0
     profit_amt = num(r.get("ProfitAmount"))
-    profit_pct = num(r.get("Profit"))                 # already a %
-    proj_prof  = num(r.get("ProjectedProfit"))        # $ forecast at completion
+    profit_pct = num(r.get("Profit"))                 # current booked margin, a %
+    proj_raw   = num(r.get("ProjectedProfit"))        # Knowify ProjectedProfit is a % (not $)
     knowify_wip = num(r.get("WIP"))
     retain    = num(r.get("Retainage"))
     open_ar   = invoiced - paid
@@ -280,19 +280,23 @@ for r in jobs:
     wip_net   = earned - invoiced                     # +underbilled / -overbilled
     over      = -wip_net if wip_net < 0 else 0.0
     under     = wip_net if wip_net > 0 else 0.0
-    # Margins + profit fade (single-snapshot: forecast margin vs as-bid budget margin).
-    # Only meaningful when the job carries a real budget and contract value.
-    has_budget = budget > 0 and contract > 0
-    managed    = (pm != "(Unassigned)") and has_budget and contract >= 1000
-    est_margin  = (contract - budget) / contract if has_budget else 0.0
-    proj_margin = proj_prof / contract if contract else 0.0
-    fade        = (proj_margin - est_margin) if has_budget else 0.0
+    # Margins. Profit Fade % = forecast margin at completion - current booked margin
+    # (both from Knowify's computed percentages). ProjectedProfit == +/-100 is a
+    # Knowify placeholder for "no real forecast" -> treat fade as 0 (not eroding).
+    has_budget   = budget > 0 and contract > 0
+    managed      = (pm != "(Unassigned)") and has_budget and contract >= 1000
+    cur_margin   = profit_pct / 100.0
+    proj_margin  = proj_raw / 100.0
+    proj_dollars = proj_margin * contract
+    est_margin   = (contract - budget) / contract if has_budget else 0.0
+    forecast_ok  = abs(proj_raw) < 100.0              # exclude +/-100 placeholders
+    fade         = (proj_margin - cur_margin) if forecast_ok else 0.0
     wip_rows.append([
         AS_OF, pid, name, dk, pm, cust, r.get("Status","").replace("#",""),
         round(contract,2), round(change,2), round(invoiced,2), round(paid,2),
         round(budget,2), round(actual,2), round(pctf,4), round(earned,2),
         round(wip_net,2), round(knowify_wip,2), round(over,2), round(under,2),
-        round(profit_amt,2), round(profit_pct/100.0,4), round(proj_prof,2),
+        round(profit_amt,2), round(cur_margin,4), round(proj_dollars,2),
         round(proj_margin,4), round(est_margin,4), round(fade,4),
         round(retain,2), round(open_ar,2),
         "TRUE" if has_budget else "FALSE", "TRUE" if managed else "FALSE",

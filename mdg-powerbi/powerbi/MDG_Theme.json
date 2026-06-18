@@ -1,41 +1,41 @@
 {
-  "name": "MDG Executive (Dark)",
+  "name": "MDG Executive",
   "dataColors": [
-    "#029CF5",
+    "#1F4E79",
+    "#2E75B6",
     "#6E7585",
-    "#4F8FC7",
-    "#515967",
-    "#3A4150",
-    "#35C77F",
-    "#FF6B6B",
-    "#F4B740"
+    "#9AA3AF",
+    "#C9D2DD",
+    "#2E7D32",
+    "#C0392B",
+    "#B7791F"
   ],
-  "background": "#15171F",
-  "foreground": "#FFFFFF",
-  "tableAccent": "#029CF5",
-  "good": "#35C77F",
-  "neutral": "#6E7585",
-  "bad": "#FF6B6B",
+  "background": "#FFFFFF",
+  "foreground": "#1F2937",
+  "tableAccent": "#1F4E79",
+  "good": "#2E7D32",
+  "neutral": "#B7791F",
+  "bad": "#C0392B",
   "textClasses": {
     "title": {
       "fontFace": "Segoe UI Semibold",
       "fontSize": 14,
-      "color": "#FFFFFF"
+      "color": "#1F2937"
     },
     "header": {
       "fontFace": "Segoe UI",
       "fontSize": 12,
-      "color": "#9AA3B2"
+      "color": "#1F4E79"
     },
     "label": {
       "fontFace": "Segoe UI",
       "fontSize": 10,
-      "color": "#FFFFFF"
+      "color": "#1F2937"
     },
     "callout": {
       "fontFace": "Segoe UI Semibold",
       "fontSize": 28,
-      "color": "#FFFFFF"
+      "color": "#1F2937"
     }
   }
 }

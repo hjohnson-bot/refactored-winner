@@ -11,23 +11,25 @@ See [`RECONCILIATION.md`](RECONCILIATION.md) for every number tied back to sourc
 
 | Deliverable | Path | Use |
 |---|---|---|
-| **Excel dashboard** (open & play now) | [`output/MDG_Executive_Dashboard.xlsx`](output/MDG_Executive_Dashboard.xlsx) | 10 report sheets + 13 raw data tables. Opens anywhere; also a clean Power BI source. |
+| **Excel dashboard** (open & play now) | [`output/MDG_Executive_Dashboard.xlsx`](output/MDG_Executive_Dashboard.xlsx) | Clean, **formula-driven** workbook: 6 report sheets + labeled Data tabs. Opens anywhere; also a clean Power BI source. |
 | **Power BI kit** | [`powerbi/`](powerbi/) | `model.bim` (semantic model), `MDG_Theme.json`, `measures.dax`, `powerquery_all.m` |
 | **Star-schema data** | [`data/`](data/) | The fact/dim CSVs the model reads |
 | **Build pipeline** | [`scripts/`](scripts/) | Re-pull → rebuild everything |
 
 ### Excel workbook — sheets
-Command Center (CEO landing) · P&L · Division Performance · Project Tracker
-(profit-fade ranked) · WIP & Profit Fade (by PM) · A/R Aging · A/P Aging ·
-Cash & Liquidity · Balance Sheet · Data Health · plus `» Fact_*` / `» Dim_*`
-raw tables (formatted as Excel Tables for instant PivotTables).
+**Report sheets** (every number is a live Excel formula — SUMIFS/COUNTIFS — off the Data tabs):
+Dashboard · P&L · Projects (WIP & profit fade) · Receivables & Payables ·
+Cash & Balance Sheet · Job Revenue by Month.
+**Data tabs** (the engine, each an Excel Table): `tGL`, `tMonthly`, `tWIP`, `tAR`,
+`tAP`, `tCash`, `tBS`, `tInv` — each labeled with its source (QuickBooks vs Knowify)
+and as-of date. Edit the data (or re-run the refresh) and the report sheets recalc.
 
 ## Headline numbers (real, 2026-06-17)
 
 - YTD 2026 Revenue **$28.77M** · Gross Margin **35.6%** · Net Income **$5.34M** (18.6%)
 - Active backlog **$21.9M** across **308** active jobs (**84** managed)
 - Trade A/R **$12.99M** (+ **$3.14M** retainage) · A/P **$3.66M**
-- Cash **-$0.05M** · LOC drawn **$5.44M** · worst profit-fade under **Tommy Cohoat / Spencer Anderson**
+- Cash **-$0.05M** · LOC drawn **$5.44M** · **15** managed jobs with margin fade < -2% (forecast below booked)
 
 ## Build the Power BI file (.pbix)
 

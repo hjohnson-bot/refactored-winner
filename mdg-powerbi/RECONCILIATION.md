@@ -49,7 +49,7 @@ sub-rows that otherwise triple-count.
 | Invoiced (active) | 46,850,685.67 | Σ Invoiced |
 | Backlog (contract − invoiced) | 21,887,687.17 | |
 | Job profit $ (active) | 13,878,328.86 | Σ ProfitAmount |
-| Worst profit-fade PMs | Tommy Cohoat, Spencer Anderson | matches spec's flagged concentration |
+| Jobs with margin fade < -2% (managed) | 15 | forecast margin (Knowify ProjectedProfit %) below current booked margin; surfaced on Projects / Data - WIP |
 
 ## Balance sheet & liquidity (QuickBooks, 2026-06-17)
 
