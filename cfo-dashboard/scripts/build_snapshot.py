@@ -235,6 +235,146 @@ def compute_working_capital(cf_current, cf_prior):
     }
 
 
+def compute_revenue_projections(pl_current, pl_prior, pl_prior_2, pipeline, completed, remaining):
+    """Four near-term revenue projection methods, each with assumptions."""
+    methods = []
+
+    # 1. Run-rate (simple YTD × 12 / completed)
+    avg_monthly = pl_current["revenue"] / completed
+    methods.append({
+        "id": "run_rate",
+        "label": "Run-rate (YTD ÷ months × 12)",
+        "yearEnd": round(pl_current["revenue"] + avg_monthly * remaining, 2),
+        "assumption": f"YTD avg monthly ${avg_monthly:,.0f} continues for {remaining} months",
+        "confidence": "low",  # naive
+    })
+
+    # 2. YoY-adjusted (apply prior-year-over-2-years-back growth)
+    if pl_prior_2 and pl_prior_2["revenue"]:
+        yoy_growth = (pl_prior["revenue"] / pl_prior_2["revenue"]) - 1
+        adjusted_avg = avg_monthly * (1 + yoy_growth)
+        methods.append({
+            "id": "yoy_adjusted",
+            "label": "YoY growth-adjusted",
+            "yearEnd": round(pl_current["revenue"] + adjusted_avg * remaining, 2),
+            "assumption": f"Apply prior-year YoY growth {yoy_growth*100:+.1f}% to remaining {remaining} months",
+            "yoyGrowth": yoy_growth,
+            "confidence": "medium",
+        })
+
+    # 3. Seasonality-adjusted (use prior-year seasonality)
+    # YTD = months completed × avg monthly. For full year, apply seasonality factor
+    # = prior-year(same period) / prior-year(full). Fallback to run-rate if prior monthly data is unreliable.
+    if pl_prior and pl_prior["revenue"]:
+        # Months completed share of prior FY: completed/12 baseline. We have completed real months of pl_current.
+        # Use linear seasonality factor: assume the rest of the year mirrors prior year's monthly avg.
+        prior_avg_monthly = pl_prior["revenue"] / 12
+        seasonality_estimate = pl_current["revenue"] + prior_avg_monthly * remaining
+        methods.append({
+            "id": "seasonality_adjusted",
+            "label": "Seasonality-adjusted (prior-year monthly avg)",
+            "yearEnd": round(seasonality_estimate, 2),
+            "assumption": f"YTD actual + prior-year avg monthly ${prior_avg_monthly:,.0f} × {remaining} remaining months",
+            "confidence": "medium",
+        })
+
+    # 4. Pipeline-driven (billings cadence from open invoices)
+    if pipeline and pipeline.get("monthlyBillings"):
+        # Use full-month billings only (count > 25 invoices is a reasonable proxy)
+        full_months = [m for m in pipeline["monthlyBillings"] if m["count"] >= 25]
+        if full_months:
+            avg_monthly_billings = sum(m["billings"] for m in full_months) / len(full_months)
+            ytd_billings = pipeline.get("ytdBillings", 0)
+            year_end_billings = ytd_billings + avg_monthly_billings * remaining
+            # Convert billings → recognized revenue using the YTD ratio (accounts for WIP/retainage timing)
+            billings_to_revenue_ratio = pl_current["revenue"] / ytd_billings if ytd_billings else 1.0
+            year_end_revenue = year_end_billings * billings_to_revenue_ratio
+            methods.append({
+                "id": "pipeline_driven",
+                "label": "Pipeline-driven (open invoices billing cadence)",
+                "yearEnd": round(year_end_revenue, 2),
+                "yearEndBillings": round(year_end_billings, 2),
+                "assumption": f"Avg billings ${avg_monthly_billings:,.0f}/mo × {remaining} remaining + YTD; recognized at YTD billings→revenue ratio of {billings_to_revenue_ratio:.2f}",
+                "billingsToRevenueRatio": billings_to_revenue_ratio,
+                "ytdBillings": ytd_billings,
+                "avgMonthlyBillings": round(avg_monthly_billings, 2),
+                "confidence": "high",
+            })
+
+    if not methods:
+        return None
+    avg = sum(m["yearEnd"] for m in methods) / len(methods)
+    low = min(m["yearEnd"] for m in methods)
+    high = max(m["yearEnd"] for m in methods)
+    return {
+        "methods": methods,
+        "consensus": round(avg, 2),
+        "low": round(low, 2),
+        "high": round(high, 2),
+        "spread": round(high - low, 2),
+    }
+
+
+def compute_multi_year(pl_current, pl_prior, pl_prior_2, forecast):
+    """3-year forward projection with optimistic / base / bearish scenarios.
+
+    Anchor = year-end forecast for the current year. CAGR derived from
+    FY (n-2) → year-end forecast (n) is the base growth rate."""
+    if not pl_prior_2 or not pl_prior or not forecast.get("yearEndRevenue"):
+        return None
+    base_rev = forecast["yearEndRevenue"]
+    base_gp_pct = forecast["yearEndGrossMarginPct"]
+    base_nm_pct = forecast["yearEndNetMarginPct"]
+
+    # 2-yr CAGR from FY (n-2) → current year-end forecast
+    base_cagr = (base_rev / pl_prior_2["revenue"]) ** (1 / 2) - 1
+
+    scenarios = {
+        "bearish":   {"growth": max(0.0, base_cagr - 0.05), "gmShift": -0.02, "label": "Bearish"},
+        "base":      {"growth": base_cagr,                    "gmShift":  0.00, "label": "Base"},
+        "optimistic":{"growth": base_cagr + 0.04,             "gmShift":  0.015, "label": "Optimistic"},
+    }
+    current_year = int(forecast.get("currentYear") or 2026)
+    years_out = [current_year + 1, current_year + 2]  # +1yr, +2yr beyond current
+
+    def project_year(prev_rev, prev_gm, growth, gm_shift):
+        rev = prev_rev * (1 + growth)
+        gm = max(0.0, prev_gm + gm_shift)
+        gp = rev * gm
+        return rev, gp, gm
+
+    out = {
+        "anchor": {"year": current_year, "revenue": base_rev, "grossMarginPct": base_gp_pct, "netMarginPct": base_nm_pct},
+        "baseCagr": round(base_cagr, 4),
+        "scenarios": {},
+    }
+    for sname, s in scenarios.items():
+        years = []
+        running_rev = base_rev
+        running_gm = base_gp_pct
+        running_nm = base_nm_pct
+        for y in years_out:
+            running_rev, running_gp, running_gm = project_year(running_rev, running_gm, s["growth"], s["gmShift"])
+            # Net margin scales with GM shift (simple linear assumption)
+            running_nm = max(0.0, running_nm + s["gmShift"] * 0.7)
+            running_net = running_rev * running_nm
+            years.append({
+                "year": y,
+                "revenue": round(running_rev, 2),
+                "grossProfit": round(running_gp, 2),
+                "grossMarginPct": running_gm,
+                "netIncome": round(running_net, 2),
+                "netMarginPct": running_nm,
+            })
+        out["scenarios"][sname] = {
+            "label": s["label"],
+            "growth": round(s["growth"], 4),
+            "gmShift": s["gmShift"],
+            "years": years,
+        }
+    return out
+
+
 # ---------------------------------------------------------------------------
 # Main builder
 # ---------------------------------------------------------------------------
@@ -307,6 +447,12 @@ def build_snapshot(args):
         forecast["yearEndOperatingCash"] = None
 
     months = load_months(args.months_dir)
+    pipeline = load_json(args.pipeline) if args.pipeline and Path(args.pipeline).exists() else None
+    customers = load_json(args.customers) if args.customers and Path(args.customers).exists() else None
+
+    forecast["currentYear"] = int(args.as_of.split("-")[0])
+    projections = compute_revenue_projections(pl_current, pl_prior, pl_prior_2, pipeline, completed, remaining)
+    multi_year = compute_multi_year(pl_current, pl_prior, pl_prior_2, forecast)
 
     snapshot = {
         "company": {
@@ -330,6 +476,10 @@ def build_snapshot(args):
         },
         "workingCapital": compute_working_capital(cf_current_raw, cf_prior_raw),
         "forecast": forecast,
+        "projections": projections,
+        "multiYear": multi_year,
+        "pipeline": pipeline,
+        "customers": customers,
         "verifiedMonths": months,
         "benchmark": benchmark,
     }
@@ -355,6 +505,8 @@ def main():
     parser.add_argument("--cf-current")
     parser.add_argument("--cf-prior")
     parser.add_argument("--benchmark")
+    parser.add_argument("--pipeline", help="optional: path to pipeline.json (invoice billings cadence)")
+    parser.add_argument("--customers", help="optional: path to customers.json (top customers by sales)")
     parser.add_argument("--months-dir", default="cfo-dashboard/data/raw/months")
     parser.add_argument("--as-of", required=True)
     parser.add_argument("--out", required=True)

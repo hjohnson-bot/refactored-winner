@@ -6,7 +6,7 @@
     "state": "IN"
   },
   "asOf": "2026-05-07",
-  "generatedAt": "2026-05-07T04:02:32.164249+00:00",
+  "generatedAt": "2026-06-18T00:24:51.804946+00:00",
   "source": "QuickBooks Online (live, via QuickBooks MCP)",
   "personas": [
     {
@@ -381,7 +381,229 @@
     "yearEndGrossMarginPct": 0.2718606081952797,
     "yearEndNetMarginPct": 0.08575153307616747,
     "yearEndCash": -1103389.81,
-    "yearEndOperatingCash": 1824082.32
+    "yearEndOperatingCash": 1824082.32,
+    "currentYear": 2026
+  },
+  "projections": {
+    "methods": [
+      {
+        "id": "run_rate",
+        "label": "Run-rate (YTD \u00f7 months \u00d7 12)",
+        "yearEnd": 46504248.46,
+        "assumption": "YTD avg monthly $3,875,354 continues for 7 months",
+        "confidence": "low"
+      },
+      {
+        "id": "yoy_adjusted",
+        "label": "YoY growth-adjusted",
+        "yearEnd": 47158830.4,
+        "assumption": "Apply prior-year YoY growth +2.4% to remaining 7 months",
+        "yoyGrowth": 0.024129848541375676,
+        "confidence": "medium"
+      },
+      {
+        "id": "seasonality_adjusted",
+        "label": "Seasonality-adjusted (prior-year monthly avg)",
+        "yearEnd": 42996995.85,
+        "assumption": "YTD actual + prior-year avg monthly $3,374,318 \u00d7 7 remaining months",
+        "confidence": "medium"
+      },
+      {
+        "id": "pipeline_driven",
+        "label": "Pipeline-driven (open invoices billing cadence)",
+        "yearEnd": 52919774.6,
+        "yearEndBillings": 44902063.06,
+        "assumption": "Avg billings $4,065,858/mo \u00d7 7 remaining + YTD; recognized at YTD billings\u2192revenue ratio of 1.18",
+        "billingsToRevenueRatio": 1.1785599811616962,
+        "ytdBillings": 16441055.61,
+        "avgMonthlyBillings": 4065858.21,
+        "confidence": "high"
+      }
+    ],
+    "consensus": 47394962.33,
+    "low": 42996995.85,
+    "high": 52919774.6,
+    "spread": 9922778.75
+  },
+  "multiYear": {
+    "anchor": {
+      "year": 2026,
+      "revenue": 46504248.46,
+      "grossMarginPct": 0.2718606081952797,
+      "netMarginPct": 0.08575153307616747
+    },
+    "baseCagr": 0.0845,
+    "scenarios": {
+      "bearish": {
+        "label": "Bearish",
+        "growth": 0.0345,
+        "gmShift": -0.02,
+        "years": [
+          {
+            "year": 2027,
+            "revenue": 48109881.41,
+            "grossProfit": 12116983.99,
+            "grossMarginPct": 0.25186060819527967,
+            "netIncome": 3451957.75,
+            "netMarginPct": 0.07175153307616747
+          },
+          {
+            "year": 2028,
+            "revenue": 49770951.38,
+            "grossProfit": 11539923.06,
+            "grossMarginPct": 0.23186060819527968,
+            "netIncome": 2874348.75,
+            "netMarginPct": 0.05775153307616747
+          }
+        ]
+      },
+      "base": {
+        "label": "Base",
+        "growth": 0.0845,
+        "gmShift": 0.0,
+        "years": [
+          {
+            "year": 2027,
+            "revenue": 50435093.83,
+            "grossProfit": 13711315.28,
+            "grossMarginPct": 0.2718606081952797,
+            "netIncome": 4324886.62,
+            "netMarginPct": 0.08575153307616747
+          },
+          {
+            "year": 2028,
+            "revenue": 54698200.15,
+            "grossProfit": 14870285.96,
+            "grossMarginPct": 0.2718606081952797,
+            "netIncome": 4690454.52,
+            "netMarginPct": 0.08575153307616747
+          }
+        ]
+      },
+      "optimistic": {
+        "label": "Optimistic",
+        "growth": 0.1245,
+        "gmShift": 0.015,
+        "years": [
+          {
+            "year": 2027,
+            "revenue": 52295263.77,
+            "grossProfit": 15001451.17,
+            "grossMarginPct": 0.2868606081952797,
+            "netIncome": 5033499.31,
+            "netMarginPct": 0.09625153307616746
+          },
+          {
+            "year": 2028,
+            "revenue": 58807414.45,
+            "grossProfit": 17751641.89,
+            "grossMarginPct": 0.3018606081952797,
+            "netIncome": 6277781.65,
+            "netMarginPct": 0.10675153307616746
+          }
+        ]
+      }
+    }
+  },
+  "pipeline": {
+    "asOf": "2026-05-07",
+    "periodStart": "2026-01-01",
+    "periodEnd": "2026-05-07",
+    "invoiceCount": 406,
+    "ytdBillings": 16441055.61,
+    "ytdOpenBalance": 3518300.82,
+    "ytdCollected": 12922754.79,
+    "openInvoiceCount": 66,
+    "monthlyBillings": [
+      {
+        "month": "2026-01",
+        "billings": 2732933.77,
+        "openBalance": 82181.04,
+        "count": 90
+      },
+      {
+        "month": "2026-02",
+        "billings": 3783851.42,
+        "openBalance": 243933.33,
+        "count": 91
+      },
+      {
+        "month": "2026-03",
+        "billings": 4814613.14,
+        "openBalance": 693136.46,
+        "count": 99
+      },
+      {
+        "month": "2026-04",
+        "billings": 4932034.5,
+        "openBalance": 2397076.37,
+        "count": 104
+      },
+      {
+        "month": "2026-05",
+        "billings": 177622.78,
+        "openBalance": 101973.62,
+        "count": 22
+      }
+    ]
+  },
+  "customers": {
+    "period": "THIS_YEAR_TO_DATE_2026",
+    "totalSales": 75418579.22000004,
+    "customerCount": 282,
+    "top5Concentration": 17.7,
+    "topCustomers": [
+      {
+        "name": "Thompson Thrift Construction",
+        "sales": 2717218.65,
+        "percent": 3.6
+      },
+      {
+        "name": "MF.2025.972 Union Flats - Fishers",
+        "sales": 2717218.65,
+        "percent": 3.6
+      },
+      {
+        "name": "The Peterson Company, LLC",
+        "sales": 2587643.01,
+        "percent": 3.4
+      },
+      {
+        "name": "DEEM, LLC",
+        "sales": 2041679.8199999998,
+        "percent": 2.7
+      },
+      {
+        "name": "Marous Brothers Construction",
+        "sales": 2039464.17,
+        "percent": 2.7
+      },
+      {
+        "name": "MF.2025.1019 Town & Country Apartments (NY MF Project - 22 bldgs)",
+        "sales": 2039464.17,
+        "percent": 2.7
+      },
+      {
+        "name": "Skender Construction of Indiana LLC",
+        "sales": 2035601.2999999998,
+        "percent": 2.7
+      },
+      {
+        "name": "MILHAUS Construction",
+        "sales": 1886647.5,
+        "percent": 2.5
+      },
+      {
+        "name": "Compass Commercial Construction Group",
+        "sales": 1704370.92,
+        "percent": 2.3
+      },
+      {
+        "name": "2025.964 Avon Municipal Building",
+        "sales": 1361655.46,
+        "percent": 1.8
+      }
+    ]
   },
   "verifiedMonths": [
     {

@@ -81,8 +81,10 @@
     <button class="tab" data-tab="workingcap" role="tab">Working Capital</button>
     <button class="tab" data-tab="deepdive" role="tab">Deep Dive</button>
     <button class="tab" data-tab="forecast" role="tab">Forecast</button>
+    <button class="tab" data-tab="projections" role="tab">Revenue Projections</button>
     <button class="tab" data-tab="scenarios" role="tab">Scenarios</button>
     <button class="tab" data-tab="trends" role="tab">Trends</button>
+    <button class="tab" data-tab="multiyear" role="tab">Multi-Year Outlook</button>
     <button class="tab" data-tab="benchmark" role="tab">Industry Benchmark</button>
     <button class="tab" data-tab="flags" role="tab">Action Flags</button>
   </nav>
@@ -292,6 +294,55 @@
       <div class="notes-section" data-tab-key="forecast"></div>
     </section>
 
+    <!-- Tab 7.5: Revenue Projections (4 methods, pipeline-driven, by-segment) -->
+    <section id="tab-projections" class="tab-panel" role="tabpanel" data-tab="projections">
+      <div class="panel-header">
+        <div><h2>Revenue Projections</h2><p class="meta" id="projections-meta"></p></div>
+        <button class="btn-secondary csv-btn" data-csv="projections">Export CSV</button>
+      </div>
+      <div class="kpi-grid" id="projections-headline-kpis"></div>
+      <div class="card">
+        <h3>Projection methods side-by-side</h3>
+        <table class="mini-table">
+          <thead><tr><th>Method</th><th class="num">Year-end revenue</th><th class="num">vs consensus</th><th>Confidence</th><th>Assumption</th></tr></thead>
+          <tbody id="projections-methods-tbody"></tbody>
+        </table>
+      </div>
+      <div class="comparison-grid">
+        <div class="card">
+          <h3>Quarterly view</h3>
+          <table class="mini-table">
+            <thead><tr><th>Quarter</th><th class="num">Revenue</th><th>Status</th></tr></thead>
+            <tbody id="projections-quarterly-tbody"></tbody>
+          </table>
+        </div>
+        <div class="card">
+          <h3>Pipeline (open invoices)</h3>
+          <table class="mini-table">
+            <thead><tr><th>Metric</th><th class="num">Value</th></tr></thead>
+            <tbody id="projections-pipeline-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="card">
+        <h3>By-segment projection (year-end)</h3>
+        <table class="mini-table">
+          <thead><tr><th>Segment</th><th class="num">YTD revenue</th><th class="num">Run-rate × 12</th><th class="num">% of total</th></tr></thead>
+          <tbody id="projections-segment-tbody"></tbody>
+        </table>
+      </div>
+      <div class="callout">
+        <strong>Method definitions:</strong>
+        <ul>
+          <li><strong>Run-rate</strong>: YTD ÷ completed months × 12. Naive — assumes no growth and no seasonality.</li>
+          <li><strong>YoY growth-adjusted</strong>: Apply prior FY's YoY growth rate to the remaining months.</li>
+          <li><strong>Seasonality-adjusted</strong>: YTD actual + prior-year average monthly revenue × remaining months.</li>
+          <li><strong>Pipeline-driven</strong>: Use open-invoice billing cadence × remaining months, converted to recognized revenue using the YTD billings-to-revenue ratio. Most CFO-grade because it reflects actual project work.</li>
+        </ul>
+      </div>
+      <div class="notes-section" data-tab-key="projections"></div>
+    </section>
+
     <!-- Tab 8: Scenarios (NEW for Strategy / FP&A) -->
     <section id="tab-scenarios" class="tab-panel" role="tabpanel" data-tab="scenarios">
       <div class="panel-header">
@@ -348,6 +399,40 @@
         </table>
       </div>
       <div class="notes-section" data-tab-key="trends"></div>
+    </section>
+
+    <!-- Tab 9.5: Multi-Year Outlook (3-year CAGR + scenarios) -->
+    <section id="tab-multiyear" class="tab-panel" role="tabpanel" data-tab="multiyear">
+      <div class="panel-header">
+        <div><h2>Multi-Year Outlook (3-Year)</h2><p class="meta" id="multiyear-meta"></p></div>
+        <button class="btn-secondary csv-btn" data-csv="multiyear">Export CSV</button>
+      </div>
+      <div class="kpi-grid" id="multiyear-headline-kpis"></div>
+      <div class="card">
+        <h3>Revenue projection by scenario</h3>
+        <table class="mini-table">
+          <thead><tr><th>Scenario</th><th class="num">Growth</th><th class="num">GM shift</th><th class="num" id="my-y0-h"></th><th class="num" id="my-y1-h"></th><th class="num" id="my-y2-h"></th></tr></thead>
+          <tbody id="multiyear-rev-tbody"></tbody>
+        </table>
+      </div>
+      <div class="card">
+        <h3>Net income projection by scenario</h3>
+        <table class="mini-table">
+          <thead><tr><th>Scenario</th><th class="num" id="my-ni-y0-h"></th><th class="num" id="my-ni-y1-h"></th><th class="num" id="my-ni-y2-h"></th></tr></thead>
+          <tbody id="multiyear-ni-tbody"></tbody>
+        </table>
+      </div>
+      <div class="card">
+        <h3>3-year visual trend (base case)</h3>
+        <div id="multiyear-chart" class="chart"></div>
+      </div>
+      <div class="callout">
+        <strong>Method:</strong> Anchor = year-end forecast for the current year.
+        Base CAGR derived from (FY n-2 → current year-end forecast)<sup>1/2</sup> − 1.
+        Bearish = base CAGR − 5pt, GM −2pt. Optimistic = base CAGR + 4pt, GM +1.5pt.
+        Net margin scales 0.7× the GM shift (operating leverage assumption).
+      </div>
+      <div class="notes-section" data-tab-key="multiyear"></div>
     </section>
 
     <!-- Tab 10: Industry Benchmark (NEW for Strategy) -->
