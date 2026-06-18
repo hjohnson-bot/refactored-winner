@@ -1,6 +1,7 @@
 import React from 'react';
 import { useDashboardState } from '../hooks/useDashboardState';
 import type { DashboardState } from '../hooks/dashboardState';
+import CommandBar from './knowify/CommandBar';
 import JobsView from './knowify/JobsView';
 import CapacityView from './knowify/CapacityView';
 import TrendsView from './knowify/TrendsView';
@@ -174,6 +175,9 @@ export default function KnowifyDashboard() {
           Track profit and progress with easy-to-read charts
         </p>
       </div>
+
+      {/* ── Global command bar (search + presets) ─────────────────── */}
+      <CommandBar state={state} actions={actions} />
 
       {/* ── Project Header (overview only) ────────────────────────── */}
       {state.view === 'overview' && (
