@@ -135,7 +135,7 @@ data_table("tGL","Fact_GL.csv",f"{QB} — Profit & Loss",money_cols={"Amount"},
 mi=data_table("tMonthly","Fact_PL_Monthly.csv",f"{QB} — monthly P&L",
            money_cols={"Revenue","COGS","GrossProfit","OpEx","NetIncome"},pct_cols={"GrossMarginPct","NetMarginPct"},id_cols={"MonthEnd"})
 data_table("tWIP","Fact_WIP.csv",f"{KN} — Jobs / AJR",
-           money_cols={"ContractTotal","ChangeOrders","Invoiced","PaymentsInvoices","BudgetTotal","ActualCost","EarnedRevenue","WIPNet","KnowifyWIP","Overbilled","Underbilled","ProfitAmount","ProjectedProfit","Retainage","OpenAR"},
+           money_cols={"ContractTotal","ChangeOrders","Invoiced","PaymentsInvoices","BudgetTotal","ActualCost","EarnedRevenue","WIPNet","KnowifyWIP","Overbilled","Underbilled","ProfitAmount","ProjectedProfit","Retainage","OpenAR","MaterialsActual","SubsActual","EquipmentActual","MiscActual","LaborCommitted"},
            pct_cols={"PctComplete","ProfitPct","ProjectedProfitPct","EstMarginPct","ProfitFadePct"},
            id_cols={"SnapshotDate","ProjectId","Job","DivKey","PMName","Customer","Status","HasBudget","Managed"})
 data_table("tAR","Fact_AR.csv",f"{QB} — A/R aging",money_cols={"Amount"},id_cols={"Customer","Bucket","IsRetainage","AsOfDate"})
@@ -145,6 +145,7 @@ data_table("tCash","Fact_Cash.csv",f"{QB} — balance sheet & cash flow",
 data_table("tBS","Fact_BalanceSheet.csv",f"{QB} — balance sheet",money_cols={"Amount"},id_cols={"Account","Section","AsOfDate"})
 inv_headers=["Job","Month","Amount"]
 data_table("tInv",None,f"{KN} — Invoices (by invoice date)",money_cols={"Amount"},id_cols={"Job","Month"},rows=inv,headers=inv_headers)
+data_table("tCustRev","Fact_CustomerRev.csv",f"{QB} — Sales by Customer (2026 YTD)",money_cols={"Revenue2026"},id_cols={"Customer"})
 dws.column_dimensions["A"].width=44
 for col in range(2,30): dws.column_dimensions[get_column_letter(col)].width=12
 # resolve 2026 monthly rows for chart + forecast (tMonthly header row mi[0], data from mi[1])
@@ -221,6 +222,9 @@ for r in arr:
 TOPCUST=[c for c in sorted(custAR,key=lambda x:-custAR[x])[:10]]
 jobBL={w["Job"]:(n(w["ContractTotal"])-n(w["Invoiced"])) for w in wip}
 TOPJOB=[j for j in sorted(jobBL,key=lambda x:-jobBL[x])[:10]]
+custrev=rddict("Fact_CustomerRev.csv")
+TOPCREV=[r["Customer"] for r in sorted(custrev,key=lambda x:-n(x["Revenue2026"]))[:10]]
+COSTTOT='(SUM(tWIP[LaborCommitted])+SUM(tWIP[SubsActual])+SUM(tWIP[MaterialsActual])+SUM(tWIP[EquipmentActual])+SUM(tWIP[MiscActual]))'
 
 # =====================================================================
 # 1) DASHBOARD
@@ -404,6 +408,42 @@ for job in TOPJOB:
     put(op,R,3,f'=IFERROR({bl}/{F["backlog"]},0)',10,False,INK,fmt='0.0%',align="right")
     for c in (1,2,3): op.cell(row=R,column=c).border=Border(bottom=Side(style="thin",color=RULE))
     R+=1
+
+# Construction & job KPIs
+R+=3; section(op,R,"Construction & job KPIs","Knowify"); R+=1
+thead(op,R,["Metric","Value"],widths=[40,16]); R+=1
+ckpis=[("Change-order rate (CO / contract)","=IFERROR(SUM(tWIP[ChangeOrders])/SUM(tWIP[ContractTotal]),0)",'0.0%'),
+       ("Average contract size","=IFERROR(AVERAGE(tWIP[ContractTotal]),0)",'$#,##0'),
+       ("Jobs over budget %","=IFERROR(SUMPRODUCT((tWIP[ActualCost]>tWIP[BudgetTotal])*(tWIP[BudgetTotal]>0))/SUMPRODUCT((tWIP[BudgetTotal]>0)*1),0)",'0.0%'),
+       ("Overbilled (billed ahead of work)","=SUM(tWIP[Overbilled])",'$#,##0'),
+       ("Underbilled (work ahead of billing)","=SUM(tWIP[Underbilled])",'$#,##0'),
+       ("Retainage held","=SUM(tWIP[Retainage])",'$#,##0')]
+for label,fml,fmt in ckpis:
+    put(op,R,1,label,10,False,INK,indent=1); put(op,R,2,fml,10,False,INK,fmt=fmt,align="right")
+    for c in (1,2): op.cell(row=R,column=c).border=Border(bottom=Side(style="thin",color=RULE))
+    R+=1
+R+=2; section(op,R,"Job cost mix (actual cost)","Knowify"); R+=1
+thead(op,R,["Cost category","Amount","% of cost"],widths=[26,16,11]); R+=1
+for label,col in [("Labor","LaborCommitted"),("Subcontractors","SubsActual"),("Materials","MaterialsActual"),("Equipment","EquipmentActual"),("Misc","MiscActual")]:
+    put(op,R,1,label,10,False,INK,indent=1)
+    put(op,R,2,f'=SUM(tWIP[{col}])',10,False,INK,fmt='$#,##0',align="right")
+    put(op,R,3,f'=IFERROR(SUM(tWIP[{col}])/{COSTTOT},0)',10,False,INK,fmt='0.0%',align="right")
+    for c in (1,2,3): op.cell(row=R,column=c).border=Border(bottom=Side(style="thin",color=RULE))
+    R+=1
+put(op,R,1,"Total job cost",10,True,INK,indent=1,fillc=PANEL); put(op,R,2,f'={COSTTOT}',10,True,INK,fmt='$#,##0',align="right",fillc=PANEL); put(op,R,3,"",fillc=PANEL)
+for c in (1,2,3): op.cell(row=R,column=c).border=Border(bottom=Side(style="thin",color=ACCENT))
+R+=3; section(op,R,"Customer revenue concentration — 2026","QuickBooks · Sales by Customer"); R+=1
+thead(op,R,["Customer","2026 revenue","% of revenue"],widths=[40,15,11]); R+=1
+for cust in TOPCREV:
+    q=cust.replace('"','""'); put(op,R,1,cust,10,False,INK,indent=1)
+    put(op,R,2,f'=SUMIF(tCustRev[Customer],"{q}",tCustRev[Revenue2026])',10,False,INK,fmt='$#,##0',align="right")
+    put(op,R,3,f'=IFERROR(SUMIF(tCustRev[Customer],"{q}",tCustRev[Revenue2026])/SUM(tCustRev[Revenue2026]),0)',10,False,INK,fmt='0.0%',align="right")
+    for c in (1,2,3): op.cell(row=R,column=c).border=Border(bottom=Side(style="thin",color=RULE))
+    R+=1
+top5=" + ".join(f'SUMIF(tCustRev[Customer],"{c.replace(chr(34),chr(34)*2)}",tCustRev[Revenue2026])' for c in TOPCREV[:5])
+put(op,R,1,"Top-5 customer concentration",10,True,INK,indent=1,fillc=PANEL)
+put(op,R,2,f'=IFERROR(({top5})/SUM(tCustRev[Revenue2026]),0)',10,True,INK,fmt='0.0%',align="right",fillc=PANEL); put(op,R,3,"",fillc=PANEL)
+for c in (1,2,3): op.cell(row=R,column=c).border=Border(bottom=Side(style="thin",color=ACCENT))
 
 # =====================================================================
 # 4) JOB REVENUE BY MONTH

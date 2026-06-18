@@ -589,6 +589,31 @@
             "name": "Managed",
             "dataType": "string",
             "sourceColumn": "Managed"
+          },
+          {
+            "name": "MaterialsActual",
+            "dataType": "double",
+            "sourceColumn": "MaterialsActual"
+          },
+          {
+            "name": "SubsActual",
+            "dataType": "double",
+            "sourceColumn": "SubsActual"
+          },
+          {
+            "name": "EquipmentActual",
+            "dataType": "double",
+            "sourceColumn": "EquipmentActual"
+          },
+          {
+            "name": "MiscActual",
+            "dataType": "double",
+            "sourceColumn": "MiscActual"
+          },
+          {
+            "name": "LaborCommitted",
+            "dataType": "double",
+            "sourceColumn": "LaborCommitted"
           }
         ],
         "partitions": [
@@ -597,7 +622,7 @@
             "mode": "import",
             "source": {
               "type": "m",
-              "expression": "let\n    Source = Csv.Document(File.Contents(DataFolder & \"\\Fact_WIP.csv\"), [Delimiter=\",\", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),\n    Prom = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),\n    Typed = Table.TransformColumnTypes(Prom, {{\"SnapshotDate\", type date}, {\"ProjectId\", Int64.Type}, {\"Job\", type text}, {\"DivKey\", type text}, {\"PMName\", type text}, {\"Customer\", type text}, {\"Status\", type text}, {\"ContractTotal\", type number}, {\"ChangeOrders\", type number}, {\"Invoiced\", type number}, {\"PaymentsInvoices\", type number}, {\"BudgetTotal\", type number}, {\"ActualCost\", type number}, {\"PctComplete\", type number}, {\"EarnedRevenue\", type number}, {\"WIPNet\", type number}, {\"KnowifyWIP\", type number}, {\"Overbilled\", type number}, {\"Underbilled\", type number}, {\"ProfitAmount\", type number}, {\"ProfitPct\", type number}, {\"ProjectedProfit\", type number}, {\"ProjectedProfitPct\", type number}, {\"EstMarginPct\", type number}, {\"ProfitFadePct\", type number}, {\"Retainage\", type number}, {\"OpenAR\", type number}, {\"HasBudget\", type text}, {\"Managed\", type text}})\nin\n    Typed"
+              "expression": "let\n    Source = Csv.Document(File.Contents(DataFolder & \"\\Fact_WIP.csv\"), [Delimiter=\",\", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),\n    Prom = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),\n    Typed = Table.TransformColumnTypes(Prom, {{\"SnapshotDate\", type date}, {\"ProjectId\", Int64.Type}, {\"Job\", type text}, {\"DivKey\", type text}, {\"PMName\", type text}, {\"Customer\", type text}, {\"Status\", type text}, {\"ContractTotal\", type number}, {\"ChangeOrders\", type number}, {\"Invoiced\", type number}, {\"PaymentsInvoices\", type number}, {\"BudgetTotal\", type number}, {\"ActualCost\", type number}, {\"PctComplete\", type number}, {\"EarnedRevenue\", type number}, {\"WIPNet\", type number}, {\"KnowifyWIP\", type number}, {\"Overbilled\", type number}, {\"Underbilled\", type number}, {\"ProfitAmount\", type number}, {\"ProfitPct\", type number}, {\"ProjectedProfit\", type number}, {\"ProjectedProfitPct\", type number}, {\"EstMarginPct\", type number}, {\"ProfitFadePct\", type number}, {\"Retainage\", type number}, {\"OpenAR\", type number}, {\"HasBudget\", type text}, {\"Managed\", type text}, {\"MaterialsActual\", type number}, {\"SubsActual\", type number}, {\"EquipmentActual\", type number}, {\"MiscActual\", type number}, {\"LaborCommitted\", type number}})\nin\n    Typed"
             }
           }
         ]

@@ -264,9 +264,9 @@ for r in jobs:
     invoiced = num(r.get("Invoiced"))
     paid     = num(r.get("PaymentsInvoices"))
     budget   = num(r.get("BudgetTotal"))
-    actual   = (num(r.get("MaterialsActual")) + num(r.get("SubsActual")) +
-                num(r.get("EquipmentActual")) + num(r.get("MiscActual")) +
-                num(r.get("LaborCommitted")))
+    mat=num(r.get("MaterialsActual")); sub=num(r.get("SubsActual"))
+    equ=num(r.get("EquipmentActual")); misc=num(r.get("MiscActual")); lab=num(r.get("LaborCommitted"))
+    actual   = mat + sub + equ + misc + lab
     pct      = num(r.get("PercCompleted"))
     pctf     = pct / 100.0
     profit_amt = num(r.get("ProfitAmount"))
@@ -300,6 +300,7 @@ for r in jobs:
         round(proj_margin,4), round(est_margin,4), round(fade,4),
         round(retain,2), round(open_ar,2),
         "TRUE" if has_budget else "FALSE", "TRUE" if managed else "FALSE",
+        round(mat,2), round(sub,2), round(equ,2), round(misc,2), round(lab,2),
     ])
     pms.setdefault(pm, 0)
     pms[pm] += 1
@@ -504,7 +505,8 @@ write_csv("Fact_WIP.csv",
            "ContractTotal","ChangeOrders","Invoiced","PaymentsInvoices","BudgetTotal","ActualCost",
            "PctComplete","EarnedRevenue","WIPNet","KnowifyWIP","Overbilled","Underbilled",
            "ProfitAmount","ProfitPct","ProjectedProfit","ProjectedProfitPct","EstMarginPct","ProfitFadePct",
-           "Retainage","OpenAR","HasBudget","Managed"],
+           "Retainage","OpenAR","HasBudget","Managed",
+           "MaterialsActual","SubsActual","EquipmentActual","MiscActual","LaborCommitted"],
           wip_rows)
 write_csv("Fact_AR.csv", ["Customer","Bucket","Amount","IsRetainage","AsOfDate"], ar_rows)
 write_csv("Fact_AP.csv", ["Vendor","Bucket","Amount","AsOfDate"], ap_rows)
@@ -514,6 +516,28 @@ write_csv("Fact_Cash.csv",
 write_csv("Fact_Budget.csv", ["DivKey","Period","ContractTotal","BudgetTotal","ActualCost","Invoiced"], budget_rows)
 write_csv("Fact_BalanceSheet.csv", ["Account","Section","Amount","AsOfDate"], bs_rows)
 write_csv("Param_Cash.csv", ["Param","Value","Note"], param_rows)
+
+# Customer revenue concentration (QuickBooks Sales by Customer, deduplicated)
+custrev_rows = []
+scf = os.path.join(RAW, "qb_sales_by_customer.json")
+if os.path.exists(scf):
+    sc = json.load(open(scf))
+    srows = sc.get("reportData", {}).get("rows", [])
+    def _cv(r):
+        nm = val = None
+        for c in r.get("cells") or []:
+            if c.get("id") == "0" or c.get("name") in ("Customer", "name"): nm = c.get("value")
+            if isinstance(c.get("value"), (int, float)): val = c.get("value")
+        m = r.get("metadata", {}); return m.get("parentId"), nm, val
+    totals = {}
+    parsed = [_cv(r) for r in srows]
+    for p, nm, v in parsed:
+        if nm and nm.startswith("Total for "): totals[nm[len("Total for "):].strip()] = v
+    clean = {}
+    for p, nm, v in parsed:
+        if p == "0" and nm and not nm.startswith("Total for"): clean[nm] = totals.get(nm, v)
+    custrev_rows = [[c, round(clean[c], 2)] for c in sorted(clean, key=lambda x: -clean[x])]
+    write_csv("Fact_CustomerRev.csv", ["Customer", "Revenue2026"], custrev_rows)
 
 # ---------------------------------------------------------------------------
 # Reconciliation report
