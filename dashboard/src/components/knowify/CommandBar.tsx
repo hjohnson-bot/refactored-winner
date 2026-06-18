@@ -15,11 +15,12 @@ interface Preset {
   preset: Partial<DashboardState>;
 }
 
-// Each preset only declares the fields it changes; LOAD_PRESET merges the rest.
+// Each preset declares only the fields it changes; applyPreset clears the
+// filter group first so a preset always lands on a clean baseline.
 const PRESETS: Preset[] = [
-  { id: "at-risk", label: "⚠ At-risk jobs", preset: { view: "jobs", tab: "projects", filter: "at-risk", profitFilter: "all", pmFilter: "all", typeFilter: "all", yearFilter: "all", listSearch: "", drillJob: null } },
-  { id: "losers", label: "📉 Unprofitable", preset: { view: "jobs", tab: "projects", profitFilter: "loss", filter: "all", listSearch: "", drillJob: null } },
-  { id: "pipeline", label: "🏗 2026 active", preset: { view: "jobs", tab: "projects", yearFilter: "2026", filter: "active", profitFilter: "all", listSearch: "", drillJob: null } },
+  { id: "at-risk", label: "⚠ At-risk jobs", preset: { view: "jobs", tab: "projects", filter: "at-risk" } },
+  { id: "losers", label: "📉 Unprofitable", preset: { view: "jobs", tab: "projects", profitFilter: "loss" } },
+  { id: "pipeline", label: "🏗 2026 active", preset: { view: "jobs", tab: "projects", yearFilter: "2026", filter: "active" } },
   { id: "pm-load", label: "👷 PM workload", preset: { view: "capacity", capRole: "pm" } },
   { id: "quarterly", label: "📈 Quarterly trend", preset: { view: "trends", gran: "quarter" } },
 ];
@@ -39,6 +40,13 @@ export default function CommandBar({ state, actions }: Props) {
     // Navigate straight to the job's drill-down, then clear the search.
     actions.loadPreset({ view: "jobs", tab: "projects", drillJob: job.name });
     actions.setSearch("");
+  };
+
+  const applyPreset = (preset: Partial<DashboardState>) => {
+    // Reset filters to a clean baseline so stale pm/type/year/profit
+    // selections don't leak into the preset's result.
+    actions.resetFilters();
+    actions.loadPreset(preset);
   };
 
   return (
@@ -101,7 +109,7 @@ export default function CommandBar({ state, actions }: Props) {
           {PRESETS.map((p) => (
             <button
               key={p.id}
-              onClick={() => actions.loadPreset(p.preset)}
+              onClick={() => applyPreset(p.preset)}
               style={{
                 padding: "7px 12px", borderRadius: 999, border: "1px solid #d1d5db",
                 background: "#f9fafb", color: "#374151", cursor: "pointer",

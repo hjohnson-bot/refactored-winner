@@ -90,8 +90,9 @@ export default function CapacityView({ state, actions }: Props) {
           const key = `${res.role}:${res.name}`;
           const expanded = state.capExpanded.includes(key);
           const active = activeCount(res);
-          const crew = res.jobs.filter((j) => j.status === "active").reduce((s, j) => s + j.crew, 0);
-          const contract = res.jobs.reduce((s, j) => s + j.contract, 0);
+          const activeJobs = res.jobs.filter((j) => j.status === "active");
+          const crew = activeJobs.reduce((s, j) => s + j.crew, 0);
+          const contract = activeJobs.reduce((s, j) => s + j.contract, 0);
 
           return (
             <div key={key} style={{ background: "#fff", borderRadius: 8, border: "1px solid #e5e7eb", overflow: "hidden" }}>

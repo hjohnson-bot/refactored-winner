@@ -95,8 +95,8 @@ export const DEFAULT_UI = {
   view: "overview",
   tab: "projects",
   gran: "month",
-  sortKey: "profitAmount",
-  listSort: "jobName",
+  sortKey: "amount",
+  listSort: "name",
   showNumbers: true,
   capRole: "all",
   capExpanded: [],
@@ -161,10 +161,6 @@ export type DashboardAction =
   | { type: "SET_GRAN"; payload: DashboardState["gran"] }
   | { type: "SET_DRILL_JOB"; payload: string | null }
   | { type: "TOGGLE_PANEL"; payload: keyof DashboardState["open"] }
-  | {
-      type: "SET_PANEL";
-      payload: { key: keyof DashboardState["open"]; value: boolean };
-    }
   | { type: "SET_SEARCH"; payload: string }
   | { type: "SET_SORT_KEY"; payload: string }
   | { type: "TOGGLE_SHOW_NUMBERS" }
@@ -212,12 +208,6 @@ export function dashboardReducer(
       return {
         ...state,
         open: { ...state.open, [action.payload]: !state.open[action.payload] },
-      };
-
-    case "SET_PANEL":
-      return {
-        ...state,
-        open: { ...state.open, [action.payload.key]: action.payload.value },
       };
 
     case "SET_SEARCH":

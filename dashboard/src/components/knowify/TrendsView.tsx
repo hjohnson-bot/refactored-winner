@@ -13,6 +13,9 @@ export default function TrendsView({ state, actions }: Props) {
   const show = state.showNumbers;
   const points = aggregateTrend(MONTHLY_TREND, state.gran);
   const maxRevenue = Math.max(...points.map((p) => p.revenue), 1);
+  // Profit is far smaller than revenue, so it gets its own scale (dual-axis
+  // overlay). Using the absolute value keeps loss periods visible as a bar.
+  const maxAbsProfit = Math.max(...points.map((p) => Math.abs(p.profit)), 1);
 
   const totalRevenue = points.reduce((s, p) => s + p.revenue, 0);
   const totalProfit = points.reduce((s, p) => s + p.profit, 0);
@@ -63,7 +66,7 @@ export default function TrendsView({ state, actions }: Props) {
         <div style={{ display: "flex", alignItems: "flex-end", gap: 12, height: 220 }}>
           {points.map((p) => {
             const revH = (p.revenue / maxRevenue) * 100;
-            const profH = (Math.max(p.profit, 0) / maxRevenue) * 100;
+            const profH = (Math.abs(p.profit) / maxAbsProfit) * 100;
             return (
               <div key={p.label} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", height: "100%", justifyContent: "flex-end" }}>
                 <div style={{ position: "relative", width: "70%", height: "100%", display: "flex", alignItems: "flex-end", justifyContent: "center" }}>

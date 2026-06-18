@@ -39,9 +39,6 @@ export function useDashboardState(initial?: Partial<DashboardState>) {
       togglePanel: (key: keyof DashboardState["open"]) =>
         dispatch({ type: "TOGGLE_PANEL", payload: key }),
 
-      setPanel: (key: keyof DashboardState["open"], value: boolean) =>
-        dispatch({ type: "SET_PANEL", payload: { key, value } }),
-
       setSearch: (search: string) =>
         dispatch({ type: "SET_SEARCH", payload: search }),
 

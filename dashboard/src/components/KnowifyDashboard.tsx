@@ -5,6 +5,7 @@ import CommandBar from './knowify/CommandBar';
 import JobsView from './knowify/JobsView';
 import CapacityView from './knowify/CapacityView';
 import TrendsView from './knowify/TrendsView';
+import { mask } from './knowify/data';
 
 // ── Sample AJR Data ──────────────────────────────────────────────────────────
 const PROJECT = {
@@ -42,11 +43,6 @@ const NAV_ITEMS: { label: string; sub: string; view: DashboardState['view'] }[] 
   { label: 'Capacity', sub: 'Team Load', view: 'capacity' },
   { label: 'Trends', sub: 'Performance Over Time', view: 'trends' },
 ];
-
-// ── Helpers ──────────────────────────────────────────────────────────────────
-function fmt(n: number): string {
-  return n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-}
 
 // ── Donut Chart (SVG) ────────────────────────────────────────────────────────
 function DonutChart({ percent }: { percent: number }) {
@@ -146,7 +142,7 @@ function ExpenseBarChart({
             />
           </div>
           <span style={{ width: 80, fontSize: 12, color: '#374151', flexShrink: 0 }}>
-            ${show ? fmt(cat.amount) : '•••••'}
+            ${mask(cat.amount, show)}
           </span>
         </div>
       ))}
@@ -156,13 +152,13 @@ function ExpenseBarChart({
 
 // ── Main Dashboard Component ─────────────────────────────────────────────────
 export default function KnowifyDashboard() {
-  const { state, actions } = useDashboardState({ sortKey: 'amount' });
+  const { state, actions } = useDashboardState();
 
   const actualMargin = FINANCIALS.actualRevenue - FINANCIALS.actualExpense;
   const marginPercent = (actualMargin / FINANCIALS.actualRevenue) * 100;
 
   // Mask currency amounts when the user toggles numbers off (privacy mode).
-  const money = (n: number) => (state.showNumbers ? fmt(n) : '•••••');
+  const money = (n: number) => mask(n, state.showNumbers);
 
   return (
     <div style={{ fontFamily: "'Segoe UI', 'Helvetica Neue', Arial, sans-serif", backgroundColor: '#f0f4ff', minHeight: '100vh', color: '#1f2937' }}>
