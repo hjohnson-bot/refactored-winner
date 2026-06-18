@@ -141,7 +141,7 @@ data_table("tWIP","Fact_WIP.csv",f"{KN} — Jobs / AJR",
 data_table("tAR","Fact_AR.csv",f"{QB} — A/R aging",money_cols={"Amount"},id_cols={"Customer","Bucket","IsRetainage","AsOfDate"})
 data_table("tAP","Fact_AP.csv",f"{QB} — A/P aging",money_cols={"Amount"},id_cols={"Vendor","Bucket","AsOfDate"})
 data_table("tCash","Fact_Cash.csv",f"{QB} — balance sheet & cash flow",
-           money_cols={"CashBalance","LOCDrawn","LOCCapX","OperatingCF","InvestingCF","FinancingCF","NetCashChange","LOCLimit","EligibleAR"},pct_cols={"AdvanceRate"},id_cols={"Date"})
+           money_cols={"CashBalance","LOCDrawn","LOCCapX","OperatingCF","InvestingCF","FinancingCF","NetCashChange","LOCLimit","EligibleAR","CurrentAssets","CurrentLiabilities"},pct_cols={"AdvanceRate"},id_cols={"Date"})
 data_table("tBS","Fact_BalanceSheet.csv",f"{QB} — balance sheet",money_cols={"Amount"},id_cols={"Account","Section","AsOfDate"})
 inv_headers=["Job","Month","Amount"]
 data_table("tInv",None,f"{KN} — Invoices (by invoice date)",money_cols={"Amount"},id_cols={"Job","Month"},rows=inv,headers=inv_headers)
@@ -171,8 +171,10 @@ F={'rev':sumif_gl("YTD2026","Revenue"),'cogs':sumif_gl("YTD2026","COGS"),
 F['nop']=f'({F["rev"]}-{F["cogs"]}-{F["opex"]})'
 F['ni']=f'({F["rev"]}-{F["cogs"]}-{F["opex"]}+{F["oi"]}-{F["oe"]})'
 F['ebitda']=f'({F["nop"]}+{F["dep"]}+{F["int"]})'
-F['ca']=f'({F["assets"]}-SUMIFS(tBS[Amount],tBS[Account],"Fixed Assets")-SUMIFS(tBS[Amount],tBS[Account],"Other Assets"))'
-F['cl']=f'({F["liab"]}-SUMIFS(tBS[Amount],tBS[Account],"Long-term Liabilities"))'
+# Current assets / current liabilities taken straight from QuickBooks' own
+# classification (Fact_Cash) so the liquidity ratios match QB exactly.
+F['ca']='SUM(tCash[CurrentAssets])'
+F['cl']='SUM(tCash[CurrentLiabilities])'
 RATIOS=[
  ("Profitability","Gross margin %",f'=IFERROR(({F["rev"]}-{F["cogs"]})/{F["rev"]},0)','0.0%'),
  ("Profitability","Operating margin %",f'=IFERROR({F["nop"]}/{F["rev"]},0)','0.0%'),

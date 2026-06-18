@@ -101,7 +101,7 @@ in
 let
     Source = Csv.Document(File.Contents(DataFolder & "\Fact_Cash.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
     Prom = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
-    Typed = Table.TransformColumnTypes(Prom, {{"Date", type date}, {"CashBalance", type number}, {"LOCDrawn", type number}, {"LOCCapX", type number}, {"OperatingCF", type number}, {"InvestingCF", type number}, {"FinancingCF", type number}, {"NetCashChange", type number}, {"LOCLimit", type number}, {"AdvanceRate", type number}, {"EligibleAR", type number}})
+    Typed = Table.TransformColumnTypes(Prom, {{"Date", type date}, {"CashBalance", type number}, {"LOCDrawn", type number}, {"LOCCapX", type number}, {"OperatingCF", type number}, {"InvestingCF", type number}, {"FinancingCF", type number}, {"NetCashChange", type number}, {"LOCLimit", type number}, {"AdvanceRate", type number}, {"EligibleAR", type number}, {"CurrentAssets", type number}, {"CurrentLiabilities", type number}})
 in
     Typed
 

@@ -1,2 +1,2 @@
-Date,CashBalance,LOCDrawn,LOCCapX,OperatingCF,InvestingCF,FinancingCF,NetCashChange,LOCLimit,AdvanceRate,EligibleAR
-2026-06-17,-54623.3,5440076.95,333834.01,1708994.16,212852.1,-1650418.17,271428.09,8000000.0,0.8,12986875.87
+Date,CashBalance,LOCDrawn,LOCCapX,OperatingCF,InvestingCF,FinancingCF,NetCashChange,LOCLimit,AdvanceRate,EligibleAR,CurrentAssets,CurrentLiabilities
+2026-06-17,-54623.3,5440076.95,333834.01,1708994.16,212852.1,-1650418.17,271428.09,8000000.0,0.8,12986875.87,19633898.04,13844013.44

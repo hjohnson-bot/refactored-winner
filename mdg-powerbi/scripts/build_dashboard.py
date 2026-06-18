@@ -431,6 +431,7 @@ cash_rows = [[
     round(num(cf.get("financingActivities")),2),
     round(num(cf.get("netCashIncrease")),2),
     round(LOC_LIMIT,2), round(ADVANCE_RATE,4), round(eligible_ar,2),
+    round(num(ab.get("currentAssets")),2), round(num(lb.get("currentLiabilities")),2),
 ]]
 param_rows = [
     ["LOC Limit", LOC_LIMIT, "USER INPUT — Forum line-of-credit commitment (not in QuickBooks)"],
@@ -508,7 +509,7 @@ write_csv("Fact_WIP.csv",
 write_csv("Fact_AR.csv", ["Customer","Bucket","Amount","IsRetainage","AsOfDate"], ar_rows)
 write_csv("Fact_AP.csv", ["Vendor","Bucket","Amount","AsOfDate"], ap_rows)
 write_csv("Fact_Cash.csv",
-          ["Date","CashBalance","LOCDrawn","LOCCapX","OperatingCF","InvestingCF","FinancingCF","NetCashChange","LOCLimit","AdvanceRate","EligibleAR"],
+          ["Date","CashBalance","LOCDrawn","LOCCapX","OperatingCF","InvestingCF","FinancingCF","NetCashChange","LOCLimit","AdvanceRate","EligibleAR","CurrentAssets","CurrentLiabilities"],
           cash_rows)
 write_csv("Fact_Budget.csv", ["DivKey","Period","ContractTotal","BudgetTotal","ActualCost","Invoiced"], budget_rows)
 write_csv("Fact_BalanceSheet.csv", ["Account","Section","Amount","AsOfDate"], bs_rows)
