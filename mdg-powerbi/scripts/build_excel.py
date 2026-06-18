@@ -13,7 +13,7 @@ Every number on sheets 1-4 is a live Excel formula (SUMIFS/COUNTIFS/structured
 refs) against the Data tables. Each block states its source (QuickBooks vs Knowify).
 Reads the star-schema CSVs in data/ (+ the 2026 invoice pulls in build/raw/).
 """
-import csv, os, json, glob
+import csv, os, json, glob, datetime as dt
 from openpyxl import Workbook
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 from openpyxl.utils import get_column_letter
@@ -43,7 +43,7 @@ def isnum(v):
 recon=json.load(open(os.path.join(DATA,"_reconciliation.json"))); AS_OF=recon["as_of"]
 QB,KN="QuickBooks Online","Knowify"
 wip=rddict("Fact_WIP.csv"); bs=rddict("Fact_BalanceSheet.csv"); divs=rddict("Dim_Division.csv")
-cashrow=rddict("Fact_Cash.csv")[0]
+arr=rddict("Fact_AR.csv"); cashrow=rddict("Fact_Cash.csv")[0]
 inv=[]
 for p in sorted(glob.glob(os.path.join(RAW,"invoices_2026_p*.json"))):
     for r in json.load(open(p))["Data"]:
@@ -152,6 +152,74 @@ mhdr,mrows=rdrows("Fact_PL_Monthly.csv")
 m26=[k for k,r in enumerate(mrows) if r[0][:4]=="2026" and r[0]<="2026-05-31"]
 MR1=mi[1]+min(m26); MR2=mi[1]+max(m26); MN=len(m26)
 
+# ---- CFO formula library (all pure formulas over the Data tables) ----
+DAYS=(dt.date.fromisoformat(AS_OF)-dt.date(int(AS_OF[:4]),1,1)).days+1
+F={'rev':sumif_gl("YTD2026","Revenue"),'cogs':sumif_gl("YTD2026","COGS"),
+   'opex':sumif_gl("YTD2026","Operating Expense"),'oi':sumif_gl("YTD2026","Other Income"),
+   'oe':sumif_gl("YTD2026","Other Expense"),
+   'dep':'SUMIFS(tGL[Amount],tGL[Account],"Depreciation",tGL[Period],"YTD2026")',
+   'int':'SUMIFS(tGL[Amount],tGL[Account],"Interest Paid",tGL[Period],"YTD2026")',
+   'assets':'SUMIFS(tBS[Amount],tBS[Section],"Assets")','liab':'SUMIFS(tBS[Amount],tBS[Section],"Liabilities")',
+   'eq':'SUMIFS(tBS[Amount],tBS[Section],"Equity")','invb':'SUMIFS(tBS[Amount],tBS[Account],"Drywall Inventory")',
+   'cash':'SUM(tCash[CashBalance])','ar':'SUMIFS(tAR[Amount],tAR[IsRetainage],"FALSE")',
+   'arcur':'SUMIFS(tAR[Amount],tAR[Bucket],"Current",tAR[IsRetainage],"FALSE")',
+   'retain':'SUMIFS(tAR[Amount],tAR[IsRetainage],"TRUE")','ap':'SUM(tAP[Amount])',
+   'locd':'SUM(tCash[LOCDrawn])','locl':'SUM(tCash[LOCLimit])',
+   'backlog':'(SUM(tWIP[ContractTotal])-SUM(tWIP[Invoiced]))',
+   'fy25':sumif_gl("FY2025","Revenue"),'fy24':sumif_gl("FY2024","Revenue"),
+   'fcrev':f"SUM('{DATASHEET}'!B{MR1}:B{MR2})/{MN}*12"}
+F['nop']=f'({F["rev"]}-{F["cogs"]}-{F["opex"]})'
+F['ni']=f'({F["rev"]}-{F["cogs"]}-{F["opex"]}+{F["oi"]}-{F["oe"]})'
+F['ebitda']=f'({F["nop"]}+{F["dep"]}+{F["int"]})'
+F['ca']=f'({F["assets"]}-SUMIFS(tBS[Amount],tBS[Account],"Fixed Assets")-SUMIFS(tBS[Amount],tBS[Account],"Other Assets"))'
+F['cl']=f'({F["liab"]}-SUMIFS(tBS[Amount],tBS[Account],"Long-term Liabilities"))'
+RATIOS=[
+ ("Profitability","Gross margin %",f'=IFERROR(({F["rev"]}-{F["cogs"]})/{F["rev"]},0)','0.0%'),
+ ("Profitability","Operating margin %",f'=IFERROR({F["nop"]}/{F["rev"]},0)','0.0%'),
+ ("Profitability","Net margin %",f'=IFERROR({F["ni"]}/{F["rev"]},0)','0.0%'),
+ ("Profitability","EBITDA",f'={F["ebitda"]}','$#,##0'),
+ ("Profitability","EBITDA margin %",f'=IFERROR({F["ebitda"]}/{F["rev"]},0)','0.0%'),
+ ("Returns","Return on equity",f'=IFERROR({F["ni"]}/{F["eq"]},0)','0.0%'),
+ ("Returns","Return on assets",f'=IFERROR({F["ni"]}/{F["assets"]},0)','0.0%'),
+ ("Liquidity","Current ratio",f'=IFERROR({F["ca"]}/{F["cl"]},0)','0.00'),
+ ("Liquidity","Quick ratio",f'=IFERROR(({F["ca"]}-{F["invb"]})/{F["cl"]},0)','0.00'),
+ ("Liquidity","Working capital",f'={F["ca"]}-{F["cl"]}','$#,##0'),
+ ("Liquidity","Days cash on hand",f'=IFERROR({F["cash"]}/(({F["cogs"]}+{F["opex"]})/{DAYS}),0)','0.0'),
+ ("Leverage","Debt-to-equity",f'=IFERROR({F["liab"]}/{F["eq"]},0)','0.00'),
+ ("Leverage","LOC utilization",f'=IFERROR({F["locd"]}/{F["locl"]},0)','0.0%'),
+ ("Leverage","Net debt (LOC - cash)",f'={F["locd"]}-{F["cash"]}','$#,##0'),
+ ("Efficiency — cash cycle","DSO — days sales outstanding",f'=IFERROR({F["ar"]}/{F["rev"]}*{DAYS},0)','0.0'),
+ ("Efficiency — cash cycle","DPO — days payable outstanding",f'=IFERROR({F["ap"]}/{F["cogs"]}*{DAYS},0)','0.0'),
+ ("Efficiency — cash cycle","DIO — days inventory outstanding",f'=IFERROR({F["invb"]}/{F["cogs"]}*{DAYS},0)','0.0'),
+ ("Efficiency — cash cycle","Cash conversion cycle (days)",f'=IFERROR({F["ar"]}/{F["rev"]}*{DAYS}+{F["invb"]}/{F["cogs"]}*{DAYS}-{F["ap"]}/{F["cogs"]}*{DAYS},0)','0.0'),
+ ("Growth","Revenue YoY (FY25 vs FY24)",f'=IFERROR(({F["fy25"]}-{F["fy24"]})/{F["fy24"]},0)','0.0%'),
+ ("Growth","2026 forecast vs FY2025",f'=IFERROR(({F["fcrev"]}-{F["fy25"]})/{F["fy25"]},0)','0.0%'),
+ ("Backlog & receivables","Backlog (unbilled contract)",f'={F["backlog"]}','$#,##0'),
+ ("Backlog & receivables","Months of backlog",f'=IFERROR({F["backlog"]}/({F["fcrev"]}/12),0)','0.0'),
+ ("Backlog & receivables","A/R overdue %",f'=IFERROR(({F["ar"]}-{F["arcur"]})/{F["ar"]},0)','0.0%'),
+ ("Backlog & receivables","Retainage % of A/R",f'=IFERROR({F["retain"]}/({F["ar"]}+{F["retain"]}),0)','0.0%'),
+ ("Backlog & receivables","Collected % (billed -> paid)",'=IFERROR(SUM(tWIP[PaymentsInvoices])/SUM(tWIP[Invoiced]),0)','0.0%'),
+]
+def ratio_block(ws,R):
+    section(ws,R,"Key ratios & metrics (CFO)","formulas over the Data sheet"); R+=1
+    thead(ws,R,["Metric","Value"],widths=[40,18]); R+=1
+    grp=None
+    for g,label,fml,fmt in RATIOS:
+        if g!=grp:
+            put(ws,R,1,g,9,True,ACCENT2,indent=1,fillc=PANEL); put(ws,R,2,"",fillc=PANEL); grp=g; R+=1
+        put(ws,R,1,label,10,False,INK,indent=2)
+        put(ws,R,2,fml,10,False,INK,fmt=fmt,align="right")
+        for c in (1,2): ws.cell(row=R,column=c).border=Border(bottom=Side(style="thin",color=RULE))
+        R+=1
+    return R
+# concentration lists (Python ranks; values are formulas)
+custAR={}
+for r in arr:
+    if r["IsRetainage"]=="FALSE": custAR[r["Customer"]]=custAR.get(r["Customer"],0)+n(r["Amount"])
+TOPCUST=[c for c in sorted(custAR,key=lambda x:-custAR[x])[:10]]
+jobBL={w["Job"]:(n(w["ContractTotal"])-n(w["Invoiced"])) for w in wip}
+TOPJOB=[j for j in sorted(jobBL,key=lambda x:-jobBL[x])[:10]]
+
 # =====================================================================
 # 1) DASHBOARD
 # =====================================================================
@@ -189,10 +257,17 @@ card(d,16,5,"Jobs Fading",'=COUNTIFS(tWIP[Managed],"TRUE",tWIP[ProfitFadePct],"<
 card(d,16,7,"LOC Utilization","=IFERROR(SUM(tCash[LOCDrawn])/SUM(tCash[LOCLimit]),0)",'0.0%',"QuickBooks + input",BAD if loc_util>=0.9 else (WARN if loc_util>=0.75 else GOOD))
 card(d,16,9,"Overbilled","=SUM(tWIP[Overbilled])",'$#,##0',"Knowify · billed ahead")
 card(d,16,11,"BBC Headroom","=MIN(SUM(tCash[EligibleAR])*AVERAGE(tCash[AdvanceRate]),SUM(tCash[LOCLimit]))-SUM(tCash[LOCDrawn])",'$#,##0',"borrowing-base avail",BAD if bbc<0 else GOOD)
+section(d,21,"CFO scorecard","live formulas")
+card(d,22,1,"EBITDA",f'={F["ebitda"]}','$#,##0',"QuickBooks · P&L")
+card(d,22,3,"Operating Margin",f'=IFERROR({F["nop"]}/{F["rev"]},0)','0.0%',"QuickBooks · P&L")
+card(d,22,5,"Current Ratio",f'=IFERROR({F["ca"]}/{F["cl"]},0)','0.00',"QuickBooks · balance sheet")
+card(d,22,7,"Debt / Equity",f'=IFERROR({F["liab"]}/{F["eq"]},0)','0.00',"QuickBooks · balance sheet")
+card(d,22,9,"DSO (days)",f'=IFERROR({F["ar"]}/{F["rev"]}*{DAYS},0)','0.0',"A/R vs revenue")
+card(d,22,11,"Cash Conv. Cycle",f'=IFERROR({F["ar"]}/{F["rev"]}*{DAYS}+{F["invb"]}/{F["cogs"]}*{DAYS}-{F["ap"]}/{F["cogs"]}*{DAYS},0)','0.0',"DSO + DIO - DPO")
 for col in range(1,13): d.column_dimensions[get_column_letter(col)].width=11.5
-section(d,21,"By division","Knowify · jobs")
-thead(d,22,["Division","Contract","Invoiced","Profit $","Margin"],widths=[22,14,14,14,10],start=9)
-present=[r for r in divs if any(w["DivKey"]==r["DivKey"] for w in wip)]; rr=23
+section(d,28,"By division","Knowify · jobs")
+thead(d,29,["Division","Contract","Invoiced","Profit $","Margin"],widths=[22,14,14,14,10],start=9)
+present=[r for r in divs if any(w["DivKey"]==r["DivKey"] for w in wip)]; rr=30
 for dv in present:
     k=dv["DivKey"]
     put(d,rr,9,dv["Division"],10,False,INK,indent=1)
@@ -202,12 +277,12 @@ for dv in present:
     put(d,rr,13,f'=IFERROR(SUMIF(tWIP[DivKey],"{k}",tWIP[ProfitAmount])/SUMIF(tWIP[DivKey],"{k}",tWIP[ContractTotal]),0)',10,False,INK,fmt='0.0%',align="right")
     for c in range(9,14): d.cell(row=rr,column=c).border=Border(bottom=Side(style="thin",color=RULE))
     rr+=1
-put(d,22,1,"Revenue by month (2026)",11,True,ACCENT)
+put(d,28,1,"Revenue by month (2026)",11,True,ACCENT)
 ch=LineChart(); ch.title="Revenue by month — 2026"; ch.height=7.0; ch.width=15.0; ch.legend=None
 ch.add_data(Reference(dws,min_col=2,min_row=MR1,max_row=MR2)); ch.set_categories(Reference(dws,min_col=1,min_row=MR1,max_row=MR2))
 ch.y_axis.majorGridlines=None
 for s in ch.series: s.graphicalProperties=GraphicalProperties(ln=LineProperties(solidFill=ACCENT,w=28000))
-d.add_chart(ch,"A23")
+d.add_chart(ch,"A29")
 
 # =====================================================================
 # 2) FINANCIALS  (P&L + Cash & Liquidity + Balance Sheet)
@@ -229,6 +304,8 @@ line(fin,R,"Other income",per(lambda pk:f'={sumif_gl(pk,"Other Income")}'),'$#,#
 line(fin,R,"Other expense",per(lambda pk:f'={sumif_gl(pk,"Other Expense")}'),'$#,##0'); OE=R; R+=1
 line(fin,R,"Net income",[f'={get_column_letter(2+i)}{GP}-{get_column_letter(2+i)}{OPEX}+{get_column_letter(2+i)}{OI}-{get_column_letter(2+i)}{OE}' for i in range(3)],'$#,##0',bold=True,total=True); NI=R; R+=1
 line(fin,R,"Net margin %",[f'=IFERROR({get_column_letter(2+i)}{NI}/{get_column_letter(2+i)}{REV},0)' for i in range(3)],'0.0%'); R+=1
+# Key ratios & metrics (CFO)
+R+=1; R=ratio_block(fin,R)
 # Cash & liquidity
 R+=1; section(fin,R,"Cash & liquidity","QuickBooks + inputs"); R+=1
 thead(fin,R,["Metric","Value"],widths=[40,18]); R+=1
@@ -307,6 +384,24 @@ for b in ARB:
     R+=1
 put(op,R,1,"Total A/P",10,True,INK,indent=1,fillc=PANEL); put(op,R,2,'=SUM(tAP[Amount])',10,True,INK,fmt='$#,##0',align="right",fillc=PANEL)
 for c in (1,2): op.cell(row=R,column=c).border=Border(bottom=Side(style="thin",color=ACCENT))
+# Concentration — top open A/R by customer, and largest jobs by remaining backlog
+R+=3; section(op,R,"Customer concentration — top open A/R","QuickBooks"); R+=1
+thead(op,R,["Customer","Open A/R","% of A/R"],widths=[40,15,11]); R+=1
+for cust in TOPCUST:
+    q=cust.replace('"','""'); put(op,R,1,cust,10,False,INK,indent=1)
+    put(op,R,2,f'=SUMIFS(tAR[Amount],tAR[Customer],"{q}",tAR[IsRetainage],"FALSE")',10,False,INK,fmt='$#,##0',align="right")
+    put(op,R,3,f'=IFERROR(SUMIFS(tAR[Amount],tAR[Customer],"{q}",tAR[IsRetainage],"FALSE")/{F["ar"]},0)',10,False,INK,fmt='0.0%',align="right")
+    for c in (1,2,3): op.cell(row=R,column=c).border=Border(bottom=Side(style="thin",color=RULE))
+    R+=1
+R+=2; section(op,R,"Largest jobs by remaining backlog","Knowify"); R+=1
+thead(op,R,["Job","Backlog","% of backlog"],widths=[40,15,11]); R+=1
+for job in TOPJOB:
+    q=job.replace('"','""'); put(op,R,1,job,10,False,INK,indent=1)
+    bl=f'(SUMIF(tWIP[Job],"{q}",tWIP[ContractTotal])-SUMIF(tWIP[Job],"{q}",tWIP[Invoiced]))'
+    put(op,R,2,f'={bl}',10,False,INK,fmt='$#,##0',align="right")
+    put(op,R,3,f'=IFERROR({bl}/{F["backlog"]},0)',10,False,INK,fmt='0.0%',align="right")
+    for c in (1,2,3): op.cell(row=R,column=c).border=Border(bottom=Side(style="thin",color=RULE))
+    R+=1
 
 # =====================================================================
 # 4) JOB REVENUE BY MONTH
