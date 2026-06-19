@@ -1,0 +1,58 @@
+{
+  "period": "THIS_YEAR_TO_DATE_2026",
+  "totalSales": 75418579.22000004,
+  "customerCount": 282,
+  "top5Concentration": 17.7,
+  "topCustomers": [
+    {
+      "name": "Thompson Thrift Construction",
+      "sales": 2717218.65,
+      "percent": 3.6
+    },
+    {
+      "name": "MF.2025.972 Union Flats - Fishers",
+      "sales": 2717218.65,
+      "percent": 3.6
+    },
+    {
+      "name": "The Peterson Company, LLC",
+      "sales": 2587643.01,
+      "percent": 3.4
+    },
+    {
+      "name": "DEEM, LLC",
+      "sales": 2041679.8199999998,
+      "percent": 2.7
+    },
+    {
+      "name": "Marous Brothers Construction",
+      "sales": 2039464.17,
+      "percent": 2.7
+    },
+    {
+      "name": "MF.2025.1019 Town & Country Apartments (NY MF Project - 22 bldgs)",
+      "sales": 2039464.17,
+      "percent": 2.7
+    },
+    {
+      "name": "Skender Construction of Indiana LLC",
+      "sales": 2035601.2999999998,
+      "percent": 2.7
+    },
+    {
+      "name": "MILHAUS Construction",
+      "sales": 1886647.5,
+      "percent": 2.5
+    },
+    {
+      "name": "Compass Commercial Construction Group",
+      "sales": 1704370.92,
+      "percent": 2.3
+    },
+    {
+      "name": "2025.964 Avon Municipal Building",
+      "sales": 1361655.46,
+      "percent": 1.8
+    }
+  ]
+}

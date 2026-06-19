@@ -180,8 +180,8 @@ function pickComparison(active) {
 function renderAll() {
   renderExec(); renderPnl(); renderCompare();
   renderSegments(); renderWorkingCapital();
-  renderDeepDive(); renderForecast(); renderScenarios();
-  renderTrends(); renderBenchmark(); renderFlags();
+  renderDeepDive(); renderForecast(); renderProjections(); renderScenarios();
+  renderTrends(); renderMultiYear(); renderBenchmark(); renderFlags();
 }
 
 const PERSONA_KPIS = {
@@ -604,6 +604,173 @@ function renderBenchmark() {
     li.className = 'flag-good';
     ul.appendChild(li);
   });
+}
+
+function renderProjections() {
+  const p = SNAPSHOT.projections;
+  const periodsCur = SNAPSHOT.periods.current;
+  const fc = SNAPSHOT.forecast;
+  const pipe = SNAPSHOT.pipeline;
+
+  document.getElementById('projections-meta').textContent =
+    `${fc.completedMonths} of 12 months completed · ${fc.remainingMonths} remaining · ${p?.methods?.length || 0} projection methods`;
+
+  // Headline KPIs: consensus + spread + confidence range
+  const headline = document.getElementById('projections-headline-kpis');
+  headline.innerHTML = '';
+  if (p) {
+    const ytdToConsensus = fc.ytdRevenue / p.consensus;
+    const items = [
+      { label: 'Consensus year-end', value: fmt.money(p.consensus) },
+      { label: 'Low (most conservative)', value: fmt.money(p.low) },
+      { label: 'High (pipeline-driven)', value: fmt.money(p.high) },
+      { label: 'Spread (high − low)', value: fmt.money(p.spread) },
+      { label: 'YTD coverage of consensus', value: fmt.pct(ytdToConsensus) },
+    ];
+    items.forEach(i => {
+      const div = document.createElement('div');
+      div.className = 'kpi';
+      div.innerHTML = `<div class="kpi-label">${i.label}</div><div class="kpi-value">${i.value}</div>`;
+      headline.appendChild(div);
+    });
+  }
+
+  // Methods table
+  const mtb = document.getElementById('projections-methods-tbody');
+  mtb.innerHTML = '';
+  (p?.methods || []).forEach(m => {
+    const vsCons = (m.yearEnd - (p.consensus || 0));
+    const cls = vsCons >= 0 ? 'delta-pos' : 'delta-neg';
+    const confClass = m.confidence === 'high' ? 'good' : m.confidence === 'medium' ? 'warn' : 'neutral';
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td><strong>${m.label}</strong></td>
+      <td class="num">${fmt.money(m.yearEnd)}</td>
+      <td class="num ${cls}">${fmt.signed(vsCons)}</td>
+      <td><span class="flag-tag ${confClass}">${(m.confidence || 'unknown').toUpperCase()}</span></td>
+      <td>${m.assumption || ''}</td>`;
+    mtb.appendChild(tr);
+  });
+
+  // Quarterly view: split year into Q1/Q2/Q3/Q4 with actuals where available
+  const qtb = document.getElementById('projections-quarterly-tbody');
+  qtb.innerHTML = '';
+  const monthly = SNAPSHOT.verifiedMonths.filter(m => m.month.startsWith(String(SNAPSHOT.forecast.currentYear || 2026)));
+  const projMonthlyAvg = (p?.consensus || 0) / 12;
+  for (let q = 1; q <= 4; q++) {
+    const qMonths = monthly.filter(m => {
+      const mo = parseInt(m.month.split('-')[1], 10);
+      return mo >= (q - 1) * 3 + 1 && mo <= q * 3;
+    });
+    const actualSum = qMonths.reduce((s, m) => s + m.revenue, 0);
+    const missing = 3 - qMonths.length;
+    const projected = missing * projMonthlyAvg;
+    const total = actualSum + projected;
+    const status = missing === 0 ? 'Actual' : qMonths.length === 0 ? 'Projected' : 'Mixed';
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td><strong>Q${q}</strong></td><td class="num">${fmt.money(total)}</td><td>${status} ${qMonths.length}/3 mo</td>`;
+    qtb.appendChild(tr);
+  }
+
+  // Pipeline metrics
+  const ptb = document.getElementById('projections-pipeline-tbody');
+  ptb.innerHTML = '';
+  if (pipe) {
+    const rows = [
+      ['YTD billings', fmt.money(pipe.ytdBillings)],
+      ['Open A/R (billings unpaid)', fmt.money(pipe.ytdOpenBalance)],
+      ['YTD collected', fmt.money(pipe.ytdCollected)],
+      ['Open invoice count', `${pipe.openInvoiceCount} of ${pipe.invoiceCount}`],
+      ['Avg monthly billings (full months)', fmt.money((pipe.monthlyBillings || []).filter(m => m.count >= 25).reduce((s, m, _, a) => s + m.billings / a.length, 0))],
+    ];
+    rows.forEach(([k, v]) => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${k}</td><td class="num">${v}</td>`;
+      ptb.appendChild(tr);
+    });
+  } else {
+    ptb.innerHTML = '<tr><td colspan="2">Pipeline data not loaded (no pipeline.json). Run the daily refresh to populate.</td></tr>';
+  }
+
+  // By-segment projection: take current segment revenue accounts, apply run-rate × 12
+  const stb = document.getElementById('projections-segment-tbody');
+  stb.innerHTML = '';
+  const segments = (periodsCur.segments?.incomeAccounts || []).slice().sort((a, b) => Math.abs(b.amount) - Math.abs(a.amount));
+  const totalRunRate = segments.reduce((s, a) => s + a.amount * (12 / fc.completedMonths), 0);
+  segments.forEach(seg => {
+    const runRate = seg.amount * (12 / fc.completedMonths);
+    const share = runRate / (totalRunRate || 1);
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${seg.account}</td><td class="num">${fmt.money(seg.amount)}</td><td class="num">${fmt.money(runRate)}</td><td class="num">${fmt.pct(share)}</td>`;
+    stb.appendChild(tr);
+  });
+}
+
+function renderMultiYear() {
+  const my = SNAPSHOT.multiYear;
+  if (!my) {
+    document.getElementById('multiyear-meta').textContent = 'Multi-year outlook unavailable (need 2 prior years of data).';
+    return;
+  }
+  const anchor = my.anchor;
+  document.getElementById('multiyear-meta').textContent =
+    `Anchor: ${anchor.year} year-end forecast ${fmt.money(anchor.revenue)} · Base CAGR ${fmt.pct(my.baseCagr)} (FY ${anchor.year - 2} → ${anchor.year} forecast)`;
+
+  // Headline KPIs: base 2028 revenue + range
+  const yearsOut = my.scenarios.base.years.map(y => y.year);
+  const headline = document.getElementById('multiyear-headline-kpis');
+  headline.innerHTML = '';
+  const last = yearsOut[yearsOut.length - 1];
+  const items = [
+    { label: `${last} revenue — base case`, value: fmt.money(my.scenarios.base.years[1].revenue) },
+    { label: `${last} revenue — bearish`, value: fmt.money(my.scenarios.bearish.years[1].revenue) },
+    { label: `${last} revenue — optimistic`, value: fmt.money(my.scenarios.optimistic.years[1].revenue) },
+    { label: `${last} net income — base case`, value: fmt.money(my.scenarios.base.years[1].netIncome) },
+    { label: '2-yr CAGR (derived)', value: fmt.pct(my.baseCagr) },
+  ];
+  items.forEach(i => {
+    const div = document.createElement('div');
+    div.className = 'kpi';
+    div.innerHTML = `<div class="kpi-label">${i.label}</div><div class="kpi-value">${i.value}</div>`;
+    headline.appendChild(div);
+  });
+
+  // Column headers reflect the anchor year + projections
+  document.getElementById('my-y0-h').textContent = `${anchor.year} (anchor)`;
+  document.getElementById('my-y1-h').textContent = `${yearsOut[0]} proj`;
+  document.getElementById('my-y2-h').textContent = `${yearsOut[1]} proj`;
+  document.getElementById('my-ni-y0-h').textContent = `${anchor.year} (anchor)`;
+  document.getElementById('my-ni-y1-h').textContent = `${yearsOut[0]} proj`;
+  document.getElementById('my-ni-y2-h').textContent = `${yearsOut[1]} proj`;
+
+  const revTb = document.getElementById('multiyear-rev-tbody');
+  const niTb = document.getElementById('multiyear-ni-tbody');
+  revTb.innerHTML = '';
+  niTb.innerHTML = '';
+  ['bearish', 'base', 'optimistic'].forEach(key => {
+    const s = my.scenarios[key];
+    if (!s) return;
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td><strong>${s.label}</strong></td>
+      <td class="num">${fmt.pct(s.growth)}</td>
+      <td class="num">${fmt.pctPoint(s.gmShift)}</td>
+      <td class="num">${fmt.money(anchor.revenue)}</td>
+      <td class="num">${fmt.money(s.years[0].revenue)}</td>
+      <td class="num">${fmt.money(s.years[1].revenue)}</td>`;
+    revTb.appendChild(tr);
+
+    const niTr = document.createElement('tr');
+    const anchorNet = anchor.revenue * anchor.netMarginPct;
+    niTr.innerHTML = `<td><strong>${s.label}</strong></td>
+      <td class="num">${fmt.money(anchorNet)}</td>
+      <td class="num">${fmt.money(s.years[0].netIncome)}</td>
+      <td class="num">${fmt.money(s.years[1].netIncome)}</td>`;
+    niTb.appendChild(niTr);
+  });
+
+  // Chart: base case revenue across the 3 years
+  const baseSeries = [{ label: `${anchor.year}`, value: anchor.revenue }];
+  my.scenarios.base.years.forEach(y => baseSeries.push({ label: `${y.year}`, value: y.revenue }));
+  drawBars('multiyear-chart', baseSeries);
 }
 
 function renderFlags() {
