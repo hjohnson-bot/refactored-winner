@@ -1,0 +1,41 @@
+{
+  "name": "MDG Executive",
+  "dataColors": [
+    "#1F4E79",
+    "#2E75B6",
+    "#6E7585",
+    "#9AA3AF",
+    "#C9D2DD",
+    "#2E7D32",
+    "#C0392B",
+    "#B7791F"
+  ],
+  "background": "#FFFFFF",
+  "foreground": "#1F2937",
+  "tableAccent": "#1F4E79",
+  "good": "#2E7D32",
+  "neutral": "#B7791F",
+  "bad": "#C0392B",
+  "textClasses": {
+    "title": {
+      "fontFace": "Segoe UI Semibold",
+      "fontSize": 14,
+      "color": "#1F2937"
+    },
+    "header": {
+      "fontFace": "Segoe UI",
+      "fontSize": 12,
+      "color": "#1F4E79"
+    },
+    "label": {
+      "fontFace": "Segoe UI",
+      "fontSize": 10,
+      "color": "#1F2937"
+    },
+    "callout": {
+      "fontFace": "Segoe UI Semibold",
+      "fontSize": 28,
+      "color": "#1F2937"
+    }
+  }
+}

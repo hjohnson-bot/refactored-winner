@@ -1,0 +1,51 @@
+{
+  "as_of": "2026-06-17",
+  "periods": {
+    "FY2024": {
+      "revenue": 39537774.900000006,
+      "cogs": 28435216.93,
+      "grossProfit": 11102557.970000006,
+      "opex": 8249044.140000001,
+      "otherIncome": 68846.32999999999,
+      "otherExpense": 23197.6,
+      "netIncome": 2899162.5600000056
+    },
+    "FY2025": {
+      "revenue": 40491815.42,
+      "cogs": 27755136.439999998,
+      "grossProfit": 12736678.980000004,
+      "opex": 10032604.110000001,
+      "otherIncome": 0.0,
+      "otherExpense": 0.0,
+      "netIncome": 2704074.870000003
+    },
+    "YTD2026": {
+      "revenue": 28774215.270000003,
+      "cogs": 18535632.979999997,
+      "grossProfit": 10238582.290000007,
+      "opex": 4772731.890000001,
+      "otherIncome": 55196.909999999996,
+      "otherExpense": 180850.51,
+      "netIncome": 5340196.800000006
+    }
+  },
+  "monthly_count": 7,
+  "jobs": 308,
+  "wip_contract_total": 68738372.84,
+  "wip_invoiced_total": 46850685.67,
+  "wip_profit_total": 13878328.86,
+  "wip_retainage_total": 1482267.62,
+  "ar_trade_total": 12986875.87,
+  "ar_balance_sheet": 12986875.87,
+  "retainage_balance_sheet": 3136194.46,
+  "ap_total": 3655333.94,
+  "ap_balance_sheet": 3655333.94,
+  "cash_balance": -54623.3,
+  "loc_drawn": 5440076.95,
+  "total_assets": 22551054.99,
+  "total_liabilities": 13852385.73,
+  "total_equity": 8698669.26,
+  "qb_pl_income": 28774215.27,
+  "qb_cf_netincome": 5340196.8,
+  "qb_jobs_total": 308
+}
