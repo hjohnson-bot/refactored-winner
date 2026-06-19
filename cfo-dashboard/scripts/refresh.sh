@@ -2,21 +2,21 @@
 #
 # Refresh CFO dashboard data from QuickBooks.
 #
-# The QuickBooks MCP tools live inside Claude Code. This script does NOT call
-# QuickBooks directly — it (a) prepares the directory structure, (b) renders
-# the prompt for Claude Code to execute against the QuickBooks MCP, and (c)
-# rebuilds the dashboard snapshot once the raw JSON files are in place.
+# Three modes:
 #
-# Two ways to use it:
+#   ./scripts/refresh.sh prompt     # prints the prompt to paste into Claude Code
+#                                   # (use this when QuickBooks needs interactive
+#                                   # OAuth or you don't have an API key yet)
 #
-#   1) Manual / monthly:
-#        ./scripts/refresh.sh prompt   # prints the prompt to give Claude Code
-#        # paste the prompt into Claude Code; it writes raw/*.json files
-#        ./scripts/refresh.sh build    # rebuilds snapshot.json
+#   ./scripts/refresh.sh cron       # fully headless: calls Anthropic + QB MCP,
+#                                   # writes raw files, rebuilds snapshot.json,
+#                                   # rebuilds standalone HTML + Excel.
+#                                   # This is what the daily 4 AM ET GitHub
+#                                   # Actions workflow runs.
+#                                   # Requires: ANTHROPIC_API_KEY, QB_MCP_URL.
 #
-#   2) From Claude Code in one go (when run inside a Claude Code session that
-#      has the QuickBooks MCP available):
-#        ./scripts/refresh.sh build    # rebuilds from existing raw files
+#   ./scripts/refresh.sh build      # just rebuild snapshot.json from existing
+#                                   # raw files (no QuickBooks calls).
 #
 set -euo pipefail
 cd "$(dirname "$0")/.."
@@ -30,6 +30,15 @@ mkdir -p "$RAW" "$MONTHS_DIR"
 cmd="${1:-build}"
 
 case "$cmd" in
+  cron)
+    if ! command -v node >/dev/null 2>&1; then
+      echo "node is required for headless cron mode." >&2
+      exit 2
+    fi
+    : "${ANTHROPIC_API_KEY:?ANTHROPIC_API_KEY env var required}"
+    AS_OF="$AS_OF" node scripts/refresh-quickbooks.mjs
+    ;;
+
   prompt)
     cat <<EOF
 Paste this prompt into Claude Code (which must have the QuickBooks MCP enabled):
@@ -89,7 +98,7 @@ EOF
     ;;
 
   *)
-    echo "Usage: $0 [prompt|build]" >&2
+    echo "Usage: $0 [prompt|cron|build]" >&2
     exit 1
     ;;
 esac
