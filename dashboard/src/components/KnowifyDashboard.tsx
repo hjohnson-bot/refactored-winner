@@ -1,4 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useDashboardState } from '../hooks/useDashboardState';
+import type { DashboardState } from '../hooks/dashboardState';
+import CommandBar from './knowify/CommandBar';
+import JobsView from './knowify/JobsView';
+import CapacityView from './knowify/CapacityView';
+import TrendsView from './knowify/TrendsView';
+import { mask } from './knowify/data';
 
 // ── Sample AJR Data ──────────────────────────────────────────────────────────
 const PROJECT = {
@@ -29,23 +36,13 @@ const EXPENSE_CATEGORIES = [
   { name: 'Direct Costs', amount: 50, color: '#178a6e' },
 ];
 
-const NAV_ITEMS = [
-  { label: 'Dashboard', sub: 'Project Overview', active: false },
-  { label: 'Financials', sub: 'Overview', active: true },
-  { label: 'Jobs', sub: 'Booking, Jobs & Appointments', active: false },
-  { label: 'Estimates', sub: 'Sold & Unsold Estimates', active: false },
-  { label: 'Purchasing', sub: 'Purchase Order', active: false },
-  { label: 'Technicians', sub: 'Team', active: false },
-  { label: 'Project Plan', sub: 'Tasks & Jobs', active: false },
-  { label: 'Documents', sub: 'Tasks & Jobs', active: false },
-  { label: 'Daily Log', sub: 'Daily Log', active: false },
-  { label: 'Change Orders', sub: 'Change Orders', active: false },
+// Sidebar items map directly onto the dashboard `view` state.
+const NAV_ITEMS: { label: string; sub: string; view: DashboardState['view'] }[] = [
+  { label: 'Overview', sub: 'Project Financials', view: 'overview' },
+  { label: 'Jobs', sub: 'Portfolio & Profitability', view: 'jobs' },
+  { label: 'Capacity', sub: 'Team Load', view: 'capacity' },
+  { label: 'Trends', sub: 'Performance Over Time', view: 'trends' },
 ];
-
-// ── Helpers ──────────────────────────────────────────────────────────────────
-function fmt(n: number): string {
-  return n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-}
 
 // ── Donut Chart (SVG) ────────────────────────────────────────────────────────
 function DonutChart({ percent }: { percent: number }) {
@@ -112,12 +109,23 @@ function DonutChart({ percent }: { percent: number }) {
 }
 
 // ── Horizontal Bar Chart ─────────────────────────────────────────────────────
-function ExpenseBarChart({ categories }: { categories: typeof EXPENSE_CATEGORIES }) {
-  const maxAmount = Math.max(...categories.map((c) => c.amount));
+function ExpenseBarChart({
+  categories,
+  show,
+  sortKey,
+}: {
+  categories: typeof EXPENSE_CATEGORIES;
+  show: boolean;
+  sortKey: string;
+}) {
+  const sorted = [...categories].sort((a, b) =>
+    sortKey === 'name' ? a.name.localeCompare(b.name) : b.amount - a.amount
+  );
+  const maxAmount = Math.max(...sorted.map((c) => c.amount));
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-      {categories.map((cat) => (
+      {sorted.map((cat) => (
         <div key={cat.name} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <span style={{ width: 100, fontSize: 12, textAlign: 'right', color: '#374151', flexShrink: 0 }}>
             {cat.name}
@@ -134,7 +142,7 @@ function ExpenseBarChart({ categories }: { categories: typeof EXPENSE_CATEGORIES
             />
           </div>
           <span style={{ width: 80, fontSize: 12, color: '#374151', flexShrink: 0 }}>
-            ${fmt(cat.amount)}
+            ${mask(cat.amount, show)}
           </span>
         </div>
       ))}
@@ -144,10 +152,13 @@ function ExpenseBarChart({ categories }: { categories: typeof EXPENSE_CATEGORIES
 
 // ── Main Dashboard Component ─────────────────────────────────────────────────
 export default function KnowifyDashboard() {
-  const [activeNav, setActiveNav] = useState('Financials');
+  const { state, actions } = useDashboardState();
 
   const actualMargin = FINANCIALS.actualRevenue - FINANCIALS.actualExpense;
   const marginPercent = (actualMargin / FINANCIALS.actualRevenue) * 100;
+
+  // Mask currency amounts when the user toggles numbers off (privacy mode).
+  const money = (n: number) => mask(n, state.showNumbers);
 
   return (
     <div style={{ fontFamily: "'Segoe UI', 'Helvetica Neue', Arial, sans-serif", backgroundColor: '#f0f4ff', minHeight: '100vh', color: '#1f2937' }}>
@@ -161,7 +172,11 @@ export default function KnowifyDashboard() {
         </p>
       </div>
 
-      {/* ── Project Header ────────────────────────────────────────── */}
+      {/* ── Global command bar (search + presets) ─────────────────── */}
+      <CommandBar state={state} actions={actions} />
+
+      {/* ── Project Header (overview only) ────────────────────────── */}
+      {state.view === 'overview' && (
       <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 24px' }}>
         <div style={{
           display: 'flex', alignItems: 'center', backgroundColor: '#fff',
@@ -221,34 +236,43 @@ export default function KnowifyDashboard() {
           </div>
         </div>
       </div>
+      )}
 
       {/* ── Main Content Area ─────────────────────────────────────── */}
       <div style={{ maxWidth: 1200, margin: '24px auto 0', padding: '0 24px', display: 'flex', gap: 24 }}>
         {/* ── Left Sidebar Nav ──────────────────────────────────── */}
         <nav style={{ width: 180, flexShrink: 0 }}>
-          {NAV_ITEMS.map((item) => (
-            <div
-              key={item.label}
-              onClick={() => setActiveNav(item.label)}
-              style={{
-                padding: '10px 12px', cursor: 'pointer', borderRadius: 6,
-                backgroundColor: activeNav === item.label ? '#eff6ff' : 'transparent',
-                marginBottom: 2, transition: 'background-color 0.15s',
-              }}
-            >
-              <div style={{
-                fontSize: 14, fontWeight: activeNav === item.label ? 700 : 500,
-                color: activeNav === item.label ? '#2563eb' : '#374151',
-              }}>
-                {item.label}
+          {NAV_ITEMS.map((item) => {
+            const active = state.view === item.view;
+            return (
+              <div
+                key={item.view}
+                onClick={() => actions.setView(item.view)}
+                style={{
+                  padding: '10px 12px', cursor: 'pointer', borderRadius: 6,
+                  backgroundColor: active ? '#eff6ff' : 'transparent',
+                  marginBottom: 2, transition: 'background-color 0.15s',
+                }}
+              >
+                <div style={{
+                  fontSize: 14, fontWeight: active ? 700 : 500,
+                  color: active ? '#2563eb' : '#374151',
+                }}>
+                  {item.label}
+                </div>
+                <div style={{ fontSize: 11, color: '#9ca3af', marginTop: 1 }}>{item.sub}</div>
               </div>
-              <div style={{ fontSize: 11, color: '#9ca3af', marginTop: 1 }}>{item.sub}</div>
-            </div>
-          ))}
+            );
+          })}
         </nav>
 
         {/* ── Right Content ─────────────────────────────────────── */}
         <div style={{ flex: 1, minWidth: 0 }}>
+          {state.view === 'jobs' && <JobsView state={state} actions={actions} />}
+          {state.view === 'capacity' && <CapacityView state={state} actions={actions} />}
+          {state.view === 'trends' && <TrendsView state={state} actions={actions} />}
+          {state.view === 'overview' && (
+          <>
           {/* Section Title */}
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
             <div>
@@ -258,12 +282,42 @@ export default function KnowifyDashboard() {
                 <span style={{ fontSize: 14, fontWeight: 600, color: '#374151' }}>Project Summary</span>
               </div>
             </div>
-            <button style={{
-              padding: '8px 20px', borderRadius: 6, border: '1px solid #2563eb',
-              background: '#fff', color: '#2563eb', cursor: 'pointer', fontWeight: 600, fontSize: 13,
-            }}>
-              Project Costing
-            </button>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              {/* Sort the expense breakdown */}
+              <div style={{ display: 'flex', border: '1px solid #d1d5db', borderRadius: 6, overflow: 'hidden' }}>
+                {(['amount', 'name'] as const).map((key) => (
+                  <button
+                    key={key}
+                    onClick={() => actions.setSortKey(key)}
+                    style={{
+                      padding: '8px 12px', border: 'none', cursor: 'pointer', fontSize: 12, fontWeight: 600,
+                      background: state.sortKey === key ? '#2563eb' : '#fff',
+                      color: state.sortKey === key ? '#fff' : '#374151',
+                    }}
+                  >
+                    {key === 'amount' ? 'Sort by $' : 'Sort by name'}
+                  </button>
+                ))}
+              </div>
+
+              {/* Privacy toggle — masks every dollar figure */}
+              <button
+                onClick={actions.toggleShowNumbers}
+                style={{
+                  padding: '8px 16px', borderRadius: 6, border: '1px solid #d1d5db',
+                  background: '#fff', color: '#374151', cursor: 'pointer', fontWeight: 600, fontSize: 13,
+                }}
+              >
+                {state.showNumbers ? 'Hide $' : 'Show $'}
+              </button>
+
+              <button style={{
+                padding: '8px 20px', borderRadius: 6, border: '1px solid #2563eb',
+                background: '#fff', color: '#2563eb', cursor: 'pointer', fontWeight: 600, fontSize: 13,
+              }}>
+                Project Costing
+              </button>
+            </div>
           </div>
 
           {/* ── Summary Cards ───────────────────────────────────── */}
@@ -277,11 +331,11 @@ export default function KnowifyDashboard() {
                 CONTRACT VALUE
               </div>
               <div style={{ fontSize: 28, fontWeight: 700, color: '#111827', marginTop: 4 }}>
-                ${fmt(FINANCIALS.contractValue)}
+                ${money(FINANCIALS.contractValue)}
               </div>
               <div style={{ borderTop: '1px solid #f3f4f6', marginTop: 12, paddingTop: 12 }}>
                 <div style={{ fontSize: 11, color: '#6b7280', textTransform: 'uppercase', fontWeight: 600 }}>ACTUAL REVENUE</div>
-                <div style={{ fontSize: 16, fontWeight: 600, color: '#374151', marginTop: 2 }}>${fmt(FINANCIALS.actualRevenue)}</div>
+                <div style={{ fontSize: 16, fontWeight: 600, color: '#374151', marginTop: 2 }}>${money(FINANCIALS.actualRevenue)}</div>
               </div>
             </div>
 
@@ -294,11 +348,11 @@ export default function KnowifyDashboard() {
                 TOTAL BUDGETED EXPENSES
               </div>
               <div style={{ fontSize: 28, fontWeight: 700, color: '#111827', marginTop: 4 }}>
-                ${fmt(FINANCIALS.totalBudgetedExpenses)}
+                ${money(FINANCIALS.totalBudgetedExpenses)}
               </div>
               <div style={{ borderTop: '1px solid #f3f4f6', marginTop: 12, paddingTop: 12 }}>
                 <div style={{ fontSize: 11, color: '#6b7280', textTransform: 'uppercase', fontWeight: 600 }}>COST TO COMPLETE</div>
-                <div style={{ fontSize: 16, fontWeight: 600, color: '#374151', marginTop: 2 }}>+${fmt(FINANCIALS.costToComplete)}</div>
+                <div style={{ fontSize: 16, fontWeight: 600, color: '#374151', marginTop: 2 }}>+${money(FINANCIALS.costToComplete)}</div>
               </div>
             </div>
 
@@ -311,10 +365,14 @@ export default function KnowifyDashboard() {
                 ACTUAL EXPENSE
               </div>
               <div style={{ fontSize: 28, fontWeight: 700, color: '#111827', marginTop: 4 }}>
-                ${fmt(FINANCIALS.actualExpense)}
+                ${money(FINANCIALS.actualExpense)}
               </div>
               <div style={{ marginTop: 16 }}>
-                <ExpenseBarChart categories={EXPENSE_CATEGORIES} />
+                <ExpenseBarChart
+                  categories={EXPENSE_CATEGORIES}
+                  show={state.showNumbers}
+                  sortKey={state.sortKey}
+                />
               </div>
             </div>
           </div>
@@ -333,7 +391,7 @@ export default function KnowifyDashboard() {
                       ACTUAL MARGIN
                     </div>
                     <div style={{ fontSize: 28, fontWeight: 700, color: '#111827', marginTop: 4 }}>
-                      ${fmt(actualMargin)}
+                      ${money(actualMargin)}
                     </div>
                   </div>
                   <div style={{ textAlign: 'right' }}>
@@ -341,7 +399,7 @@ export default function KnowifyDashboard() {
                       BUDGETED MARGIN
                     </div>
                     <div style={{ fontSize: 16, fontWeight: 600, color: '#374151', marginTop: 6 }}>
-                      ${fmt(FINANCIALS.budgetedMarginDollars)} ({FINANCIALS.budgetedMarginPercent}%)
+                      ${money(FINANCIALS.budgetedMarginDollars)} ({FINANCIALS.budgetedMarginPercent}%)
                     </div>
                   </div>
                 </div>
@@ -351,14 +409,25 @@ export default function KnowifyDashboard() {
                 </div>
               </div>
 
-              {/* Right: Summary Table */}
-              <div style={{ display: 'flex', alignItems: 'center' }}>
+              {/* Right: Summary Table (collapsible) */}
+              <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                <button
+                  onClick={() => actions.togglePanel('legend')}
+                  style={{
+                    alignSelf: 'flex-start', marginBottom: 8, padding: '4px 8px', borderRadius: 6,
+                    border: '1px solid #d1d5db', background: '#fff', color: '#374151',
+                    cursor: 'pointer', fontSize: 12, fontWeight: 600,
+                  }}
+                >
+                  {state.open.legend ? '▾ Hide details' : '▸ Show details'}
+                </button>
+                {state.open.legend && (
                 <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 14 }}>
                   <tbody>
                     {[
-                      { label: 'Actual Revenue to date', value: `$${fmt(FINANCIALS.actualRevenue)}`, dot: null },
-                      { label: 'Actual Expense to date', value: `$${fmt(FINANCIALS.actualExpense)}`, dot: '#2596be' },
-                      { label: 'Actual Margin $ to date', value: `$${fmt(actualMargin)}`, dot: '#7c5bbf' },
+                      { label: 'Actual Revenue to date', value: `$${money(FINANCIALS.actualRevenue)}`, dot: null },
+                      { label: 'Actual Expense to date', value: `$${money(FINANCIALS.actualExpense)}`, dot: '#2596be' },
+                      { label: 'Actual Margin $ to date', value: `$${money(actualMargin)}`, dot: '#7c5bbf' },
                       { label: 'Actual Margin % to date', value: `${marginPercent.toFixed(2)}%`, dot: null },
                     ].map((row, i) => (
                       <tr key={i} style={{ borderBottom: '1px solid #f3f4f6' }}>
@@ -378,9 +447,12 @@ export default function KnowifyDashboard() {
                     ))}
                   </tbody>
                 </table>
+                )}
               </div>
             </div>
           </div>
+          </>
+          )}
         </div>
       </div>
 
