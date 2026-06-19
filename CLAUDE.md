@@ -4,23 +4,63 @@ This file provides guidance to Claude Code when working with this repository.
 
 ## Project Overview
 
-Node.js CLI tool for managing Claude Code components (agents, commands, MCPs, hooks, settings) with a static website for browsing and installing components. The project includes Vercel API endpoints for download tracking and Discord integration.
+This repository has **two distinct halves** that live side by side:
+
+1. **Claude Code Templates** (upstream / `claude-code-templates`) — a Node.js CLI
+   tool for managing Claude Code components (agents, commands, MCPs, hooks,
+   settings, skills) plus an Astro dashboard, Vercel API endpoints, and
+   Cloudflare Workers. This is the bulk of the codebase: `cli-tool/`,
+   `dashboard/`, `api/`, `cloudflare-workers/`, `docs/`, `scripts/`.
+
+2. **Finance & business tooling** (this fork's additions, for Longhorn
+   Consultants / Midwest Design Group LLC) — self-contained dashboards and
+   automations wired to live data via MCP servers:
+   - `cfo-dashboard/` — CFO dashboard wired to QuickBooks Online (via the
+     QuickBooks MCP).
+   - `knowify-dashboard.html` + the `/knowify-report` command — Knowify
+     (contractor project management) reporting and export automation.
+   - `docu/` — a separate Docusaurus documentation site.
+   - `templates/agent-teams/` — reusable agent-team definitions.
+
+Most "component" workflows below concern half (1). The finance dashboards
+(half 2) are largely standalone and documented in their own sections.
+
+### Repository Layout
+
+| Path | What it is |
+|---|---|
+| `cli-tool/` | The npm CLI (`claude-code-templates` / `cct`), component library under `cli-tool/components/`, tests |
+| `dashboard/` | Astro + React dashboard serving `www.aitmpl.com` / `app.aitmpl.com`, all Astro API routes |
+| `api/` | Legacy/standalone Vercel API functions (Discord, tracking) — see note in API section |
+| `cloudflare-workers/` | Independent Workers: `docs-monitor`, `pulse` (weekly KPI report) |
+| `docs/` | Generated `components.json` + legacy static HTML site + blog |
+| `docu/` | Docusaurus documentation site (separate npm project, deploys to Vercel) |
+| `cfo-dashboard/` | QuickBooks-wired CFO dashboard (HTML + React + Python build) |
+| `knowify-dashboard.html` | Standalone Knowify dashboard |
+| `templates/` | Agent-team templates (`agent-teams/agents/*.md`) |
+| `database/migrations/` | SQL migrations for Neon (versions, command usage logs) |
+| `scripts/` | Python/JS generators, deploy + predeploy scripts |
+| `.claude/` | Project agents, commands, hooks, `launch.json` for this repo |
+| `.claude-plugin/marketplace.json` | Plugin marketplace manifest |
+| `.mcp.json` | Project MCP servers (Linear, Neon) |
+| `schedule.json` | Scheduled job: runs `/knowify-report` daily at 23:35 |
 
 ## Essential Commands
 
 ```bash
-# Development
-npm install                    # Install dependencies
-npm test                       # Run tests
-npm version patch|minor|major  # Bump version
-npm publish                    # Publish to npm
+# Development (CLI lives in cli-tool/)
+npm install                    # Install root dependencies
+cd cli-tool && npm test        # Run the Jest test suite (root `npm test` is a no-op)
+npm version patch|minor|major  # Bump version (run in cli-tool/ for the published pkg)
+npm publish                    # Publish to npm (see Publishing Workflow)
 
 # Component catalog
 python scripts/generate_components_json.py  # Update docs/components.json
 
-# API testing
-cd api && npm test             # Test API endpoints before deploy
-vercel --prod                  # Deploy to production
+# Dashboards / sites
+cd dashboard && npx astro dev --port 4321   # Astro dashboard + APIs
+cd docu && yarn start                        # Docusaurus docs site
+npm run deploy                               # Deploy via deployer agent (preferred)
 ```
 
 ## Security Guidelines
@@ -383,6 +423,93 @@ This automatically:
 2. Creates HTML with SEO optimization
 3. Updates `docs/blog/blog-articles.json`
 
+## CFO Dashboard (`cfo-dashboard/`)
+
+A self-contained, browser-based CFO dashboard for **Midwest Design Group LLC**,
+wired to live QuickBooks Online data via the **QuickBooks MCP**. Every value
+renders from `data/snapshot.json` — there are **no hardcoded numbers**.
+
+### Structure
+
+| Path | Purpose |
+|---|---|
+| `index.html` / `styles.css` / `app.js` | Single-page dashboard (7 tabs); `app.js` holds all formulas, filters, comparisons, forecasts, action flags |
+| `data/snapshot.json` | The "live" data the dashboard reads |
+| `data/raw/*.json` | Raw QuickBooks API responses, saved per refresh |
+| `data/raw/months/*.json` | Per-month verified P&L queries (monthly trend) |
+| `scripts/build_snapshot.py` | Reduces raw QB responses into `snapshot.json` |
+| `scripts/build_distributables.py` | Builds standalone HTML + Excel under `downloads/` |
+| `scripts/refresh.sh` | Orchestrates the monthly refresh |
+| `react/CFODashboard.jsx` | Drop-in React version; auto-loads `snapshot.json` |
+| `react/snapshotAdapter.js` | Maps `snapshot.json` into the React component's shape |
+| `ACCOUNT_MAP.md` | Audit map: every QuickBooks account → dashboard tab/KPI |
+
+### Monthly refresh flow
+
+```bash
+cd cfo-dashboard
+./scripts/refresh.sh prompt   # prints a copy/paste prompt for Claude Code
+# Paste into Claude Code — it pulls live P&L + Cash Flow via the QuickBooks
+# MCP and saves each response under data/raw/ and data/raw/months/
+./scripts/refresh.sh build    # build_snapshot.py → data/snapshot.json
+# Open index.html (re-reads snapshot.json on load)
+```
+
+**Only Claude Code has QuickBooks MCP access** — the dashboard itself never
+calls QuickBooks directly. Keep `data/raw/` as the verifiable source of truth;
+all formulas are documented in both `README.md` and `ACCOUNT_MAP.md`.
+
+## Knowify Integration
+
+Tooling for **Knowify** (contractor project management) for Midwest Design
+Group LLC.
+
+- `knowify-dashboard.html` — standalone dashboard (open in a browser).
+- `.claude/commands/knowify-report.md` (the `/knowify-report` command) —
+  automates exporting the Advanced Jobs report via Playwright browser
+  automation and saves it to the AJR Reports folder. Requires
+  `KNOWIFY_USERNAME` / `KNOWIFY_PASSWORD` env vars.
+- `schedule.json` runs `/knowify-report` daily at 23:35 (cron `35 23 * * *`).
+- A **Knowify MCP** is also available in some sessions for direct data access
+  (company is Midwest Design Group LLC, time zone America/Indianapolis).
+
+## Docusaurus Site (`docu/`)
+
+A **separate** Docusaurus documentation project (its own `package.json`,
+`vercel.json`, and `docusaurus.config.ts`). Do not confuse it with the legacy
+`docs/` static site or the `cli-tool/docs_to_claude/` Docusaurus content.
+
+```bash
+cd docu
+yarn          # install
+yarn start    # local dev server
+yarn build    # static build → build/
+```
+
+## Project Claude Config (`.claude/`)
+
+This repo ships its own Claude Code configuration:
+
+- **`.claude/agents/`** — project agents including `component-reviewer`,
+  `deployer`, `catalog-generator`, `blog-writer`, the `*-expert` component
+  authors, and `linear-tracker`. Use them as directed elsewhere in this file.
+- **`.claude/commands/`** — slash commands: `knowify-report`, `create-blog-article`,
+  `lint`, `test`, `cleanup-cache`, and the `worktree-*` family
+  (`worktree-init`, `worktree-check`, `worktree-deliver`, `worktree-cleanup`)
+  for parallel multi-task development.
+- **`.claude/hooks/telegram-pr-webhook.py`** — sends a Telegram notification
+  (with PR + Vercel preview URLs) when a PR is created via `gh pr create`.
+  Needs `TELEGRAM_BOT_TOKEN` / `TELEGRAM_CHAT_ID`.
+- **`.claude/launch.json`** — launches the dashboard (`astro dev --port 4321`).
+- **`.mcp.json`** — project MCP servers: **Linear** and **Neon**.
+
+## Database Migrations (`database/migrations/`)
+
+SQL migrations for the Neon database, applied in numeric order:
+
+- `001_create_claude_code_versions.sql` — Claude Code release tracking
+- `002_create_command_usage_logs.sql` — CLI command usage logs
+
 ## Code Standards
 
 ### Path Handling
@@ -404,10 +531,16 @@ This automatically:
 
 ## Testing
 
+The Jest suite lives in `cli-tool/` (root `npm test` is a no-op `echo`):
+
 ```bash
-npm test                 # Run all tests
-npm run test:watch      # Watch mode
-npm run test:coverage   # Coverage report
+cd cli-tool
+npm test                 # Run all tests (jest)
+npm run test:watch       # Watch mode
+npm run test:coverage    # Coverage report
+npm run test:unit        # tests/unit only
+npm run test:integration # tests/integration only
+npm run test:e2e         # tests/e2e only
 ```
 
 Aim for 70%+ test coverage. Test critical paths and error handling.
