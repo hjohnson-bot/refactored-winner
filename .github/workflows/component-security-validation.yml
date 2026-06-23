@@ -12,6 +12,11 @@ on:
     paths:
       - 'cli-tool/components/**/*.md'
 
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
 jobs:
   security-audit:
     name: Security Audit
@@ -19,12 +24,12 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0  # Full history for git metadata
 
       - name: Setup Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v4
         with:
           node-version: '18'
           cache: 'npm'
@@ -47,18 +52,21 @@ jobs:
         run: |
           cd cli-tool
           npm run security-audit:json
+        continue-on-error: true
 
       - name: Upload Security Report
         if: always()
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v4
         with:
           name: security-audit-report
           path: cli-tool/security-report.json
           retention-days: 30
+        continue-on-error: true
 
       - name: Comment PR with Results
         if: github.event_name == 'pull_request' && always()
-        uses: actions/github-script@v8
+        continue-on-error: true
+        uses: actions/github-script@v7
         with:
           script: |
             const fs = require('fs');

@@ -1,0 +1,19 @@
+{
+  "name": "fpa-construction-workflow",
+  "version": "0.1.0",
+  "description": "AI-native FP&A workflow for construction finance teams. Structured monthly close: variance, anomaly detection, scenarios, board brief, finance Q&A.",
+  "main": "src/workflow.js",
+  "bin": {
+    "fpa": "src/index.js"
+  },
+  "scripts": {
+    "demo": "node src/index.js run --period data/sample-period.json --out artifacts/2026-04",
+    "ask": "node src/index.js ask --period data/sample-period.json",
+    "test": "node test/workflow.test.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "license": "MIT",
+  "private": true
+}
