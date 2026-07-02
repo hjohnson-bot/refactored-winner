@@ -5,8 +5,8 @@
     "naics": "236220",
     "state": "IN"
   },
-  "asOf": "2026-05-07",
-  "generatedAt": "2026-06-18T00:24:51.804946+00:00",
+  "asOf": "2026-06-30",
+  "generatedAt": "2026-07-02T15:48:54.949750+00:00",
   "source": "QuickBooks Online (live, via QuickBooks MCP)",
   "personas": [
     {
@@ -73,14 +73,14 @@
   "periods": {
     "current": {
       "periodStart": "2026-01-01",
-      "periodEnd": "2026-05-07",
-      "revenue": 19376770.19,
-      "cogs": 14108989.66,
-      "grossProfit": 5267780.53,
-      "operatingExpenses": 3480138.73,
-      "netIncome": 1661587.75,
-      "grossMarginPct": 0.2718606082616702,
-      "netMarginPct": 0.08575153308354315,
+      "periodEnd": "2026-06-30",
+      "revenue": 30132990.57,
+      "cogs": 20090132.37,
+      "grossProfit": 10042858.2,
+      "operatingExpenses": 5242172.32,
+      "netIncome": 4800685.88,
+      "grossMarginPct": 0.33328448355200874,
+      "netMarginPct": 0.15931660911145995,
       "segments": {
         "incomeAccounts": [
           {
@@ -89,15 +89,15 @@
           },
           {
             "account": "Drywall Supply Arbor Income",
-            "amount": 571765.41
+            "amount": 954478.7
           },
           {
             "account": "Drywall Supply Pulte Income",
-            "amount": 16823.83
+            "amount": 16826.61
           },
           {
             "account": "Engineering Project Income",
-            "amount": 206725.0
+            "amount": 396425.0
           },
           {
             "account": "Sales",
@@ -105,51 +105,51 @@
           },
           {
             "account": "Service/Fee Income",
-            "amount": 15924134.62
+            "amount": 25713723.99
           },
           {
             "account": "WIP Adj - Net change",
-            "amount": 2347599.0
+            "amount": 2544448.44
           }
         ],
         "cogsBuckets": [
           {
             "bucket": "Labor (contractors + direct)",
-            "amount": 6261029.85
+            "amount": 8677589.45
           },
           {
             "bucket": "Materials & supply",
-            "amount": 2745051.1
+            "amount": 3879854.77
           },
           {
             "bucket": "Job site & rental",
-            "amount": 529849.5
+            "amount": 781598.96
           }
         ],
         "opexBuckets": [
           {
             "bucket": "Payroll & benefits",
-            "amount": 1928101.09
+            "amount": 2916068.14
           },
           {
             "bucket": "Facilities (rent + utilities)",
-            "amount": 757455.81
+            "amount": 990801.93
           },
           {
             "bucket": "Vehicle / fleet",
-            "amount": 72850.52
+            "amount": 139047.64
           },
           {
             "bucket": "Insurance & professional",
-            "amount": 191337.16
+            "amount": 317740.36
           },
           {
             "bucket": "G&A (office, IT, dues, travel, M&E)",
-            "amount": 64541.24
+            "amount": 134589.28
           },
           {
             "bucket": "Other OpEx",
-            "amount": 221218.59
+            "amount": 402320.28
           }
         ]
       }
@@ -157,13 +157,13 @@
     "prior": {
       "periodStart": "2025-01-01",
       "periodEnd": "2025-12-31",
-      "revenue": 40491815.42,
-      "cogs": 27755136.44,
-      "grossProfit": 12736678.98,
-      "operatingExpenses": 9925912.36,
+      "revenue": 40491815.41,
+      "cogs": 27754565.1,
+      "grossProfit": 12737250.31,
+      "operatingExpenses": 9926483.69,
       "netIncome": 2810766.62,
-      "grossMarginPct": 0.314549467537803,
-      "netMarginPct": 0.06941567304022843,
+      "grossMarginPct": 0.3145635773804887,
+      "netMarginPct": 0.06941567305737158,
       "segments": {
         "incomeAccounts": [
           {
@@ -216,7 +216,7 @@
           },
           {
             "account": "Service/Fee Income",
-            "amount": 33721642.66
+            "amount": 33721642.65
           },
           {
             "account": "Specialties",
@@ -252,7 +252,7 @@
           },
           {
             "bucket": "Facilities (rent + utilities)",
-            "amount": 1286006.54
+            "amount": 196030.17
           },
           {
             "bucket": "Vehicle / fleet",
@@ -268,7 +268,7 @@
           },
           {
             "bucket": "Other OpEx",
-            "amount": 981759.21
+            "amount": 981248.31
           }
         ]
       }
@@ -288,24 +288,25 @@
   "cashFlow": {
     "current": {
       "periodStart": "2026-01-01",
-      "periodEnd": "2026-05-07",
-      "operating": 760034.3,
+      "periodEnd": "2026-06-30",
+      "operating": 856166.26,
       "investing": 212852.1,
-      "financing": -1330991.51,
-      "netCashChange": -358105.11,
+      "financing": -1717084.83,
+      "netCashChange": -648066.47,
       "cashBeginning": -243937.55,
-      "cashEnding": -602042.66,
-      "netIncome": 1661587.75,
+      "cashEnding": -892004.02,
+      "netIncome": 4675143.6,
       "workingCapital": {
-        "accountsPayableChange": 286831.19,
-        "accountsReceivableChange": -649262.07,
-        "retainageReceivableChange": -837450.48,
-        "inventoryDrywallChange": 193111.88,
-        "wipOverbillingsChange": -1073267.83,
-        "wipUnderbillingsChange": -1274331.17,
-        "accruedBonusesChange": 224000.0,
-        "accruedPayrollChange": -149000.0,
-        "lineOfCreditDraw": 2536373.04,
+        "accountsPayableChange": 933211.54,
+        "accountsReceivableChange": -1802279.03,
+        "retainageReceivableChange": -1178924.86,
+        "inventoryDrywallChange": 84158.12,
+        "wipOverbillingsChange": -563772.95,
+        "wipUnderbillingsChange": -1980675.49,
+        "accruedBonusesChange": 336000.0,
+        "accruedPayrollChange": -94000.0,
+        "accruedCommissionsChange": -39048.85,
+        "lineOfCreditDraw": 545048.77,
         "lineOfCreditCapXChange": -27802.23
       }
     },
@@ -339,14 +340,14 @@
   },
   "workingCapital": {
     "current": {
-      "ar": -649262.07,
-      "ap": 286831.19,
-      "retainage": -837450.48,
-      "inventory": 193111.88,
-      "wipOverbillings": -1073267.83,
-      "wipUnderbillings": -1274331.17,
-      "lineOfCreditDraw": 2536373.04,
-      "totalWorkingCapitalChange": -3354368.48
+      "ar": -1802279.03,
+      "ap": 933211.54,
+      "retainage": -1178924.86,
+      "inventory": 84158.12,
+      "wipOverbillings": -563772.95,
+      "wipUnderbillings": -1980675.49,
+      "lineOfCreditDraw": 545048.77,
+      "totalWorkingCapitalChange": -4508282.67
     },
     "prior": {
       "ar": -733947.11,
@@ -360,28 +361,28 @@
     }
   },
   "forecast": {
-    "completedMonths": 5,
-    "remainingMonths": 7,
-    "ytdRevenue": 19376770.19,
-    "ytdGrossProfit": 5267780.53,
-    "ytdOperatingExpenses": 3480138.73,
-    "ytdNetIncome": 1661587.75,
-    "avgMonthlyRevenue": 3875354.04,
-    "avgMonthlyGrossProfit": 1053556.11,
-    "avgMonthlyOperatingExpenses": 696027.75,
-    "avgMonthlyNetIncome": 332317.55,
-    "yearEndRevenue": 46504248.46,
-    "yearEndGrossProfit": 12642673.27,
-    "yearEndOperatingExpenses": 8352332.95,
-    "yearEndNetIncome": 3987810.6,
-    "runRateRevenue": 46504248.46,
-    "runRateGrossProfit": 12642673.27,
-    "runRateOperatingExpenses": 8352332.95,
-    "runRateNetIncome": 3987810.6,
-    "yearEndGrossMarginPct": 0.2718606081952797,
-    "yearEndNetMarginPct": 0.08575153307616747,
-    "yearEndCash": -1103389.81,
-    "yearEndOperatingCash": 1824082.32,
+    "completedMonths": 6,
+    "remainingMonths": 6,
+    "ytdRevenue": 30132990.57,
+    "ytdGrossProfit": 10042858.2,
+    "ytdOperatingExpenses": 5242172.32,
+    "ytdNetIncome": 4800685.88,
+    "avgMonthlyRevenue": 5022165.09,
+    "avgMonthlyGrossProfit": 1673809.7,
+    "avgMonthlyOperatingExpenses": 873695.39,
+    "avgMonthlyNetIncome": 800114.31,
+    "yearEndRevenue": 60265981.14,
+    "yearEndGrossProfit": 20085716.4,
+    "yearEndOperatingExpenses": 10484344.64,
+    "yearEndNetIncome": 9601371.76,
+    "runRateRevenue": 60265981.14,
+    "runRateGrossProfit": 20085716.4,
+    "runRateOperatingExpenses": 10484344.64,
+    "runRateNetIncome": 9601371.76,
+    "yearEndGrossMarginPct": 0.33328448355200874,
+    "yearEndNetMarginPct": 0.15931660911145998,
+    "yearEndCash": -1540070.49,
+    "yearEndOperatingCash": 1712332.52,
     "currentYear": 2026
   },
   "projections": {
@@ -389,179 +390,179 @@
       {
         "id": "run_rate",
         "label": "Run-rate (YTD \u00f7 months \u00d7 12)",
-        "yearEnd": 46504248.46,
-        "assumption": "YTD avg monthly $3,875,354 continues for 7 months",
+        "yearEnd": 60265981.14,
+        "assumption": "YTD avg monthly $5,022,165 continues for 6 months",
         "confidence": "low"
       },
       {
         "id": "yoy_adjusted",
         "label": "YoY growth-adjusted",
-        "yearEnd": 47158830.4,
-        "assumption": "Apply prior-year YoY growth +2.4% to remaining 7 months",
-        "yoyGrowth": 0.024129848541375676,
+        "yearEnd": 60993085.63,
+        "assumption": "Apply prior-year YoY growth +2.4% to remaining 6 months",
+        "yoyGrowth": 0.024129848288452882,
         "confidence": "medium"
       },
       {
         "id": "seasonality_adjusted",
         "label": "Seasonality-adjusted (prior-year monthly avg)",
-        "yearEnd": 42996995.85,
-        "assumption": "YTD actual + prior-year avg monthly $3,374,318 \u00d7 7 remaining months",
+        "yearEnd": 50378898.27,
+        "assumption": "YTD actual + prior-year avg monthly $3,374,318 \u00d7 6 remaining months",
         "confidence": "medium"
       },
       {
         "id": "pipeline_driven",
         "label": "Pipeline-driven (open invoices billing cadence)",
-        "yearEnd": 52919774.6,
-        "yearEndBillings": 44902063.06,
-        "assumption": "Avg billings $4,065,858/mo \u00d7 7 remaining + YTD; recognized at YTD billings\u2192revenue ratio of 1.18",
-        "billingsToRevenueRatio": 1.1785599811616962,
-        "ytdBillings": 16441055.61,
-        "avgMonthlyBillings": 4065858.21,
+        "yearEnd": 66292579.25,
+        "yearEndBillings": 46494737.43,
+        "assumption": "Avg billings $4,226,794/mo \u00d7 6 remaining + YTD; recognized at YTD billings\u2192revenue ratio of 1.43",
+        "billingsToRevenueRatio": 1.4258082293927343,
+        "ytdBillings": 21133971.56,
+        "avgMonthlyBillings": 4226794.31,
         "confidence": "high"
       }
     ],
-    "consensus": 47394962.33,
-    "low": 42996995.85,
-    "high": 52919774.6,
-    "spread": 9922778.75
+    "consensus": 59482636.07,
+    "low": 50378898.27,
+    "high": 66292579.25,
+    "spread": 15913680.98
   },
   "multiYear": {
     "anchor": {
       "year": 2026,
-      "revenue": 46504248.46,
-      "grossMarginPct": 0.2718606081952797,
-      "netMarginPct": 0.08575153307616747
+      "revenue": 60265981.14,
+      "grossMarginPct": 0.33328448355200874,
+      "netMarginPct": 0.15931660911145998
     },
-    "baseCagr": 0.0845,
+    "baseCagr": 0.2346,
     "scenarios": {
       "bearish": {
         "label": "Bearish",
-        "growth": 0.0345,
+        "growth": 0.1846,
         "gmShift": -0.02,
         "years": [
           {
             "year": 2027,
-            "revenue": 48109881.41,
-            "grossProfit": 12116983.99,
-            "grossMarginPct": 0.25186060819527967,
-            "netIncome": 3451957.75,
-            "netMarginPct": 0.07175153307616747
+            "revenue": 71391720.43,
+            "grossProfit": 22365918.26,
+            "grossMarginPct": 0.3132844835520087,
+            "netIncome": 10374402.73,
+            "netMarginPct": 0.14531660911146
           },
           {
             "year": 2028,
-            "revenue": 49770951.38,
-            "grossProfit": 11539923.06,
-            "grossMarginPct": 0.23186060819527968,
-            "netIncome": 2874348.75,
-            "netMarginPct": 0.05775153307616747
+            "revenue": 84571389.19,
+            "grossProfit": 24803476.2,
+            "grossMarginPct": 0.2932844835520087,
+            "netIncome": 11105628.06,
+            "netMarginPct": 0.13131660911145998
           }
         ]
       },
       "base": {
         "label": "Base",
-        "growth": 0.0845,
+        "growth": 0.2346,
         "gmShift": 0.0,
         "years": [
           {
             "year": 2027,
-            "revenue": 50435093.83,
-            "grossProfit": 13711315.28,
-            "grossMarginPct": 0.2718606081952797,
-            "netIncome": 4324886.62,
-            "netMarginPct": 0.08575153307616747
+            "revenue": 74405019.48,
+            "grossProfit": 24798038.49,
+            "grossMarginPct": 0.33328448355200874,
+            "netIncome": 11853955.41,
+            "netMarginPct": 0.15931660911145998
           },
           {
             "year": 2028,
-            "revenue": 54698200.15,
-            "grossProfit": 14870285.96,
-            "grossMarginPct": 0.2718606081952797,
-            "netIncome": 4690454.52,
-            "netMarginPct": 0.08575153307616747
+            "revenue": 91861226.18,
+            "grossProfit": 30615921.33,
+            "grossMarginPct": 0.33328448355200874,
+            "netIncome": 14635019.06,
+            "netMarginPct": 0.15931660911145998
           }
         ]
       },
       "optimistic": {
         "label": "Optimistic",
-        "growth": 0.1245,
+        "growth": 0.2746,
         "gmShift": 0.015,
         "years": [
           {
             "year": 2027,
-            "revenue": 52295263.77,
-            "grossProfit": 15001451.17,
-            "grossMarginPct": 0.2868606081952797,
-            "netIncome": 5033499.31,
-            "netMarginPct": 0.09625153307616746
+            "revenue": 76815658.73,
+            "grossProfit": 26753702.03,
+            "grossMarginPct": 0.34828448355200875,
+            "netIncome": 13044574.69,
+            "netMarginPct": 0.16981660911146
           },
           {
             "year": 2028,
-            "revenue": 58807414.45,
-            "grossProfit": 17751641.89,
-            "grossMarginPct": 0.3018606081952797,
-            "netIncome": 6277781.65,
-            "netMarginPct": 0.10675153307616746
+            "revenue": 97910053.31,
+            "grossProfit": 35569203.15,
+            "grossMarginPct": 0.36328448355200876,
+            "netIncome": 17654808.81,
+            "netMarginPct": 0.18031660911146
           }
         ]
       }
     }
   },
   "pipeline": {
-    "asOf": "2026-05-07",
+    "asOf": "2026-06-30",
     "periodStart": "2026-01-01",
-    "periodEnd": "2026-05-07",
-    "invoiceCount": 406,
-    "ytdBillings": 16441055.61,
-    "ytdOpenBalance": 3518300.82,
-    "ytdCollected": 12922754.79,
-    "openInvoiceCount": 66,
+    "periodEnd": "2026-06-30",
+    "invoiceCount": 500,
+    "ytdBillings": 21133971.56,
+    "ytdOpenBalance": 9713221.89,
+    "ytdCollected": 11420749.67,
+    "openInvoiceCount": 197,
     "monthlyBillings": [
       {
-        "month": "2026-01",
-        "billings": 2732933.77,
-        "openBalance": 82181.04,
-        "count": 90
-      },
-      {
         "month": "2026-02",
-        "billings": 3783851.42,
-        "openBalance": 243933.33,
-        "count": 91
+        "billings": 1121181.05,
+        "openBalance": 98794.71,
+        "count": 47
       },
       {
         "month": "2026-03",
         "billings": 4814613.14,
-        "openBalance": 693136.46,
+        "openBalance": 418077.52,
         "count": 99
       },
       {
         "month": "2026-04",
-        "billings": 4932034.5,
-        "openBalance": 2397076.37,
+        "billings": 4932094.5,
+        "openBalance": 801999.36,
         "count": 104
       },
       {
         "month": "2026-05",
-        "billings": 177622.78,
-        "openBalance": 101973.62,
-        "count": 22
+        "billings": 5304957.23,
+        "openBalance": 3572169.6,
+        "count": 138
+      },
+      {
+        "month": "2026-06",
+        "billings": 4961125.64,
+        "openBalance": 4822180.7,
+        "count": 112
       }
     ]
   },
   "customers": {
     "period": "THIS_YEAR_TO_DATE_2026",
-    "totalSales": 75418579.22000004,
-    "customerCount": 282,
-    "top5Concentration": 17.7,
+    "totalSales": 77174311.24000002,
+    "customerCount": 295,
+    "top5Concentration": 17.3,
     "topCustomers": [
       {
         "name": "Thompson Thrift Construction",
         "sales": 2717218.65,
-        "percent": 3.6
+        "percent": 3.5
       },
       {
         "name": "MF.2025.972 Union Flats - Fishers",
         "sales": 2717218.65,
-        "percent": 3.6
+        "percent": 3.5
       },
       {
         "name": "The Peterson Company, LLC",
@@ -570,38 +571,33 @@
       },
       {
         "name": "DEEM, LLC",
-        "sales": 2041679.8199999998,
+        "sales": 2065681.0699999998,
         "percent": 2.7
       },
       {
         "name": "Marous Brothers Construction",
         "sales": 2039464.17,
-        "percent": 2.7
+        "percent": 2.6
       },
       {
         "name": "MF.2025.1019 Town & Country Apartments (NY MF Project - 22 bldgs)",
         "sales": 2039464.17,
-        "percent": 2.7
+        "percent": 2.6
       },
       {
         "name": "Skender Construction of Indiana LLC",
-        "sales": 2035601.2999999998,
-        "percent": 2.7
+        "sales": 1974491.2999999998,
+        "percent": 2.6
       },
       {
         "name": "MILHAUS Construction",
         "sales": 1886647.5,
-        "percent": 2.5
+        "percent": 2.4
       },
       {
         "name": "Compass Commercial Construction Group",
-        "sales": 1704370.92,
-        "percent": 2.3
-      },
-      {
-        "name": "2025.964 Avon Municipal Building",
-        "sales": 1361655.46,
-        "percent": 1.8
+        "sales": 1852274.3299999998,
+        "percent": 2.4
       }
     ]
   },
@@ -631,6 +627,102 @@
       "month": "2025-04"
     },
     {
+      "periodStart": "2025-07-01",
+      "periodEnd": "2025-07-31",
+      "revenue": 3347154.03,
+      "cogs": 1995316.63,
+      "grossProfit": 1351837.4,
+      "operatingExpenses": 879964.46,
+      "netIncome": 597004.63,
+      "grossMarginPct": 0.4038766629452065,
+      "netMarginPct": 0.17836186343656238,
+      "month": "2025-07"
+    },
+    {
+      "periodStart": "2025-08-01",
+      "periodEnd": "2025-08-31",
+      "revenue": 4232059.25,
+      "cogs": 2774590.65,
+      "grossProfit": 1457468.6,
+      "operatingExpenses": 851596.2,
+      "netIncome": 624871.94,
+      "grossMarginPct": 0.3443875697156178,
+      "netMarginPct": 0.1476519828969786,
+      "month": "2025-08"
+    },
+    {
+      "periodStart": "2025-09-01",
+      "periodEnd": "2025-09-30",
+      "revenue": 4304115.3,
+      "cogs": 2836553.94,
+      "grossProfit": 1467561.36,
+      "operatingExpenses": 803511.68,
+      "netIncome": 674855.19,
+      "grossMarginPct": 0.34096701823949743,
+      "netMarginPct": 0.15679300923932032,
+      "month": "2025-09"
+    },
+    {
+      "periodStart": "2025-10-01",
+      "periodEnd": "2025-10-31",
+      "revenue": 4611211.27,
+      "cogs": 3323848.91,
+      "grossProfit": 1287362.36,
+      "operatingExpenses": 924266.37,
+      "netIncome": 373967.07,
+      "grossMarginPct": 0.27918095368464857,
+      "netMarginPct": 0.08109953070963921,
+      "month": "2025-10"
+    },
+    {
+      "periodStart": "2025-11-01",
+      "periodEnd": "2025-11-30",
+      "revenue": 3738547.96,
+      "cogs": 2750360.55,
+      "grossProfit": 988187.41,
+      "operatingExpenses": 883406.63,
+      "netIncome": 105046.38,
+      "grossMarginPct": 0.2643238552970176,
+      "netMarginPct": 0.028098176383967038,
+      "month": "2025-11"
+    },
+    {
+      "periodStart": "2025-12-01",
+      "periodEnd": "2025-12-31",
+      "revenue": 4463456.92,
+      "cogs": 2645012.62,
+      "grossProfit": 1818444.3,
+      "operatingExpenses": 762810.58,
+      "netIncome": 942337.33,
+      "grossMarginPct": 0.40740715830634694,
+      "netMarginPct": 0.211122756842918,
+      "month": "2025-12"
+    },
+    {
+      "periodStart": "2026-01-01",
+      "periodEnd": "2026-01-31",
+      "revenue": 4471974.17,
+      "cogs": 3167525.69,
+      "grossProfit": 1304448.48,
+      "operatingExpenses": 937191.25,
+      "netIncome": 186406.72,
+      "grossMarginPct": 0.2916940998342126,
+      "netMarginPct": 0.04168331768338456,
+      "month": "2026-01"
+    },
+    {
+      "periodStart": "2026-02-01",
+      "periodEnd": "2026-02-28",
+      "revenue": 4949310.29,
+      "cogs": 3687691.65,
+      "grossProfit": 1261618.64,
+      "operatingExpenses": 794070.18,
+      "netIncome": 468074.15,
+      "grossMarginPct": 0.25490797021740175,
+      "netMarginPct": 0.09457361179106837,
+      "month": "2026-02"
+    },
+    {
       "periodStart": "2026-03-01",
       "periodEnd": "2026-03-31",
       "revenue": 5290349.77,
@@ -653,23 +745,47 @@
       "grossMarginPct": 0.29408356724455975,
       "netMarginPct": 0.14746275449884244,
       "month": "2026-04"
+    },
+    {
+      "periodStart": "2026-05-01",
+      "periodEnd": "2026-05-31",
+      "revenue": 4925779.55,
+      "cogs": 3335298.81,
+      "grossProfit": 1590480.74,
+      "operatingExpenses": 978876.21,
+      "netIncome": 611696.31,
+      "grossMarginPct": 0.3228891435062294,
+      "netMarginPct": 0.12418264028888587,
+      "month": "2026-05"
+    },
+    {
+      "periodStart": "2026-06-01",
+      "periodEnd": "2026-06-30",
+      "revenue": 5213511.24,
+      "cogs": 2841927.83,
+      "grossProfit": 2371583.41,
+      "operatingExpenses": 722028.84,
+      "netIncome": 1649665.89,
+      "grossMarginPct": 0.45489178038100864,
+      "netMarginPct": 0.3164212781096833,
+      "month": "2026-06"
     }
   ],
   "benchmark": {
     "companyName": "Midwest Design Group LLC",
     "metricType": "profit",
     "metricLabel": "Yearly Profit",
-    "metricValue": 3757685.49,
-    "regionalAverage": 101486.51,
+    "metricValue": 5328445.58,
+    "regionalAverage": 76856.15,
     "nationalAverage": null,
-    "vsRegionalPercent": 3602.65,
+    "vsRegionalPercent": 6833.01,
     "vsNationalPercent": 0,
     "isAboveRegional": true,
     "isAboveNational": false,
     "location": "IN",
     "naicsCode": "236220",
     "industryType": "Commercial And Institutional Building Construction",
-    "benchmarkPeriodRange": "Mar 2025 - Feb 2026",
-    "reportDate": "2026-05-07"
+    "benchmarkPeriodRange": "May 2025 - Apr 2026",
+    "reportDate": "2026-07-02"
   }
 }

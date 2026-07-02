@@ -1,42 +1,42 @@
 {
-  "asOf": "2026-05-07",
+  "asOf": "2026-06-30",
   "periodStart": "2026-01-01",
-  "periodEnd": "2026-05-07",
-  "invoiceCount": 406,
-  "ytdBillings": 16441055.61,
-  "ytdOpenBalance": 3518300.82,
-  "ytdCollected": 12922754.79,
-  "openInvoiceCount": 66,
+  "periodEnd": "2026-06-30",
+  "invoiceCount": 500,
+  "ytdBillings": 21133971.56,
+  "ytdOpenBalance": 9713221.89,
+  "ytdCollected": 11420749.67,
+  "openInvoiceCount": 197,
   "monthlyBillings": [
     {
-      "month": "2026-01",
-      "billings": 2732933.77,
-      "openBalance": 82181.04,
-      "count": 90
-    },
-    {
       "month": "2026-02",
-      "billings": 3783851.42,
-      "openBalance": 243933.33,
-      "count": 91
+      "billings": 1121181.05,
+      "openBalance": 98794.71,
+      "count": 47
     },
     {
       "month": "2026-03",
       "billings": 4814613.14,
-      "openBalance": 693136.46,
+      "openBalance": 418077.52,
       "count": 99
     },
     {
       "month": "2026-04",
-      "billings": 4932034.5,
-      "openBalance": 2397076.37,
+      "billings": 4932094.5,
+      "openBalance": 801999.36,
       "count": 104
     },
     {
       "month": "2026-05",
-      "billings": 177622.78,
-      "openBalance": 101973.62,
-      "count": 22
+      "billings": 5304957.23,
+      "openBalance": 3572169.6,
+      "count": 138
+    },
+    {
+      "month": "2026-06",
+      "billings": 4961125.64,
+      "openBalance": 4822180.7,
+      "count": 112
     }
   ]
 }

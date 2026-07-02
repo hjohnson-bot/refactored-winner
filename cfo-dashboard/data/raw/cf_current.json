@@ -1,25 +1,26 @@
 {
   "periodStart": "2026-01-01",
-  "periodEnd": "2026-05-07",
+  "periodEnd": "2026-06-30",
   "reportTitle": "Statement of Cash Flows",
   "companyName": "Midwest Design Group LLC",
-  "operatingActivities": 760034.30,
+  "operatingActivities": 856166.26,
   "investingActivities": 212852.10,
-  "financingActivities": -1330991.51,
-  "netCashIncrease": -358105.11,
+  "financingActivities": -1717084.83,
+  "netCashIncrease": -648066.47,
   "cashAtBeginning": -243937.55,
-  "cashAtEnd": -602042.66,
-  "netIncome": 1661587.75,
+  "cashAtEnd": -892004.02,
+  "netIncome": 4675143.60,
   "workingCapital": {
-    "accountsPayableChange": 286831.19,
-    "accountsReceivableChange": -649262.07,
-    "retainageReceivableChange": -837450.48,
-    "inventoryDrywallChange": 193111.88,
-    "wipOverbillingsChange": -1073267.83,
-    "wipUnderbillingsChange": -1274331.17,
-    "accruedBonusesChange": 224000.00,
-    "accruedPayrollChange": -149000.00,
-    "lineOfCreditDraw": 2536373.04,
+    "accountsPayableChange": 933211.54,
+    "accountsReceivableChange": -1802279.03,
+    "retainageReceivableChange": -1178924.86,
+    "inventoryDrywallChange": 84158.12,
+    "wipOverbillingsChange": -563772.95,
+    "wipUnderbillingsChange": -1980675.49,
+    "accruedBonusesChange": 336000.00,
+    "accruedPayrollChange": -94000.00,
+    "accruedCommissionsChange": -39048.85,
+    "lineOfCreditDraw": 545048.77,
     "lineOfCreditCapXChange": -27802.23
   },
   "investing": {
@@ -30,12 +31,12 @@
     "securityDeposits": 10664.33
   },
   "financing": {
-    "openingBalanceEquity": 2644.70,
-    "partnerDistributionsCohoatConsulting": -278250.00,
-    "partnerDistributionsMdgEngineering": -278250.00,
-    "partnerDistributionsPatelConsulting": -278250.00,
-    "partnerDistributionsSteveLittle": -212000.00,
-    "partnerDistributionsCohoatGroup": -278250.00,
-    "wellsFargoLoanLease": -8636.21
+    "openingBalanceEquity": 1594.85,
+    "partnerDistributionsCohoatConsulting": -358750.00,
+    "partnerDistributionsMdgEngineering": -358750.00,
+    "partnerDistributionsPatelConsulting": -358750.00,
+    "partnerDistributionsSteveLittle": -273333.33,
+    "partnerDistributionsCohoatGroup": -358750.00,
+    "wellsFargoLoanLease": -10346.35
   }
 }

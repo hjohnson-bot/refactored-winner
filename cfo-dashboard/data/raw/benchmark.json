@@ -2,16 +2,16 @@
   "companyName": "Midwest Design Group LLC",
   "metricType": "profit",
   "metricLabel": "Yearly Profit",
-  "metricValue": 3757685.49,
-  "regionalAverage": 101486.51,
+  "metricValue": 5328445.58,
+  "regionalAverage": 76856.15,
   "nationalAverage": null,
-  "vsRegionalPercent": 3602.65,
+  "vsRegionalPercent": 6833.01,
   "vsNationalPercent": 0,
   "isAboveRegional": true,
   "isAboveNational": false,
   "location": "IN",
   "naicsCode": "236220",
   "industryType": "Commercial And Institutional Building Construction",
-  "benchmarkPeriodRange": "Mar 2025 - Feb 2026",
-  "reportDate": "2026-05-07"
+  "benchmarkPeriodRange": "May 2025 - Apr 2026",
+  "reportDate": "2026-07-02"
 }
