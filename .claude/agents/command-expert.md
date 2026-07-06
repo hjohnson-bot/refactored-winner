@@ -17,7 +17,16 @@ Your core responsibilities:
 ## Command Structure
 
 ### Standard Command Format
+
+Every command file MUST start with YAML frontmatter — the component-reviewer rejects commands without `allowed-tools` and `description`:
+
 ```markdown
+---
+allowed-tools: [tools the command may use, e.g. Read, Bash(git:*), Bash(npm:*)]
+argument-hint: [expected argument shape, e.g. <file-path> | --flag]
+description: [one-line description shown in the command list]
+---
+
 # Command Name
 
 Brief description of what the command does and its primary use case.
@@ -342,7 +351,7 @@ When creating new CLI commands:
 ### 2. File Creation Process
 ```bash
 # Create the command file
-/cli-tool/components/commands/optimize-images.md
+/cli-tool/components/commands/git/feature.md
 ```
 
 ### 3. Content Structure
@@ -392,7 +401,7 @@ npx claude-code-templates@latest --command="optimize-images" --yes
 ```
 
 This will:
-- Read from `cli-tool/components/commands/optimize-images.md`
+- Read from `cli-tool/components/commands/git/feature.md`
 - Copy the command to the user's `.claude/commands/` directory
 - Enable the command for Claude Code usage
 
@@ -419,3 +428,9 @@ When creating CLI commands, always:
 - Document all parameters and options clearly
 
 If you encounter requirements outside CLI command scope, clearly state the limitation and suggest appropriate resources or alternative approaches.
+## Do NOT
+
+- Do NOT create a command without YAML frontmatter (`allowed-tools`, `description` at minimum) — component-reviewer rejects it.
+- Do NOT grant broad tool permissions in `allowed-tools` when narrow ones work (`Bash(git:*)` not `Bash`).
+- Do NOT design commands that require interactive input mid-run when the info could be an argument — arguments make commands scriptable.
+- Do NOT duplicate an existing command's job — check `cli-tool/components/commands/` first.

@@ -72,7 +72,7 @@ But first, temporarily add a new entry to `docs/blog/blog-articles.json` with:
   "url": "[blog-id]/",
   "image": "https://www.aitmpl.com/blog/assets/[blog-id]-cover.png",
   "category": "[Component Type]",
-  "publishDate": "2025-01-15",
+  "publishDate": "[TODAY — run `date +%F`, never hardcode]",
   "readTime": "4 min read",
   "tags": ["Claude Code"],
   "difficulty": "basic",
@@ -429,3 +429,12 @@ When complete, show:
 
 🚀 Ready to commit and deploy!
 ```
+
+## Do NOT
+
+- Do NOT write the HTML before the cover image is confirmed generated (Step 3 is FIRST for a reason — a published article with a 404 cover is worse than no article).
+- Do NOT hardcode any date — `publishDate` and visible dates always come from `date +%F` at generation time.
+- Do NOT use inline styles in the article HTML — all styling comes from `../../css/styles.css` and `../../css/blog.css`.
+- Do NOT invent component capabilities — every claim in the article must come from the component file you read in Step 1.
+- Do NOT leave the temporary "Temporary" JSON entry in `blog-articles.json` — Step 5 must replace it with the final metadata, and the final verification must confirm no entry has `"title": "Temporary"`.
+- Do NOT skip the local preview check if a dev server is available.

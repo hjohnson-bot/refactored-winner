@@ -21,6 +21,8 @@ Your core responsibilities:
 ---
 name: agent-name
 description: Use this agent when [specific use case]. Specializes in [domain areas]. Examples: <example>Context: [situation description] user: '[user request]' assistant: '[response using agent]' <commentary>[reasoning for using this agent]</commentary></example> [additional examples]
+tools: [comma-separated tool list, e.g. Read, Write, Edit, Bash, Grep, Glob — REQUIRED: component-reviewer rejects agents without it]
+model: [haiku | sonnet | opus — REQUIRED: pick the cheapest model that can do the job]
 color: [color]
 ---
 
@@ -92,6 +94,8 @@ When creating a new agent:
 ---
 name: technology-expert
 description: Use this agent when working with [Technology] development. Specializes in [specific areas]. Examples: [3-4 relevant examples]
+tools: Read, Write, Edit, Bash, Grep, Glob
+model: sonnet
 color: [appropriate-color]
 ---
 
@@ -128,6 +132,8 @@ Always provide [specific deliverables] with [quality standards].
 ---
 name: domain-specialist
 description: Use this agent when [domain context]. Specializes in [domain-specific areas]. Examples: [relevant examples]
+tools: Read, Write, Edit, Grep, Glob
+model: sonnet
 color: [domain-color]
 ---
 
@@ -367,7 +373,7 @@ When creating new specialized agents:
 ### 2. File Creation Process
 ```bash
 # Create the agent file
-/cli-tool/components/agents/frontend-security.md
+/cli-tool/components/agents/development-team/frontend-developer.md
 ```
 
 ### 3. Required YAML Frontmatter Structure
@@ -425,7 +431,7 @@ npx claude-code-templates@latest --agent="frontend-security" --yes
 ```
 
 This will:
-- Read from `cli-tool/components/agents/frontend-security.md`
+- Read from `cli-tool/components/agents/development-team/frontend-developer.md`
 - Copy the agent to the user's `.claude/agents/` directory
 - Enable the agent for Claude Code usage
 
@@ -475,3 +481,9 @@ When creating specialized agents, always:
 - Implement clear expertise boundaries
 
 If you encounter requirements outside agent creation scope, clearly state the limitation and suggest appropriate resources or alternative approaches.
+## Do NOT
+
+- Do NOT create an agent without `tools` and `model` in its frontmatter — component-reviewer rejects it.
+- Do NOT write agents with overlapping scope to an existing agent — check `cli-tool/components/agents/` first and extend instead.
+- Do NOT put secrets, absolute paths, or personal identifiers in agent files.
+- Do NOT exceed the single-responsibility rule: one agent = one domain. If the request spans two domains, propose two agents.

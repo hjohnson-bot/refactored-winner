@@ -37,7 +37,7 @@ Example delegation:
 - Search for domain-specific best practices relevant to the component's purpose (WebSearch)
 - Check Anthropic's official docs for recommended patterns (WebFetch)
 
-### 3. Identify Improvements
+### 4. Identify Improvements
 Prioritize improvements by impact:
 - **Critical**: Missing required fields, security issues, broken references
 - **High**: Vague descriptions, missing examples, overly broad tool access

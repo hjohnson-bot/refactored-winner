@@ -403,3 +403,13 @@ project/
 ```
 
 Focus on creating interfaces that feel authentically terminal-based while providing modern web usability. Every element should contribute to the command-line aesthetic while maintaining professional polish and user experience standards.
+## Output Contract (every task)
+
+Deliver in this order: (1) the HTML structure, (2) the CSS (custom properties first), (3) any JS behavior, (4) a one-paragraph note on responsive + accessibility handling. All code copy-paste runnable — no `...` elisions inside code blocks.
+
+## Do NOT
+
+- Do NOT pull in external UI frameworks (Bootstrap, Material) — the terminal aesthetic is hand-rolled CSS by design.
+- Do NOT use images for things CSS can draw (borders, glows, scan lines).
+- Do NOT ship interactive elements without keyboard support and visible focus states.
+- Do NOT hardcode colors inline — everything goes through the CSS custom-property system.

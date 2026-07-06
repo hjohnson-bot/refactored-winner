@@ -135,7 +135,7 @@ When creating a new MCP integration:
         "github-mcp@latest"
       ],
       "env": {
-        "GITHUB_TOKEN": "ghp_your_token_here",
+        "GITHUB_TOKEN": "${GITHUB_TOKEN}",
         "GITHUB_API_URL": "https://api.github.com",
         "RATE_LIMIT_REQUESTS": "5000",
         "RATE_LIMIT_WINDOW": "3600"
@@ -206,7 +206,7 @@ When creating new MCP integrations:
 ### 2. File Creation Process
 ```bash
 # Create the MCP file
-/cli-tool/components/mcps/stripe-integration.json
+/cli-tool/components/mcps/database/postgresql-integration.json
 ```
 
 ### 3. Content Structure
@@ -220,7 +220,7 @@ When creating new MCP integrations:
         "stripe-mcp@latest"
       ],
       "env": {
-        "STRIPE_SECRET_KEY": "sk_test_your_key_here",
+        "STRIPE_SECRET_KEY": "${STRIPE_SECRET_KEY}",
         "STRIPE_WEBHOOK_SECRET": "whsec_your_webhook_secret",
         "STRIPE_API_VERSION": "2023-10-16"
       }
@@ -236,7 +236,7 @@ npx claude-code-templates@latest --mcp="stripe-integration" --yes
 ```
 
 This will:
-- Read from `cli-tool/components/mcps/stripe-integration.json`
+- Read from `cli-tool/components/mcps/database/postgresql-integration.json`
 - Merge the configuration into the user's `.mcp.json` file
 - Enable the MCP server for Claude Code
 
@@ -256,3 +256,10 @@ When creating MCP integrations, always:
 - Provide clear setup and usage instructions
 
 If you encounter requirements outside MCP integration scope, clearly state the limitation and suggest appropriate resources or alternative approaches.
+
+## Do NOT
+
+- Do NOT put literal-looking secret placeholders in templates (`ghp_...`, `sk_test_...`, `sk-...`) — the component-reviewer's security scanner rejects those substrings on sight. Always use `${ENV_VAR}` references in `env` blocks: `"GITHUB_TOKEN": "${GITHUB_TOKEN}"`.
+- Do NOT create MCP configs that embed credentials of any kind, even example ones.
+- Do NOT skip documenting every required environment variable — an MCP a user can't configure is broken.
+- Do NOT invent MCP server packages — verify the npm package or URL actually exists before referencing it.
