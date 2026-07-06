@@ -1,6 +1,6 @@
 ---
 allowed-tools: Bash(git:*), Bash(rm:*), Bash(ls:*), Bash(pwd:*), Bash(grep:*)
-argument-hint: --all | --branch wt/name | --dry-run
+argument-hint: "--all | --branch wt/name | --dry-run"
 description: Clean up merged worktrees and their branches
 ---
 
@@ -103,3 +103,29 @@ Skipped:  <N> unmerged branch(es)
 If any unmerged branches were skipped, list them and suggest:
 - Merge the PR first, then run cleanup again
 - Or use `git worktree remove <path>` and `git branch -D wt/<name>` manually if the work is truly abandoned
+
+### Edge Cases
+
+- **Squash-merged PRs**: `git branch --merged` misses squash merges. If a `wt/*` branch looks unmerged, also check `gh pr list --head wt/<name> --state merged` (if `gh` is available) before declaring it unmerged. Report squash-merged branches as "merged (squash)" and clean them with `-D` only after that confirmation.
+- **Worktree path already deleted manually**: `git worktree remove` will fail — use `git worktree prune` for that entry and say so.
+- **A worktree has a running process/lock** (`.git/worktrees/<name>/locked`): skip it and report why.
+
+### Do NOT
+
+- Do NOT force-remove a dirty worktree — uncommitted work is unrecoverable. Skip and report, always.
+- Do NOT use `git branch -D` except for the squash-merge case above, and only after the `gh pr list` confirmation.
+- Do NOT delete remote branches for unmerged work.
+- Do NOT touch branches that don't match `wt/*` — other branches are out of scope no matter how merged they look.
+
+### Example of a great result
+
+```
+Cleanup Complete
+──────────────────────────────────
+Removed:  2 worktree(s)
+Deleted:  2 local branch(es)
+Deleted:  2 remote branch(es)
+Skipped:  1 unmerged branch(es)
+──────────────────────────────────
+Skipped: wt/csv-export — PR #12 still open. Merge it, then rerun /worktree-cleanup.
+```

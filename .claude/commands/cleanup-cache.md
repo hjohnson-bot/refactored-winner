@@ -1,6 +1,6 @@
 ---
 allowed-tools: Bash(df:*), Bash(du:*), Bash(npm cache clean:*), Bash(brew cleanup:*), Bash(rm:*), Bash(find:*), Bash(docker system prune:*)
-argument-hint: [--aggressive] | [--maximum]
+argument-hint: "[--aggressive] | [--maximum]"
 description: Clean system caches (npm, Homebrew, Yarn, browsers, Python/ML) to free disk space
 ---
 
@@ -8,11 +8,23 @@ description: Clean system caches (npm, Homebrew, Yarn, browsers, Python/ML) to f
 
 Clean temporary files and caches to free disk space: $ARGUMENTS
 
+## Step 0: Detect the environment FIRST
+
+Run `uname -s` before anything else and branch:
+
+- **Darwin (macOS)** — all paths below apply as written (`~/Library/Caches/...`, Homebrew).
+- **Linux (including cloud/Claude Code sessions)** — substitute Linux equivalents and SKIP macOS-only steps:
+  - Browser/JetBrains caches under `~/Library/Caches/` do not exist → skip silently.
+  - Homebrew: only if `command -v brew` succeeds (Linuxbrew) → otherwise skip.
+  - Yarn cache: `~/.cache/yarn` instead of `~/Library/Caches/Yarn`.
+  - Everything under `~/.cache/` (puppeteer, selenium, uv, huggingface, torch, whisper, pip) applies on both platforms.
+- Never report a skipped platform-specific step as "cleaned" — list it under "Skipped (not applicable on this OS)".
+
 ## Current Disk Usage
 
 - **Disk space**: !`df -h / | tail -1`
 - **npm cache**: !`du -sh ~/.npm 2>/dev/null || echo "Not found"`
-- **Yarn cache**: !`du -sh ~/Library/Caches/Yarn 2>/dev/null || echo "Not found"`
+- **Yarn cache**: !`du -sh ~/Library/Caches/Yarn ~/.cache/yarn 2>/dev/null | head -2 || echo "Not found"`
 - **Homebrew cache**: !`brew cleanup -n 2>/dev/null | head -5 || echo "Homebrew not installed"`
 
 ## Cleanup Options
@@ -169,8 +181,26 @@ All cleaned caches are temporary and will rebuild automatically:
 /cleanup-cache --maximum
 ```
 
-After cleanup, verify the results and inform the user of:
-1. Space freed
-2. Current free space
-3. What was cleaned
-4. Whether additional cleanup is recommended
+## Output Format (always use this)
+
+```
+Cache Cleanup — <level> — <OS>
+──────────────────────────────────────────
+Cleaned:
+  npm cache            412 MB
+  ~/.cache/huggingface 2.1 GB
+Skipped (not applicable on this OS):
+  Homebrew, browser caches
+──────────────────────────────────────────
+Before: 12.4 GB free   After: 15.1 GB free   Recovered: 2.7 GB
+```
+
+If more space is still needed, end with one specific recommendation (e.g., "largest remaining: ~/.cache/torch at 4.2 GB — rerun with --aggressive").
+
+## Do NOT
+
+- Do NOT `rm -rf` anything outside the cache directories listed in this file — no exceptions, even if the user's disk is full.
+- Do NOT delete `node_modules` directories automatically — list them for manual review only (Maximum level already does this correctly).
+- Do NOT run `docker system prune` without the `--maximum` flag having been passed.
+- Do NOT clean caches for applications that are currently running (check browsers before Option 2; warn and let the user close them).
+- Do NOT invent cache paths not listed here; if a path doesn't exist, skip it silently rather than guessing at alternatives.

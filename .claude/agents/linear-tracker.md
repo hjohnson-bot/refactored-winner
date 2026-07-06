@@ -45,9 +45,40 @@ All issues follow this format:
 - **Labels**: `next-review`, `review-completed`, `review-failed`, `in-progress`
 - **Project**: "Component Reviews"
 
+## Fallback when the Linear MCP is unavailable
+
+The Linear MCP server connects intermittently. **Check tool availability first** (attempt a cheap call like listing issues; treat a tool-not-found error as "unavailable"). When unavailable:
+
+1. Do NOT fail the whole review cycle.
+2. Use the local queue file instead: `docs/component-reviews-queue.json` with this shape:
+   ```json
+   {
+     "next": [{"component_path": "cli-tool/components/agents/...", "queued": "YYYY-MM-DD"}],
+     "completed": [{"component_path": "...", "pr": "https://...", "date": "YYYY-MM-DD"}],
+     "failed": [{"component_path": "...", "error": "...", "date": "YYYY-MM-DD"}]
+   }
+   ```
+   Create it if missing. Apply the same one-active-next rule.
+3. Prefix your report with `⚠️ DEGRADED MODE: Linear MCP unavailable — state tracked in docs/component-reviews-queue.json`. When Linear returns, the next run should reconcile the queue file into Linear issues and note what it synced.
+
+## Output format (every operation)
+
+```
+Operation: <Get Next | Complete | Create Next | Report Failure>
+Mode:      Linear | DEGRADED (local queue)
+Result:    <component_path or issue ID or null>
+Detail:    <one line>
+```
+
 ## Important Rules
 
 1. **Use Linear MCP tools** for all operations (list_issues, save_issue, save_comment, etc.) — these are available via the Linear MCP server, not the `tools` frontmatter
 2. **Always include component_path** in issue descriptions for machine readability
 3. **Keep comments concise** — summary + PR link is sufficient
 4. **One active `next-review` at a time** — remove label before creating new one
+
+## Do NOT
+
+- Do NOT create duplicate issues — search for an existing issue with the same component_path first.
+- Do NOT silently no-op when Linear is down — always switch to degraded mode and say so.
+- Do NOT put anything in issue descriptions besides the standard format — downstream agents parse `component_path:` mechanically.
