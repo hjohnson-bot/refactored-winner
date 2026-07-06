@@ -8,6 +8,11 @@ description: Create an SEO-optimized blog article for a Claude Code component wi
 
 You will create a complete, SEO-optimized blog article for a Claude Code component.
 
+> **Canonical source.** This command is the authoritative, step-by-step procedure for building
+> a blog article. The `blog-writer` agent covers the same job but adds an interactive
+> confirmation step; when the two ever disagree on template, paths, or SEO rules, **this file
+> wins**. Keep them in sync.
+
 ## Component Path Argument
 
 Component path provided: **$ARGUMENTS**
@@ -410,6 +415,21 @@ If image generation fails:
 - Check if GOOGLE_API_KEY is set
 - Verify blog-articles.json entry
 - Check scripts/generate_blog_images.py exists
+
+## Do NOT (summary)
+
+The section-by-section ❌ rules above are binding. In short, never:
+
+- ❌ Build the HTML from scratch or from any template other than
+  `docs/blog/code-reviewer-agent/index.html` — copy it whole, then swap only the marked content areas
+- ❌ Remove, modify, duplicate, or "simplify" the three end-of-body scripts (CodeCopy,
+  MarkdownCopier, Mermaid) or change the header/footer/CSS structure
+- ❌ Use absolute paths — every image, CSS, and nav link is relative
+- ❌ Ship an install command with a flat name — always use the full `folder/name` path, verified with `find`
+- ❌ Omit the UTM parameters on any `claude.com` documentation link
+- ❌ Guess the component's file path or capabilities — read the actual component file first
+- ❌ Leave the temporary "Temporary" placeholder entry in `blog-articles.json` — replace it with the final entry
+- ❌ Invent installation counts or metrics you don't have
 
 ## Success Message
 

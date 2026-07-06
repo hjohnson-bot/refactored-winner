@@ -45,6 +45,38 @@ Most "component" workflows below concern half (1). The finance dashboards
 | `.mcp.json` | Project MCP servers (Linear, Neon) |
 | `schedule.json` | Scheduled job: runs `/knowify-report` daily at 23:35 |
 
+## Golden Rules (read first)
+
+The rest of this file is reference detail. These are the rules that must always hold — the
+sections below expand on each.
+
+**Always:**
+- ✅ Know which half you're in. The **CLI/dashboard** (`cli-tool/`, `dashboard/`, `api/`,
+  `cloudflare-workers/`, `docs/`) and the **finance tooling** (`cfo-dashboard/`, Knowify,
+  `docu/`) are separate. A change to one should not touch the other.
+- ✅ After adding or changing any component under `cli-tool/components/`, run it past the
+  **`component-reviewer`** agent, then regenerate the catalog with
+  `python scripts/generate_components_json.py` and copy `docs/components.json` →
+  `dashboard/public/components.json`.
+- ✅ Deploy **only** through the `deployer` agent / `npm run deploy` — never `vercel --prod` by hand.
+- ✅ Run `cd cli-tool && npm test` before publishing or before any change that touches the CLI.
+- ✅ Use relative paths (`.claude/scripts/`, `path.join()`); check `npm view claude-code-templates version`
+  before bumping the version.
+- ✅ Load secrets from `.env` via `process.env` / `os.environ.get()`; add new vars to `.env.example`.
+
+**Never:**
+- ⛔ Hardcode secrets or infrastructure IDs — API keys, tokens, passwords, Vercel/Supabase/Discord
+  IDs, DB connection strings. All go in `.env`. (See Security Guidelines.)
+- ⛔ Commit a `.env`, a real token, or a downloaded finance report (e.g. Knowify exports).
+- ⛔ Break existing component installations or hand-edit the generated `components.json`
+  (regenerate it instead).
+- ⛔ Deploy or publish with a dirty git tree, failing tests, or failing API tests.
+- ⛔ Publish from the repo root — the published package lives in `cli-tool/`.
+- ⛔ Put the model identifier or any internal-only detail into commits, PRs, or code.
+
+When a task is ambiguous or a step fails, say so plainly and show the real output — don't paper
+over a failure or invent numbers, paths, or install counts.
+
 ## Essential Commands
 
 ```bash

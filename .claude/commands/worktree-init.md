@@ -1,5 +1,5 @@
 ---
-allowed-tools: Bash(git:*), Bash(mkdir:*), Bash(ls:*), Bash(cat:*), Bash(basename:*), Bash(pwd:*), Bash(sed:*)
+allowed-tools: Bash(git:*), Bash(mkdir:*), Bash(ls:*), Bash(cat:*), Bash(basename:*), Bash(pwd:*), Bash(sed:*), Bash(date:*)
 argument-hint: task 1 | task 2 | task 3
 description: Create parallel worktrees for multi-task development with Ghostty panels
 ---
@@ -40,7 +40,8 @@ For each task:
    ```bash
    git worktree add -b wt/<name> ../worktrees/<repo-name>/wt-<name> origin/<main-branch>
    ```
-3. Write a `.worktree-task.md` file inside the new worktree with this content:
+3. Write a `.worktree-task.md` file inside the new worktree with this content (use
+   `date -u +%Y-%m-%d` for the created date — don't guess it):
    ```markdown
    # Worktree Task
 
@@ -86,3 +87,39 @@ Finally, remind the user:
 - Open a new Ghostty panel with `Cmd+D` (split right) or `Cmd+Shift+D` (split down)
 - When done with a task, use `/worktree-deliver` to commit, push, and create a PR
 - After merging all PRs, use `/worktree-cleanup --all` from the main repo
+
+## Example of a great result
+
+```
+$ /worktree-init fix the login redirect bug | add dark mode toggle
+
+Repo: refactored-winner   Base branch: main   Working tree clean ✓   Fetched origin ✓
+
+Created 2 worktrees:
+
+| # | Task                     | Branch               | Path                                         |
+|---|--------------------------|----------------------|----------------------------------------------|
+| 1 | fix the login redirect…  | wt/fix-login-redirect| ../worktrees/refactored-winner/wt-fix-login-redirect |
+| 2 | add dark mode toggle     | wt/add-dark-mode     | ../worktrees/refactored-winner/wt-add-dark-mode      |
+
+Detected package-lock.json → run `npm install` in each worktree before starting.
+
+Ready-to-copy Ghostty commands:
+
+# Panel 1: fix the login redirect bug
+cd /abs/path/../worktrees/refactored-winner/wt-fix-login-redirect && npm install && claude
+
+# Panel 2: add dark mode toggle
+cd /abs/path/../worktrees/refactored-winner/wt-add-dark-mode && npm install && claude
+
+Split panels with Cmd+D. Run /worktree-deliver in each when done.
+```
+
+## Do NOT
+
+- ❌ Create a worktree when the working tree is dirty without warning the user first
+- ❌ Reuse a branch name that already exists — if `wt/<name>` exists, append a short suffix
+- ❌ Create worktrees inside the repo itself — always use the `../worktrees/<repo>/` sibling path
+- ❌ Run `npm install` yourself — surface it as a command for the user to run per panel
+- ❌ Invent the created date — get it from `date`
+- ❌ Silently overwrite an existing `.worktree-task.md` in a reused directory
