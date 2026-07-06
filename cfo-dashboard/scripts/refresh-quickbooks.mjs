@@ -271,6 +271,23 @@ async function main() {
   // 4. Rebuild snapshot.json
   console.error("");
   console.error("Rebuilding snapshot.json…");
+  // Optional inputs: only pass files that exist. benchmark.json may be absent
+  // (its pull is non-fatal); pipeline.json / customers.json are refreshed
+  // interactively via /cfo-refresh — dropping the flag when a file is missing
+  // is fine, but omitting it when the file EXISTS would null that tab's data.
+  const optionalArgs = [];
+  for (const [flag, file] of [
+    ["--benchmark", "benchmark.json"],
+    ["--pipeline", "pipeline.json"],
+    ["--customers", "customers.json"],
+  ]) {
+    try {
+      await fs.access(path.join(RAW, file));
+      optionalArgs.push(flag, path.join(RAW, file));
+    } catch {
+      console.error(`  ${file} not present — skipping ${flag}`);
+    }
+  }
   execFileSync("python3", [
     path.join(ROOT, "scripts", "build_snapshot.py"),
     "--pl-current", path.join(RAW, `pl_${currentYear}_ytd.json`),
@@ -278,10 +295,10 @@ async function main() {
     "--pl-prior-2", path.join(RAW, `pl_${prior2Year}.json`),
     "--cf-current", path.join(RAW, "cf_current.json"),
     "--cf-prior", path.join(RAW, "cf_prior.json"),
-    "--benchmark", path.join(RAW, "benchmark.json"),
     "--months-dir", MONTHS,
     "--as-of", AS_OF,
     "--out", path.join(ROOT, "data", "snapshot.json"),
+    ...optionalArgs,
   ], { stdio: "inherit" });
 
   // 5. Rebuild standalone HTML + Excel

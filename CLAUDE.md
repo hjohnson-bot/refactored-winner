@@ -476,20 +476,25 @@ renders from `data/snapshot.json` — there are **no hardcoded numbers**.
 | `react/snapshotAdapter.js` | Maps `snapshot.json` into the React component's shape |
 | `ACCOUNT_MAP.md` | Audit map: every QuickBooks account → dashboard tab/KPI |
 
-### Monthly refresh flow
+### Refresh flows
 
-```bash
-cd cfo-dashboard
-./scripts/refresh.sh prompt   # prints a copy/paste prompt for Claude Code
-# Paste into Claude Code — it pulls live P&L + Cash Flow via the QuickBooks
-# MCP and saves each response under data/raw/ and data/raw/months/
-./scripts/refresh.sh build    # build_snapshot.py → data/snapshot.json
-# Open index.html (re-reads snapshot.json on load)
-```
+There are three ways to refresh, from most to least automated:
 
-**Only Claude Code has QuickBooks MCP access** — the dashboard itself never
-calls QuickBooks directly. Keep `data/raw/` as the verifiable source of truth;
-all formulas are documented in both `README.md` and `ACCOUNT_MAP.md`.
+1. **Daily headless cron** — `.github/workflows/cfo-dashboard-refresh.yml` runs
+   `scripts/refresh-quickbooks.mjs` at 4 AM ET (Anthropic API + QuickBooks MCP),
+   rebuilds the snapshot + distributables, and commits. Ops guide:
+   `cfo-dashboard/DAILY_REFRESH.md`. If `snapshot.json`'s `asOf` goes stale,
+   this cron is failing — usually the QuickBooks OAuth token expired.
+2. **`/cfo-refresh`** (preferred interactive path) — the Claude Code command
+   pulls everything via the QuickBooks MCP, gap-fills missing trend months,
+   rebuilds, and verifies. Use it when the cron fails, for month-end runs with
+   a custom as-of date, or to re-auth QuickBooks in a live session.
+3. **Manual** — `./scripts/refresh.sh prompt` prints a copy/paste prompt, then
+   `./scripts/refresh.sh build` rebuilds `data/snapshot.json`.
+
+The dashboard itself never calls QuickBooks directly — only Claude Code (via
+MCP) or the headless cron do. Keep `data/raw/` as the verifiable source of
+truth; all formulas are documented in both `README.md` and `ACCOUNT_MAP.md`.
 
 ## Knowify Integration
 
