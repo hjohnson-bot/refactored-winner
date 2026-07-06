@@ -32,14 +32,36 @@ matter where in the DST cycle we are.
 Manual runs from **Actions → CFO Dashboard — Daily QuickBooks Refresh →
 Run workflow** bypass the gate and always execute.
 
-## Required GitHub secrets
+## One-time setup (30 seconds)
 
-Set these once at **Settings → Secrets and variables → Actions**:
+1. **Add the API key.** Open
+   [Settings → Secrets → Actions → New repository secret](https://github.com/hjohnson-bot/refactored-winner/settings/secrets/actions/new),
+   name it `ANTHROPIC_API_KEY`, paste the key. Get a key at
+   [console.anthropic.com/settings/keys](https://console.anthropic.com/settings/keys).
+2. **Validate the setup.** Open
+   [Actions → CFO Dashboard — Setup Check → Run workflow](https://github.com/hjohnson-bot/refactored-winner/actions/workflows/cfo-dashboard-setup-check.yml)
+   and click "Run workflow" on the default branch. It finishes in ~10
+   seconds and posts a checklist to the run summary confirming:
+   - the secret is present,
+   - the API key actually authenticates against Anthropic,
+   - all required files exist in the repo.
+3. **Optional: trigger a real refresh right now.** Open
+   [Actions → CFO Dashboard — Daily QuickBooks Refresh → Run workflow](https://github.com/hjohnson-bot/refactored-winner/actions/workflows/cfo-dashboard-refresh.yml).
+   It pulls fresh QuickBooks data and commits an updated snapshot to the
+   default branch — same thing the 4 AM ET cron does.
 
-| Secret | Value |
+That's it. The daily cron takes over from there.
+
+## Optional secrets
+
+| Secret | Default if unset |
 |---|---|
-| `ANTHROPIC_API_KEY` | An Anthropic API key with permission to use MCP. |
-| `QB_MCP_URL` | The QuickBooks MCP server URL — defaults to `https://ai-inc.quickbooks.intuit.com/v1/mcp` if unset. |
+| `QB_MCP_URL` | `https://ai-inc.quickbooks.intuit.com/v1/mcp` |
+
+Only set `QB_MCP_URL` if you use a self-hosted or custom QuickBooks MCP
+endpoint.
+
+## Auth model
 
 The Anthropic API key must belong to the same Anthropic account that
 authenticated against the QuickBooks MCP. The MCP server keeps the OAuth
@@ -52,6 +74,20 @@ of inactivity, 365 days max), the cron will fail until you re-authenticate
 in a Claude Code or ChatGPT session. The failure surfaces as a non-zero
 exit in the Actions log and the artifact upload contains the partial
 snapshot for triage.
+
+## What happens if you run the daily workflow before setting the secret
+
+The first step of the workflow is a **preflight secret check** that
+inspects `ANTHROPIC_API_KEY`. When it's missing, the workflow:
+
+1. Fails immediately (no wasted minutes attempting the QB pull).
+2. Emits a boxed, actionable error to the logs with the exact URL to
+   click to add the secret.
+3. Publishes the same message to the run summary so you can see it
+   without opening the log.
+
+This is the only failure mode you should ever see from a missing
+secret. If the check ever fails silently, that's a bug — file an issue.
 
 ## What the cron commits
 
