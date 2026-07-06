@@ -178,7 +178,7 @@ Edit(
 Regenerate the components catalog:
 
 ```bash
-python scripts/generate_components_json.py
+python3 scripts/generate_components_json.py
 ```
 
 This updates `docs/components.json` with all new components.

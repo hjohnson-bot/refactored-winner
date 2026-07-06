@@ -20,7 +20,6 @@ Two Vercel projects deploy from the same repo:
 All Vercel IDs are stored in `.env` (never hardcoded):
 
 - `VERCEL_ORG_ID` — Vercel org/team ID
-- `VERCEL_SITE_PROJECT_ID` — Project ID for www.aitmpl.com
 - `VERCEL_DASHBOARD_PROJECT_ID` — Project ID for app.aitmpl.com
 
 ## Deploy Targets
@@ -88,29 +87,21 @@ cd api && npm test
 
 ## Deploy Execution
 
-Use the deploy script which reads IDs from `.env`:
+Use the deploy script, which reads IDs from `.env`. **One Astro build serves BOTH www.aitmpl.com and app.aitmpl.com** — there is no separate "site" deploy. The script accepts exactly these invocations (verify with `scripts/deploy.sh`'s case statement before assuming anything else):
 
-### Deploy www.aitmpl.com
-
-```bash
-./scripts/deploy.sh site
-```
-
-### Deploy app.aitmpl.com
+### Deploy everything (www + app — the only deploy there is)
 
 ```bash
-./scripts/deploy.sh dashboard
+./scripts/deploy.sh              # no args
+./scripts/deploy.sh dashboard    # identical (backwards compat)
+./scripts/deploy.sh all          # identical
 ```
 
-### Deploy both
+Do NOT pass `site` — the script rejects it with a usage error.
 
-```bash
-./scripts/deploy.sh all
-```
+### If `.env` is missing
 
-### Parallel deploys
-
-When deploying both, you can also run them in parallel (background tasks) to save time. Wait for both to complete before reporting.
+The repo ships only `.env.example`. If `.env` doesn't exist or lacks `VERCEL_ORG_ID` / `VERCEL_DASHBOARD_PROJECT_ID`, the script exits with a clear error. When that happens: STOP, tell the user exactly which variable is missing and that they should copy `.env.example` → `.env` and fill in the Vercel IDs from the Vercel dashboard (Settings → General). Never guess or hardcode IDs to work around it.
 
 ## Post-Deploy Verification
 
@@ -146,7 +137,7 @@ Error: [error message from Vercel]
 - **Auth failure**: Tell user to run `npx vercel login`
 - **Build failure on dashboard**: Check if Node version is pinned to 22 in Vercel project settings. Node 24 has known issues with `fs.writeFileSync`
 - **CORS issues after deploy**: Verify `vercel.json` has CORS headers for `/components.json` and `/trending-data.json`
-- **Missing env vars**: Check `.env` has `VERCEL_ORG_ID`, `VERCEL_SITE_PROJECT_ID`, `VERCEL_DASHBOARD_PROJECT_ID`
+- **Missing env vars**: Check `.env` has `VERCEL_ORG_ID`, `VERCEL_DASHBOARD_PROJECT_ID`
 
 ## Important Rules
 

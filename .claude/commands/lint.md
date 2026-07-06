@@ -1,111 +1,61 @@
-# Python Linter
+---
+allowed-tools: Bash(npx:*), Bash(node:*), Bash(python3:*), Bash(cd:*), Bash(ls:*), Read, Grep, Glob
+argument-hint: "[all | js | astro | python | <path>]"
+description: Lint/check only what THIS repo is configured for (JS syntax, Astro build check, Python compile) and report a fixed-format table
+---
 
-Run Python code linting and formatting tools.
+# Linter
 
-## Purpose
+Check code quality using only the tools this repository is actually set up for. This is a JavaScript/Astro repo with supporting Python scripts — there is no flake8/black/pylint/mypy configuration here, so do not run them.
 
-This command helps you maintain code quality using Python's best linting and formatting tools.
+## What "lint" means in this repo
 
-## Usage
+| Area | Check | Why this and not more |
+|------|-------|----------------------|
+| `js` | `node --check` on every changed/target `.js`/`.mjs` file | No ESLint config exists at root — syntax validity is the honest baseline |
+| `astro` | `cd dashboard && npx astro check` (if `@astrojs/check` resolves; otherwise `npx astro build --dry-run` is not a thing — fall back to `npx astro sync`) | Catches TS/component errors in the dashboard |
+| `python` | `python3 -m py_compile <file>` for every target `.py` under `scripts/`, `cfo-dashboard/scripts/`, `mdg-powerbi/scripts/` | No linter configs exist; compile check catches real breakage |
+
+If you discover a real linter config while scanning (e.g. someone adds `.eslintrc` or `pyproject.toml [tool.black]` later), USE it and say which config you found.
+
+## Process
+
+1. **Scope from `$ARGUMENTS`:** empty/`all` → all three areas on files changed vs the default branch (`git diff --name-only origin/<default>...HEAD`), or the whole repo if not on a branch. `js`/`astro`/`python` → that area. A path → just that path with the matching checker.
+2. **Run the checks.** Collect every error with file:line.
+3. **Report** in the exact format below.
+4. **Auto-fix policy:** only trivially safe fixes (trailing whitespace, missing final newline) and only when the user asked to fix. Otherwise report only.
+
+## Output format (always)
 
 ```
-/lint
+Lint Results — <scope>
+──────────────────────────────────────────
+Area     Files   Status   Issues
+js       14      ✅ PASS   0
+astro    1       ⚠️  WARN   2 type warnings (non-blocking)
+python   6       ❌ FAIL   1 syntax error
+──────────────────────────────────────────
+cfo-dashboard/scripts/build_snapshot.py:214  SyntaxError: unexpected indent
 ```
 
-## What this command does
+Every issue line: `path:line  <tool>: <message>`.
 
-1. **Runs multiple linters** (flake8, pylint, black, isort)
-2. **Provides detailed feedback** on code quality issues
-3. **Auto-fixes formatting** where possible
-4. **Checks type hints** if mypy is configured
+## Example of a great run
 
-## Example Commands
-
-### Black (code formatting)
-```bash
-# Format all Python files
-black .
-
-# Check formatting without changing files
-black --check .
-
-# Format specific file
-black src/main.py
+User: `/lint python`
 ```
-
-### flake8 (style guide enforcement)
-```bash
-# Check all Python files
-flake8 .
-
-# Check specific directory
-flake8 src/
-
-# Check with specific rules
-flake8 --max-line-length=88 .
+Lint Results — python
+──────────────────────────────────────────
+Area     Files   Status   Issues
+python   9       ✅ PASS   0
+──────────────────────────────────────────
 ```
+Follow-up line: "All 9 Python scripts compile clean (scripts/, cfo-dashboard/scripts/, mdg-powerbi/scripts/)."
 
-### isort (import sorting)
-```bash
-# Sort imports in all files
-isort .
+## Do NOT
 
-# Check import sorting
-isort --check-only .
-
-# Sort imports in specific file
-isort src/main.py
-```
-
-### pylint (comprehensive linting)
-```bash
-# Run pylint on all files
-pylint src/
-
-# Run with specific score threshold
-pylint --fail-under=8.0 src/
-
-# Generate detailed report
-pylint --output-format=html src/ > pylint_report.html
-```
-
-### mypy (type checking)
-```bash
-# Check types in all files
-mypy .
-
-# Check specific module
-mypy src/models.py
-
-# Check with strict mode
-mypy --strict src/
-```
-
-## Configuration Files
-
-Most projects benefit from configuration files:
-
-### .flake8
-```ini
-[flake8]
-max-line-length = 88
-exclude = .git,__pycache__,venv
-ignore = E203,W503
-```
-
-### pyproject.toml
-```toml
-[tool.black]
-line-length = 88
-
-[tool.isort]
-profile = "black"
-```
-
-## Best Practices
-
-- Run linters before committing code
-- Use consistent formatting across the project
-- Fix linting issues promptly
-- Configure linters to match your team's style
-- Use type hints for better code documentation
+- Do NOT run flake8, black, isort, pylint, or mypy — none are configured here and their defaults would produce noise, not signal.
+- Do NOT install any linter globally or add config files unless explicitly asked.
+- Do NOT reformat files wholesale; report first.
+- Do NOT lint `node_modules/`, `cli-tool/components/**` (shipped product catalog content), or generated files (`docs/components.json`, `cfo-dashboard/downloads/`).
+- Do NOT hide warnings to make the table look green — WARN is a valid, honest status.

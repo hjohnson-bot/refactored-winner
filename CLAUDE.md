@@ -31,7 +31,7 @@ Most "component" workflows below concern half (1). The finance dashboards
 |---|---|
 | `cli-tool/` | The npm CLI (`claude-code-templates` / `cct`), component library under `cli-tool/components/`, tests |
 | `dashboard/` | Astro + React dashboard serving `www.aitmpl.com` / `app.aitmpl.com`, all Astro API routes |
-| `api/` | Legacy/standalone Vercel API functions (Discord, tracking) — see note in API section |
+| `api/` | Legacy/standalone Vercel API functions — a near-complete parallel endpoint set (claude-code-check, collections/, health-check, track-command-usage, track-installation-outcome, track-website-events, `_lib/{neon,auth}.js`) plus `claude-code-monitor/` (own README). Run `cd api && npm test` before deploys |
 | `cloudflare-workers/` | Independent Workers: `docs-monitor`, `pulse` (weekly KPI report) |
 | `docs/` | Generated `components.json` + legacy static HTML site + blog |
 | `docu/` | Docusaurus documentation site (separate npm project, deploys to Vercel) |
@@ -55,12 +55,12 @@ npm version patch|minor|major  # Bump version (run in cli-tool/ for the publishe
 npm publish                    # Publish to npm (see Publishing Workflow)
 
 # Component catalog
-python scripts/generate_components_json.py  # Update docs/components.json
+python3 scripts/generate_components_json.py  # Update docs/components.json
 
 # Dashboards / sites
 cd dashboard && npx astro dev --port 4321   # Astro dashboard + APIs
 cd docu && yarn start                        # Docusaurus docs site
-npm run deploy                               # Deploy via deployer agent (preferred)
+npm run deploy                               # Runs ./scripts/deploy.sh (prefer invoking the deployer agent, which wraps this with pre-flight checks)
 ```
 
 ## Security Guidelines
@@ -134,7 +134,7 @@ Use the component-reviewer agent to review [component-path]
 3. Include clear descriptions and usage examples
 4. **REVIEW with component-reviewer agent** (validates format, security, naming)
 5. Fix any issues identified by the reviewer
-6. Run `python scripts/generate_components_json.py` to update catalog
+6. Run `python3 scripts/generate_components_json.py` to update catalog
 
 **The component-reviewer agent checks:**
 - ✅ Valid YAML frontmatter and required fields
@@ -149,10 +149,10 @@ Use the component-reviewer agent to review [component-path]
 **Example Usage:**
 ```
 # After creating a new agent
-Use the component-reviewer agent to review cli-tool/components/agents/development-team/react-expert.md
+Use the component-reviewer agent to review cli-tool/components/agents/development-team/frontend-developer.md
 
 # Before committing hook changes
-Use the component-reviewer agent to review cli-tool/components/hooks/git/prevent-force-push.json
+Use the component-reviewer agent to review cli-tool/components/hooks/git/prevent-direct-push.json
 
 # For PR reviews with multiple components
 Use the component-reviewer agent to review all modified components in cli-tool/components/
@@ -183,7 +183,7 @@ if (settingName.includes('statusline/')) {
 
 ```bash
 # 1. Update component catalog
-python scripts/generate_components_json.py
+python3 scripts/generate_components_json.py
 
 # 2. Run tests
 npm test
@@ -234,6 +234,8 @@ API endpoints live as Astro API routes in `dashboard/src/pages/api/`:
 - Monitors Claude Code releases
 - Vercel Cron: every 30 minutes
 - Database: Neon (claude_code_versions, claude_code_changes, discord_notifications_log, monitoring_metadata tables)
+
+**Other Astro API routes** (less critical but real): `github/token.ts` (GitHub OAuth token exchange) and the `live-task/` group (`control.ts`, `tools.ts`, `cycles.ts`). The standalone `api/` directory at repo root duplicates several endpoints for the legacy Vercel project — see the Repository Layout table. See `NEON_INTEGRATION_PLAN.md` for the Neon-backed feature design.
 
 ### Shared API Libraries
 
@@ -345,6 +347,19 @@ npm run deploy:dashboard   # Same as above
 - `VERCEL_ORG_ID` — Vercel org/team ID
 - `VERCEL_DASHBOARD_PROJECT_ID` — Project ID for aitmpl-dashboard
 
+### All GitHub Actions workflows (11 — full details in `.github/WORKFLOWS_REFERENCE.md`)
+
+| Workflow | Trigger | What it does |
+|---|---|---|
+| `deploy.yml` | push to main (`dashboard/**`) | Vercel production deploy |
+| `publish-package.yml` | GitHub release | Publishes `@davila7/claude-code-templates` to **GitHub Packages** (note: this is separate from the manual npmjs publish flow documented above — the manual flow publishes unscoped `claude-code-templates` to npmjs) |
+| `update-json-data.yml` | schedule | Regenerates data JSON files |
+| `component-security-validation.yml` | PRs touching components | Security scan on component changes |
+| `discord-release-notification.yml` | release | Discord release announcements |
+| `cfo-dashboard-refresh.yml` | daily 4 AM ET + manual | Pulls QuickBooks, rebuilds CFO dashboard, commits (secrets: `ANTHROPIC_API_KEY`, optional `QB_MCP_URL`) |
+| `cfo-dashboard-setup-check.yml` | manual | 10-second validator for the daily refresh setup |
+| `daily-blog-discord.yml` / `daily-component-discord.yml` / `daily-general-discord.yml` / `daily-community-help-discord.yml` | daily schedules | Discord community engagement posts |
+
 ### Environment Variables (Vercel)
 
 ```bash
@@ -439,25 +454,42 @@ renders from `data/snapshot.json` — there are **no hardcoded numbers**.
 | `data/raw/months/*.json` | Per-month verified P&L queries (monthly trend) |
 | `scripts/build_snapshot.py` | Reduces raw QB responses into `snapshot.json` |
 | `scripts/build_distributables.py` | Builds standalone HTML + Excel under `downloads/` |
-| `scripts/refresh.sh` | Orchestrates the monthly refresh |
+| `scripts/refresh.sh` | Refresh orchestrator: `prompt` (interactive), `cron` (headless), `build` (rebuild only) |
+| `scripts/refresh-quickbooks.mjs` | Headless refresh: calls Anthropic API + QuickBooks MCP, writes raw files, rebuilds everything. Needs `ANTHROPIC_API_KEY` |
+| `downloads/` | Committed distributables: standalone `cfo-dashboard.html` (all data inlined) + `cfo-dashboard.xlsx` (live formulas) |
 | `react/CFODashboard.jsx` | Drop-in React version; auto-loads `snapshot.json` |
 | `react/snapshotAdapter.js` | Maps `snapshot.json` into the React component's shape |
 | `ACCOUNT_MAP.md` | Audit map: every QuickBooks account → dashboard tab/KPI |
+| `DAILY_REFRESH.md` | Operations runbook for the automated daily refresh |
 
-### Monthly refresh flow
+### Refresh (three paths — prefer 1, fall back down the list)
 
-```bash
-cd cfo-dashboard
-./scripts/refresh.sh prompt   # prints a copy/paste prompt for Claude Code
-# Paste into Claude Code — it pulls live P&L + Cash Flow via the QuickBooks
-# MCP and saves each response under data/raw/ and data/raw/months/
-./scripts/refresh.sh build    # build_snapshot.py → data/snapshot.json
-# Open index.html (re-reads snapshot.json on load)
-```
+1. **Automated daily (production path)**: `.github/workflows/cfo-dashboard-refresh.yml` runs every day at 4 AM US Eastern (DST-aware dual cron), pulls QuickBooks headlessly, rebuilds, commits. One-time setup + validation: `.github/workflows/cfo-dashboard-setup-check.yml`. Full runbook: `cfo-dashboard/DAILY_REFRESH.md`.
+2. **Headless on demand**: `ANTHROPIC_API_KEY=… ./scripts/refresh.sh cron` (wraps `refresh-quickbooks.mjs`).
+3. **Interactive (when QB needs re-auth or no API key)**: `./scripts/refresh.sh prompt` → paste into a Claude Code session with the QuickBooks MCP → `./scripts/refresh.sh build`.
 
-**Only Claude Code has QuickBooks MCP access** — the dashboard itself never
-calls QuickBooks directly. Keep `data/raw/` as the verifiable source of truth;
-all formulas are documented in both `README.md` and `ACCOUNT_MAP.md`.
+Also available: the `/finance-refresh` command refreshes cfo-dashboard + mdg-powerbi + Knowify in one shot with tie-out validation.
+
+**Only Claude Code / the Anthropic API have QuickBooks access (via the QuickBooks MCP)** — the dashboard itself never calls QuickBooks directly. Keep `data/raw/` as the verifiable source of truth; all formulas are documented in both `README.md` and `ACCOUNT_MAP.md`.
+
+**Known QB MCP quirk**: the P&L tool's `monthlyBreakdown` on multi-month queries does NOT reconcile to its own annual totals — always pull individual months for trend data (the refresh scripts already do).
+
+## MDG Power BI Dashboard (`mdg-powerbi/`)
+
+The second Midwest Design Group finance deliverable: the **MDG Executive
+Financial Dashboard** (Power BI build spec), fed by QuickBooks + Knowify data.
+
+| Path | Purpose |
+|---|---|
+| `README.md` | Build spec v1.0 overview |
+| `RECONCILIATION.md` | How the numbers tie back to source systems |
+| `SOP_Automated_Refresh.md` | Refresh standard operating procedure |
+| `scripts/refresh_safe.py` + `scripts/validate_refresh.py` | Safe refresh + post-refresh validation (validator exit 0 = numbers OK) |
+| `scripts/build_dashboard.py` / `build_excel.py` / `build_powerbi.py` | Artifact builders |
+| `scripts/dry_run.sh` | Rehearse a refresh without writing |
+| `build/ data/ deploy/ output/ powerbi/` | Working dirs; `output/` holds the built artifacts |
+
+Refresh via `/finance-refresh powerbi` or directly: `python3 mdg-powerbi/scripts/refresh_safe.py && python3 mdg-powerbi/scripts/validate_refresh.py`.
 
 ## Knowify Integration
 
@@ -557,7 +589,7 @@ Aim for 70%+ test coverage. Test critical paths and error handling.
 - Test endpoint manually with curl
 
 **Components not updating on website**
-- Run `python scripts/generate_components_json.py`
+- Run `python3 scripts/generate_components_json.py`
 - Copy `docs/components.json` to `dashboard/public/components.json`
 - Deploy and clear browser cache
 

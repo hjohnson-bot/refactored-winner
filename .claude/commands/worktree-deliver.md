@@ -125,3 +125,17 @@ Tell the user:
 - PR is ready for review at `<URL>`
 - After merging, run `/worktree-cleanup` from the main repo to clean up
 - They can close this terminal panel
+
+### Edge Cases
+
+- **`gh` not installed or not authenticated**: push anyway, then give the user the compare URL (`https://github.com/<owner>/<repo>/compare/<main>...<branch>?expand=1`) so they can open the PR manually. Never fail after a successful push without telling them the branch IS pushed.
+- **Push rejected (non-fast-forward)**: someone else pushed to this branch. `git pull --rebase origin HEAD` once, retry; if it still fails, stop and show the conflict.
+- **Secrets in the diff**: scan `git diff --cached` for obvious keys (`ghp_`, `sk-`, `AKIA`, `-----BEGIN`) before committing. On a hit, stop and show the file/line — never commit it.
+
+### Do NOT
+
+- Do NOT force-push, ever.
+- Do NOT commit `.worktree-task.md` (Step 3 removes it — verify it's gone before staging).
+- Do NOT proceed past Step 4 without the user confirming the file list.
+- Do NOT amend or rewrite commits that are already pushed.
+- Do NOT open a second PR if one already exists for this branch — `gh pr view` first; if open, push updates to it and report its URL instead.

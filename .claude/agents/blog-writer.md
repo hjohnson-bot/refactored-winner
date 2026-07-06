@@ -26,7 +26,7 @@ The user will provide a path like `cli-tool/components/{type}/{category}/{name}.
 
 ### Step 2: Ask the User to Confirm
 
-Use **SubAgent** or output questions to the user to confirm:
+Use **AskUserQuestion** (the real tool name) to confirm with the user:
 
 1. **Title**: Propose a title. Example: "Block API Keys & Secrets from Your Commits with Claude Code Hooks"
 2. **Tags**: Propose 4-6 tags relevant to the component

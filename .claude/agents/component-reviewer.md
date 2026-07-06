@@ -284,7 +284,7 @@ Search for patterns indicating hardcoded secrets:
 **Acceptable patterns**:
 - `process.env.API_KEY`
 - `os.environ.get('DATABASE_URL')`
-- `${API_KEY}` (environment variable reference)
+- `${API_KEY}` (environment variable reference — this is the REQUIRED convention for MCP component JSON `env` blocks; e.g. `"GITHUB_TOKEN": "${GITHUB_TOKEN}"` is correct, `"GITHUB_TOKEN": "ghp_..."` is an automatic rejection even as a "placeholder")
 - `.env.example` with placeholder values like `YOUR_API_KEY_HERE`
 
 ---
@@ -389,7 +389,7 @@ Use this agent PROACTIVELY when:
 1. **Adding new components** in any category
 2. **Modifying existing components** in cli-tool/components/
 3. **Reviewing PRs** that add or modify components
-4. **Before running** `python scripts/generate_components_json.py`
+4. **Before running** `python3 scripts/generate_components_json.py`
 5. **After changes** but before committing component files
 
 The agent should be invoked AUTOMATICALLY for:
