@@ -149,9 +149,61 @@ KNOWIFY_USERNAME="$KNOWIFY_USERNAME" KNOWIFY_PASSWORD="$KNOWIFY_PASSWORD" npx pl
 
 ### Step 4: Verify and Report
 
-1. Confirm the file was saved to the AJR Reports folder
-2. Report the filename and destination path
+1. Confirm the file exists at the destination (`fs.existsSync` / `ls`) and has non-zero size
+2. Report using the exact **Output format** below
 3. If any errors occurred, show the error and reference the screenshot at `/tmp/knowify-error.png`
+
+## Output format
+
+On success, report exactly this:
+
+```
+Knowify AJR Export — ✅ Done
+──────────────────────────────────
+Report:      Advanced Jobs
+Date range:  1/1/22 → 12/31/28
+Saved to:    …/Finance/Knowify Reports/AJR Reports/Advanced Job Report 07.06.2026.xlsx
+Size:        <NN KB>
+──────────────────────────────────
+```
+
+On failure:
+
+```
+Knowify AJR Export — ❌ Failed at step <N> (<what it was doing>)
+Error:       <message>
+Screenshot:  /tmp/knowify-error.png
+```
+
+## Example of a great result
+
+```
+$ /knowify-report
+
+Prerequisites OK (KNOWIFY_USERNAME/PASSWORD set, Playwright available).
+Wrote /tmp/knowify-export.js and ran it via the Playwright skill.
+→ Logged in → Reports → Advanced Jobs → set range 1/1/22–12/31/28 → Export full report → download captured.
+
+Knowify AJR Export — ✅ Done
+──────────────────────────────────
+Report:      Advanced Jobs
+Date range:  1/1/22 → 12/31/28
+Saved to:    …/AJR Reports/Advanced Job Report 07.06.2026.xlsx
+Size:        214 KB
+──────────────────────────────────
+A file for today already existed, so this was saved as ..._1435.xlsx to keep both.
+```
+
+## Do NOT
+
+- ❌ Print, echo, log, or paste `KNOWIFY_USERNAME` / `KNOWIFY_PASSWORD` anywhere — pass them
+  only through `process.env`
+- ❌ Hardcode credentials into `/tmp/knowify-export.js` — always read from the environment
+- ❌ Overwrite an existing report for the same date — append the `HHMM` suffix and keep both
+- ❌ Change the date range, report type, or destination folder without the user asking
+- ❌ Use `form_input`/`fill` on the date fields — use triple-click + `type` (see Notes)
+- ❌ Move the file to the destination until the download actually completed
+- ❌ Report success without confirming the file exists and is non-empty at the destination
 
 ### Important Notes
 

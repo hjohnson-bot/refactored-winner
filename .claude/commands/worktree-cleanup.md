@@ -103,3 +103,37 @@ Skipped:  <N> unmerged branch(es)
 If any unmerged branches were skipped, list them and suggest:
 - Merge the PR first, then run cleanup again
 - Or use `git worktree remove <path>` and `git branch -D wt/<name>` manually if the work is truly abandoned
+
+## Example of a great result
+
+```
+$ /worktree-cleanup --all
+
+Main repo confirmed. Fetched + pruned origin. Base branch: main.
+
+| Branch                | Worktree Path                                    | Merged? | Action           |
+|-----------------------|--------------------------------------------------|---------|------------------|
+| wt/fix-login-redirect | ../worktrees/refactored-winner/wt-fix-login-…    | Yes     | Will remove      |
+| wt/add-dark-mode      | ../worktrees/refactored-winner/wt-add-dark-mode  | No      | Skip (not merged)|
+
+Removed worktree wt-fix-login-redirect, deleted local + remote branch wt/fix-login-redirect.
+
+Cleanup Complete
+──────────────────────────────────
+Removed:  1 worktree(s)
+Deleted:  1 local branch(es)
+Deleted:  1 remote branch(es)
+Skipped:  1 unmerged branch(es)
+──────────────────────────────────
+
+Skipped (not merged): wt/add-dark-mode. Merge its PR, then run cleanup again.
+```
+
+## Do NOT
+
+- ❌ Run from inside a worktree — this must run from the main working tree
+- ❌ Remove or delete any branch that is **not** merged into the base branch
+- ❌ Use `git worktree remove --force` or `git branch -D` on your own — only `git worktree remove` and `git branch -d` (safe deletes). Force-removal is a manual decision for the user
+- ❌ Delete a worktree with uncommitted changes — skip it and warn
+- ❌ Error out when a remote branch is already gone — ignore that case silently
+- ❌ Touch anything outside the `wt/*` namespace

@@ -45,6 +45,38 @@ Most "component" workflows below concern half (1). The finance dashboards
 | `.mcp.json` | Project MCP servers (Linear, Neon) |
 | `schedule.json` | Scheduled job: runs `/knowify-report` daily at 23:35 |
 
+## Golden Rules (read first)
+
+The rest of this file is reference detail. These are the rules that must always hold — the
+sections below expand on each.
+
+**Always:**
+- ✅ Know which half you're in. The **CLI/dashboard** (`cli-tool/`, `dashboard/`, `api/`,
+  `cloudflare-workers/`, `docs/`) and the **finance tooling** (`cfo-dashboard/`, Knowify,
+  `docu/`) are separate. A change to one should not touch the other.
+- ✅ After adding or changing any component under `cli-tool/components/`, run it past the
+  **`component-reviewer`** agent, then regenerate the catalog with
+  `python scripts/generate_components_json.py` and copy `docs/components.json` →
+  `dashboard/public/components.json`.
+- ✅ Deploy **only** through the `deployer` agent / `npm run deploy` — never `vercel --prod` by hand.
+- ✅ Run `cd cli-tool && npm test` before publishing or before any change that touches the CLI.
+- ✅ Use relative paths (`.claude/scripts/`, `path.join()`); check `npm view claude-code-templates version`
+  before bumping the version.
+- ✅ Load secrets from `.env` via `process.env` / `os.environ.get()`; add new vars to `.env.example`.
+
+**Never:**
+- ⛔ Hardcode secrets or infrastructure IDs — API keys, tokens, passwords, Vercel/Supabase/Discord
+  IDs, DB connection strings. All go in `.env`. (See Security Guidelines.)
+- ⛔ Commit a `.env`, a real token, or a downloaded finance report (e.g. Knowify exports).
+- ⛔ Break existing component installations or hand-edit the generated `components.json`
+  (regenerate it instead).
+- ⛔ Deploy or publish with a dirty git tree, failing tests, or failing API tests.
+- ⛔ Publish from the repo root — the published package lives in `cli-tool/`.
+- ⛔ Put the model identifier or any internal-only detail into commits, PRs, or code.
+
+When a task is ambiguous or a step fails, say so plainly and show the real output — don't paper
+over a failure or invent numbers, paths, or install counts.
+
 ## Essential Commands
 
 ```bash
@@ -444,20 +476,25 @@ renders from `data/snapshot.json` — there are **no hardcoded numbers**.
 | `react/snapshotAdapter.js` | Maps `snapshot.json` into the React component's shape |
 | `ACCOUNT_MAP.md` | Audit map: every QuickBooks account → dashboard tab/KPI |
 
-### Monthly refresh flow
+### Refresh flows
 
-```bash
-cd cfo-dashboard
-./scripts/refresh.sh prompt   # prints a copy/paste prompt for Claude Code
-# Paste into Claude Code — it pulls live P&L + Cash Flow via the QuickBooks
-# MCP and saves each response under data/raw/ and data/raw/months/
-./scripts/refresh.sh build    # build_snapshot.py → data/snapshot.json
-# Open index.html (re-reads snapshot.json on load)
-```
+There are three ways to refresh, from most to least automated:
 
-**Only Claude Code has QuickBooks MCP access** — the dashboard itself never
-calls QuickBooks directly. Keep `data/raw/` as the verifiable source of truth;
-all formulas are documented in both `README.md` and `ACCOUNT_MAP.md`.
+1. **Daily headless cron** — `.github/workflows/cfo-dashboard-refresh.yml` runs
+   `scripts/refresh-quickbooks.mjs` at 4 AM ET (Anthropic API + QuickBooks MCP),
+   rebuilds the snapshot + distributables, and commits. Ops guide:
+   `cfo-dashboard/DAILY_REFRESH.md`. If `snapshot.json`'s `asOf` goes stale,
+   this cron is failing — usually the QuickBooks OAuth token expired.
+2. **`/cfo-refresh`** (preferred interactive path) — the Claude Code command
+   pulls everything via the QuickBooks MCP, gap-fills missing trend months,
+   rebuilds, and verifies. Use it when the cron fails, for month-end runs with
+   a custom as-of date, or to re-auth QuickBooks in a live session.
+3. **Manual** — `./scripts/refresh.sh prompt` prints a copy/paste prompt, then
+   `./scripts/refresh.sh build` rebuilds `data/snapshot.json`.
+
+The dashboard itself never calls QuickBooks directly — only Claude Code (via
+MCP) or the headless cron do. Keep `data/raw/` as the verifiable source of
+truth; all formulas are documented in both `README.md` and `ACCOUNT_MAP.md`.
 
 ## Knowify Integration
 

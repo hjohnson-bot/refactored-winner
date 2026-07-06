@@ -57,3 +57,31 @@ Untracked: <N> files
 ```
 
 If there are changes ready to deliver, suggest: "Run `/worktree-deliver` when you're ready to commit, push, and create a PR."
+
+## Example of a great result
+
+```
+$ /worktree-check
+
+Worktree Status
+──────────────────────────────────
+Branch:    wt/fix-login-redirect
+Task:      Fix the login redirect bug — users land on / instead of /dashboard
+Commits:   2 ahead of main
+Modified:  3 files
+Staged:    0 files
+Untracked: 1 file
+──────────────────────────────────
+
+Modified:  dashboard/src/pages/login.astro, dashboard/src/lib/auth.ts, README.md
+Untracked: dashboard/src/lib/redirect.test.ts
+
+You have uncommitted work. Run `/worktree-deliver` when you're ready to commit, push, and open a PR.
+```
+
+## Do NOT
+
+- ❌ Modify, stage, or commit anything — this command is read-only status reporting
+- ❌ Claim this is a worktree when the path matches the first (main) entry of `git worktree list`
+- ❌ Fabricate commit/file counts — every number in the summary comes from a real git command
+- ❌ Fail loudly if `.worktree-task.md` is missing — just note it and continue

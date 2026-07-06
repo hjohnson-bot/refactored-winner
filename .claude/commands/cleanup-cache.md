@@ -174,3 +174,56 @@ After cleanup, verify the results and inform the user of:
 2. Current free space
 3. What was cleaned
 4. Whether additional cleanup is recommended
+
+## Output format
+
+End with this summary block, filled in from the real before/after `df` numbers:
+
+```
+Cache Cleanup — <conservative | aggressive | maximum>
+──────────────────────────────────
+Free before:  <NN GB>
+Free after:   <NN GB>
+Recovered:    <NN GB>
+Cleaned:      npm, Homebrew, Yarn
+Skipped:      Docker (not installed)
+──────────────────────────────────
+```
+
+If node_modules directories were listed (maximum mode), show them under the block as a
+review list — never as something already deleted.
+
+## Example of a great result
+
+```
+$ /cleanup-cache --aggressive
+
+Before: 12G free
+Cleaning npm cache… done
+Cleaning Homebrew… done
+Cleaning Yarn cache… done
+Cleaning browser caches (Chrome, Firefox, Arc)… done
+Cleaning dev + Python/ML caches (JetBrains, pnpm, huggingface, torch)… done
+
+Cache Cleanup — aggressive
+──────────────────────────────────
+Free before:  12 GB
+Free after:   31 GB
+Recovered:    19 GB
+Cleaned:      npm, Homebrew, Yarn, browsers, JetBrains, pnpm, huggingface, torch
+Skipped:      —
+──────────────────────────────────
+
+Want more? `/cleanup-cache --maximum` also prunes Docker and lists node_modules for review.
+```
+
+## Do NOT
+
+- ❌ `rm -rf` anything outside a known cache path — only the directories listed in the
+  selected option's block
+- ❌ Auto-delete `node_modules` — maximum mode only *lists* them for the user to review
+- ❌ Run aggressive/maximum cleanup without warning that browsers should be closed and
+  Docker containers will be removed
+- ❌ Skip the before-cleanup `df` snapshot — you need it to report space recovered
+- ❌ Report a "recovered" number you didn't measure from real before/after `df` output
+- ❌ Escalate to a higher cleanup level than the flag the user passed

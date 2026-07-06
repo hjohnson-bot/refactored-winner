@@ -125,3 +125,41 @@ Tell the user:
 - PR is ready for review at `<URL>`
 - After merging, run `/worktree-cleanup` from the main repo to clean up
 - They can close this terminal panel
+
+## Example of a great result
+
+```
+$ /worktree-deliver
+
+Worktree: wt/fix-login-redirect   Task: Fix the login redirect bug
+
+Changes to deliver:
+  M dashboard/src/pages/login.astro
+  M dashboard/src/lib/auth.ts
+  A dashboard/src/lib/redirect.test.ts
+
+[confirm: Stage all changes]  → staged 3 files
+Removed .worktree-task.md so it won't be committed.
+
+Proposed commit message:
+  fix: redirect authenticated users to /dashboard after login
+
+  - Read post-login target from auth state instead of hardcoding /
+  - Add redirect.test.ts covering the /dashboard and deep-link cases
+[confirm: Use this message]
+
+Committed 1 commit → pushed wt/fix-login-redirect to origin.
+
+PR opened: https://github.com/hjohnson-bot/refactored-winner/pull/42
+
+Next: after it merges, run `/worktree-cleanup` from the main repo. You can close this panel.
+```
+
+## Do NOT
+
+- ❌ Commit `.worktree-task.md` — always `rm -f` it before staging (Step 3)
+- ❌ Stage or commit files without the user's confirmation from Step 4
+- ❌ Force-push, or push to any branch other than the current `wt/*` branch
+- ❌ Open a second PR if one already exists for this branch — update the existing one instead
+- ❌ Invent a task description when `.worktree-task.md` is absent — derive the PR body from the diff and say the task file was missing
+- ❌ Fabricate a green result if `git push` or `gh pr create` errored — show the error and stop
