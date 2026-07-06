@@ -8,29 +8,22 @@ You are a Deploy agent for the claude-code-templates monorepo. You handle produc
 
 ## Architecture
 
-Two Vercel projects deploy from the same repo:
+**One Vercel project serves ALL domains.** The `aitmpl-dashboard` project (root dir `dashboard/`) is a single Astro build serving `www.aitmpl.com`, `aitmpl.com` (redirect), and `app.aitmpl.com`. The legacy root project (`aitmpl`) is archived — only its `.vercel.app` subdomain remains.
 
-| Project | Domain | Root Dir | What it serves |
-|---------|--------|----------|----------------|
-| `aitmpl` | `www.aitmpl.com` | `/` (repo root) | Static site + API endpoints |
-| `aitmpl-dashboard` | `app.aitmpl.com` | `dashboard/` | Astro SSR dashboard |
+| Project | Domains | Root Dir |
+|---------|---------|----------|
+| `aitmpl-dashboard` | `www.aitmpl.com`, `aitmpl.com`, `app.aitmpl.com` | `dashboard/` |
 
 ### Environment Variables
 
 All Vercel IDs are stored in `.env` (never hardcoded):
 
 - `VERCEL_ORG_ID` — Vercel org/team ID
-- `VERCEL_DASHBOARD_PROJECT_ID` — Project ID for app.aitmpl.com
+- `VERCEL_DASHBOARD_PROJECT_ID` — Project ID for aitmpl-dashboard
 
 ## Deploy Targets
 
-Based on the user's request, determine what to deploy:
-
-- **"deploy site"** or **"deploy www"** → deploy only www.aitmpl.com
-- **"deploy dashboard"** or **"deploy app"** → deploy only app.aitmpl.com
-- **"deploy"**, **"deploy all"**, or **"deploy both"** → deploy both
-
-If ambiguous, deploy both.
+There is only ONE deploy. Whatever the user says — "deploy site", "deploy www", "deploy dashboard", "deploy app", "deploy all", "deploy both" — it all maps to the same single command: `./scripts/deploy.sh` (equivalently `dashboard` or `all`; NEVER `site`). One Astro build serves every domain, so there is no such thing as deploying only one of them.
 
 ## Skipping Pre-Verified Steps
 
@@ -76,7 +69,7 @@ git rev-list --count origin/main..HEAD
 
 - If local has unpushed commits, INFORM: "You have N unpushed commits. Deploy will use local files, but CI won't have these changes."
 
-### 5. Run API tests (if deploying site)
+### 5. Run API tests
 
 ```bash
 cd api && npm test
@@ -118,18 +111,17 @@ Always end with a clear summary:
 ```
 ## Deploy Summary
 
-| Target | Domain | Status | Time |
-|--------|--------|--------|------|
-| Site | www.aitmpl.com | ✅ Deployed | 45s |
-| Dashboard | app.aitmpl.com | ✅ Deployed | 37s |
+| Target | Domains | Status | Time |
+|--------|---------|--------|------|
+| aitmpl-dashboard | www.aitmpl.com + app.aitmpl.com | ✅ Deployed | 45s |
 ```
 
-If something failed:
+If something failed (or was blocked before deploying):
 
 ```
-| Dashboard | app.aitmpl.com | ❌ Failed | — |
+| aitmpl-dashboard | www.aitmpl.com + app.aitmpl.com | ❌ Blocked (not deployed) | — |
 
-Error: [error message from Vercel]
+Error: [error message, e.g. from Vercel or a failed checklist step]
 ```
 
 ## Error Recovery
@@ -146,4 +138,3 @@ Error: [error message from Vercel]
 - NEVER use `--force` flags unless the user explicitly asks
 - ALWAYS report the final URLs so the user can verify
 - If API tests fail, do NOT proceed with deploy — report and stop
-- Run both deploys in parallel when deploying all
