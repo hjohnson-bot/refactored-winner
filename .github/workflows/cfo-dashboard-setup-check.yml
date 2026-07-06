@@ -1,0 +1,110 @@
+name: CFO Dashboard — Setup Check
+
+# Validates that the daily QuickBooks refresh is fully provisioned.
+# Runs the same preflight secret check as the daily workflow, but does not
+# attempt the QuickBooks pull. Useful right after wiring up secrets to
+# verify everything works without waiting 5 minutes for the full pull.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: Verify secrets, endpoints, and workflow file
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+
+      - name: Check required secrets
+        id: secrets
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          QB_MCP_URL: ${{ secrets.QB_MCP_URL }}
+        run: |
+          set +e
+          FAIL=0
+          echo "### 🔐 Secrets" >> "$GITHUB_STEP_SUMMARY"
+          if [ -n "${ANTHROPIC_API_KEY:-}" ]; then
+            echo "- ✅ \`ANTHROPIC_API_KEY\` set (length: ${#ANTHROPIC_API_KEY})" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "- ❌ \`ANTHROPIC_API_KEY\` NOT SET" >> "$GITHUB_STEP_SUMMARY"
+            FAIL=1
+          fi
+          if [ -n "${QB_MCP_URL:-}" ]; then
+            echo "- ✅ \`QB_MCP_URL\` set: \`$QB_MCP_URL\`" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "- ⚠️  \`QB_MCP_URL\` unset (will default to https://ai-inc.quickbooks.intuit.com/v1/mcp)" >> "$GITHUB_STEP_SUMMARY"
+          fi
+          if [ $FAIL -eq 1 ]; then
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            echo "**Fix**: Add missing secrets at [Settings → Secrets → Actions](https://github.com/${{ github.repository }}/settings/secrets/actions/new)." >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+
+      - name: Test Anthropic API key (auth ping, no data pulled)
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          set -euo pipefail
+          echo "### 🌐 Anthropic API auth" >> "$GITHUB_STEP_SUMMARY"
+          HTTP_STATUS=$(curl -sS -o /tmp/anthropic.json -w "%{http_code}" \
+            -X POST https://api.anthropic.com/v1/messages \
+            -H "Content-Type: application/json" \
+            -H "x-api-key: $ANTHROPIC_API_KEY" \
+            -H "anthropic-version: 2023-06-01" \
+            -d '{"model":"claude-haiku-4-5-20251001","max_tokens":10,"messages":[{"role":"user","content":"ping"}]}' \
+            || echo "curl-failed")
+
+          if [ "$HTTP_STATUS" = "200" ]; then
+            echo "- ✅ API key is valid (HTTP 200 on a minimal request)" >> "$GITHUB_STEP_SUMMARY"
+          elif [ "$HTTP_STATUS" = "401" ] || [ "$HTTP_STATUS" = "403" ]; then
+            ERROR_TYPE=$(jq -r '.error.type // "unknown"' /tmp/anthropic.json 2>/dev/null || echo unknown)
+            ERROR_MSG=$(jq -r '.error.message // ""' /tmp/anthropic.json 2>/dev/null || echo "")
+            echo "- ❌ API key rejected (HTTP $HTTP_STATUS): $ERROR_TYPE — $ERROR_MSG" >> "$GITHUB_STEP_SUMMARY"
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            echo "Get a fresh key at [console.anthropic.com/settings/keys](https://console.anthropic.com/settings/keys) and update the secret." >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          else
+            echo "- ⚠️  Unexpected HTTP status $HTTP_STATUS. See raw response:" >> "$GITHUB_STEP_SUMMARY"
+            echo '  ```json' >> "$GITHUB_STEP_SUMMARY"
+            head -20 /tmp/anthropic.json >> "$GITHUB_STEP_SUMMARY" 2>&1 || true
+            echo '  ```' >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+
+      - name: Confirm required files present in repo
+        run: |
+          set -euo pipefail
+          echo "### 📁 Repository files" >> "$GITHUB_STEP_SUMMARY"
+          for f in \
+            cfo-dashboard/scripts/refresh-quickbooks.mjs \
+            cfo-dashboard/scripts/build_snapshot.py \
+            cfo-dashboard/scripts/build_distributables.py \
+            .github/workflows/cfo-dashboard-refresh.yml
+          do
+            if [ -f "$f" ]; then
+              echo "- ✅ \`$f\`" >> "$GITHUB_STEP_SUMMARY"
+            else
+              echo "- ❌ \`$f\` MISSING" >> "$GITHUB_STEP_SUMMARY"
+              exit 1
+            fi
+          done
+
+      - name: All checks passed
+        run: |
+          {
+            echo ""
+            echo "---"
+            echo "## ✅ Setup validated"
+            echo ""
+            echo "The daily refresh workflow is fully provisioned. The next scheduled run is at 4 AM US Eastern (next fire: whichever of the two cron triggers matches)."
+            echo ""
+            echo "You can also trigger a run right now via **Actions → CFO Dashboard — Daily QuickBooks Refresh → Run workflow**."
+          } >> "$GITHUB_STEP_SUMMARY"
