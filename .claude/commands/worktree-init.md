@@ -86,3 +86,36 @@ Finally, remind the user:
 - Open a new Ghostty panel with `Cmd+D` (split right) or `Cmd+Shift+D` (split down)
 - When done with a task, use `/worktree-deliver` to commit, push, and create a PR
 - After merging all PRs, use `/worktree-cleanup --all` from the main repo
+
+### Edge Cases
+
+- **Branch already exists** (`wt/<name>` taken): append `-2`, `-3`, … and tell the user.
+- **Detached HEAD or mid-rebase** in the main repo: stop and tell the user to finish/abort first — never create worktrees from a broken state.
+- **`origin/<main-branch>` doesn't exist** (offline or empty repo): fall back to local `<main-branch>`; warn that the worktree may be behind remote.
+- **Task text contains `/` or other path-hostile characters**: they're stripped by kebab-casing — verify the result is non-empty; if empty, ask for a better task name.
+
+### Do NOT
+
+- Do NOT create a worktree if one already exists at the target path — report it and skip.
+- Do NOT run `npm install` yourself in each worktree — dependency installs are the user's call (they may want to symlink or skip).
+- Do NOT create worktrees for more than 6 tasks in one invocation — beyond that, panel management collapses; suggest batching.
+- Do NOT modify anything in the main working tree.
+
+### Example of a great result
+
+`/worktree-init fix login bug | add CSV export`
+
+```
+| # | Task           | Branch             | Path                                        |
+|---|----------------|--------------------|---------------------------------------------|
+| 1 | fix login bug  | wt/fix-login-bug   | ../worktrees/refactored-winner/wt-fix-login-bug |
+| 2 | add CSV export | wt/add-csv-export  | ../worktrees/refactored-winner/wt-add-csv-export |
+
+# Panel 1: fix login bug
+cd /Users/you/worktrees/refactored-winner/wt-fix-login-bug && claude
+
+# Panel 2: add CSV export
+cd /Users/you/worktrees/refactored-winner/wt-add-csv-export && claude
+
+# Note: run npm install in each worktree before starting (package-lock.json detected)
+```

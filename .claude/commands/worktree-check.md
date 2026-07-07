@@ -57,3 +57,28 @@ Untracked: <N> files
 ```
 
 If there are changes ready to deliver, suggest: "Run `/worktree-deliver` when you're ready to commit, push, and create a PR."
+
+### Edge Cases
+
+- **`origin/main` doesn't exist locally** (never fetched): use `git rev-list --count main..HEAD` or report "unknown" for the ahead count — don't error out.
+- **Branch doesn't follow `wt/*`**: still show the full status; just add a note that this worktree wasn't created by `/worktree-init`.
+
+### Do NOT
+
+- Do NOT modify anything — this command is read-only, always.
+- Do NOT run `git fetch` (network) unless the user asks — report from local state.
+
+### Example of a great result
+
+```
+Worktree Status
+──────────────────────────────────
+Branch:    wt/fix-login-bug
+Task:      Fix login bug where session expires immediately
+Commits:   3 ahead of main
+Modified:  2 files
+Staged:    0 files
+Untracked: 1 file
+──────────────────────────────────
+Run /worktree-deliver when you're ready to commit, push, and create a PR.
+```

@@ -11,19 +11,20 @@ Export the Advanced Jobs report from Knowify via browser automation and save it 
 
 Use the Playwright skill to automate the full workflow in Chrome. Write the automation script to `/tmp/knowify-export.js` and execute it.
 
-### Environment Variables Required
+### Step 0: Environment guard (run BEFORE anything else)
 
-The following must be set before running:
+This command's destination is a **macOS OneDrive folder**. Check, in order:
 
-- `KNOWIFY_USERNAME` — Knowify login email
-- `KNOWIFY_PASSWORD` — Knowify login password
-
-If either is missing, stop and tell the user to set them.
+1. `KNOWIFY_USERNAME` and `KNOWIFY_PASSWORD` env vars set? If either is missing, STOP with exactly:
+   > Missing KNOWIFY_USERNAME / KNOWIFY_PASSWORD. Set them in your shell (never in a file) and rerun `/knowify-report`.
+2. `uname -s` = Darwin AND the destination directory's parent (`~/Library/CloudStorage/OneDrive-MidwestDesignGroup/Finance/Knowify Reports`) exists?
+   - If NOT (e.g., Linux/cloud session): do NOT fail silently. Instead, run the export but save to `./knowify-exports/Advanced Job Report MM.DD.YYYY.xlsx` in the current repo (gitignored-safe temp location), and clearly tell the user the file needs to be moved to OneDrive manually because this session cannot reach it.
+3. Playwright available (`npx playwright --version` or the Playwright skill)? If not, install Chromium per Step 3's fallback.
 
 ### Step 1: Verify Prerequisites
 
-1. Check that `KNOWIFY_USERNAME` and `KNOWIFY_PASSWORD` environment variables are set
-2. Verify the Playwright skill is available and set up
+1. Both env vars confirmed by Step 0
+2. Playwright confirmed by Step 0
 3. Determine today's date formatted as `MM.DD.YYYY` for the output filename
 
 ### Step 2: Write the Automation Script
@@ -153,9 +154,37 @@ KNOWIFY_USERNAME="$KNOWIFY_USERNAME" KNOWIFY_PASSWORD="$KNOWIFY_PASSWORD" npx pl
 2. Report the filename and destination path
 3. If any errors occurred, show the error and reference the screenshot at `/tmp/knowify-error.png`
 
+### Output Format (always end with this)
+
+```
+Knowify Export — <date>
+──────────────────────────────────────────
+Status:      ✅ Success | ❌ Failed at <step>
+File:        Advanced Job Report MM.DD.YYYY.xlsx
+Saved to:    <full destination path>
+Size:        <file size>
+Environment: macOS + OneDrive | Linux fallback (manual move needed)
+──────────────────────────────────────────
+```
+
+On failure, add the error message and note the screenshot at `/tmp/knowify-error.png`.
+
+### Retry rules
+
+- One retry on login failure or timeout (Knowify's SPA is slow to hydrate). Two consecutive failures → stop and report; do not loop.
+- If the "Advanced Jobs" option isn't found in the dropdown, screenshot and stop — the report name may have changed in Knowify; never guess a different report.
+
 ### Important Notes
 
 - **Date fields**: Use triple-click + type to set dates, NOT form_input or fill. This ensures the existing value is fully selected and replaced.
 - **Sidebar navigation**: The Knowify sidebar may be collapsed — hover first to expand it before clicking "Reports".
 - **Download handling**: Use Playwright's download event API to capture the file, don't rely on filesystem watching.
 - **Duplicate files**: If a file with today's date already exists in the destination, keep both by appending a timestamp suffix (HHMM).
+
+### Do NOT
+
+- Do NOT write credentials into `/tmp/knowify-export.js` or any file — pass them only via environment variables at execution time (the script template already reads `process.env`).
+- Do NOT commit the exported .xlsx or the temp script to git.
+- Do NOT export any report other than "Advanced Jobs" without being asked.
+- Do NOT change the date range (1/1/22 → 12/31/28) unless the user specifies a different one.
+- Do NOT leave the browser open after failure — the `finally` block must always run.

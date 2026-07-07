@@ -65,6 +65,61 @@ jobs:
         if: steps.should-run.outputs.run == 'true'
         run: pip install openpyxl
 
+      - name: Verify required secrets before starting QuickBooks pull
+        if: steps.should-run.outputs.run == 'true'
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          QB_MCP_URL: ${{ secrets.QB_MCP_URL }}
+        run: |
+          set +e   # collect ALL missing secrets, don't stop at the first
+          MISSING=()
+          [ -z "${ANTHROPIC_API_KEY:-}" ] && MISSING+=("ANTHROPIC_API_KEY")
+          # QB_MCP_URL is optional — the refresh script falls back to the
+          # public default when it's unset. Warn but don't fail.
+          [ -z "${QB_MCP_URL:-}" ] && echo "::warning::QB_MCP_URL secret unset — falling back to https://ai-inc.quickbooks.intuit.com/v1/mcp"
+
+          if [ ${#MISSING[@]} -gt 0 ]; then
+            echo ""
+            echo "════════════════════════════════════════════════════════════════"
+            echo "  ❌ Cannot refresh the CFO dashboard from QuickBooks."
+            echo "  The following required secret(s) are not set:"
+            for s in "${MISSING[@]}"; do echo "     • $s"; done
+            echo ""
+            echo "  Fix (30 seconds):"
+            echo "  1. Open:"
+            echo "     https://github.com/${{ github.repository }}/settings/secrets/actions/new"
+            echo "  2. Add each secret listed above."
+            echo "     • ANTHROPIC_API_KEY: the Anthropic API key whose account"
+            echo "       authenticated against the QuickBooks MCP. Get one at"
+            echo "       https://console.anthropic.com/settings/keys"
+            echo "     • QB_MCP_URL (optional): defaults to"
+            echo "       https://ai-inc.quickbooks.intuit.com/v1/mcp — only set"
+            echo "       this if you use a custom or self-hosted QB MCP endpoint."
+            echo "  3. Re-run this workflow from the Actions tab."
+            echo "════════════════════════════════════════════════════════════════"
+            echo ""
+
+            # Publish to the run summary so the failure is visible without
+            # digging through the logs.
+            {
+              echo "## ❌ Cannot refresh — missing secrets"
+              echo ""
+              echo "The daily QuickBooks refresh workflow requires the following secret(s):"
+              echo ""
+              for s in "${MISSING[@]}"; do echo "- \`$s\`"; done
+              echo ""
+              echo "### Fix"
+              echo ""
+              echo "1. Open [repository secrets settings](https://github.com/${{ github.repository }}/settings/secrets/actions/new)."
+              echo "2. Add each secret listed above. Get an Anthropic API key at [console.anthropic.com/settings/keys](https://console.anthropic.com/settings/keys)."
+              echo "3. Re-run this workflow from the Actions tab."
+            } >> "$GITHUB_STEP_SUMMARY"
+
+            exit 1
+          fi
+
+          echo "All required secrets present. Proceeding to pull from QuickBooks."
+
       - name: Pull QuickBooks data + rebuild snapshot
         if: steps.should-run.outputs.run == 'true'
         env:
