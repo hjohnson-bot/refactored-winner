@@ -1,111 +1,88 @@
-# Python Linter
+---
+allowed-tools: Bash(cd:*), Bash(npm:*), Bash(npx:*), Bash(black:*), Bash(flake8:*), Bash(isort:*), Bash(ruff:*), Bash(mypy:*), Bash(pylint:*), Bash(ls:*), Bash(cat:*), Bash(git:*)
+argument-hint: [path] | [--fix] | [--check]
+description: Lint and format the changed code with the right tool for its language (Python + JS/TS), then report what changed
+---
 
-Run Python code linting and formatting tools.
+# Linter
+
+Lint and format the code being changed, using the correct tool for each language in this mixed repo. Default to reporting issues; only auto-fix when asked. `$ARGUMENTS`
 
 ## Purpose
 
-This command helps you maintain code quality using Python's best linting and formatting tools.
+This repo mixes **Python** (`scripts/`, `cfo-dashboard/`) and **JavaScript/TypeScript** (`cli-tool/`, `dashboard/`, `docu/`). Run the linter that matches the files under change — don't run Python tools on the Astro dashboard or vice-versa. Use this before committing so style stays consistent and diffs stay small.
 
-## Usage
+## Preconditions
 
-```
-/lint
-```
+1. Determine which files changed: `git status --short` / `git diff --name-only`.
+2. Prefer the tool the project already configures (check for `pyproject.toml`, `.flake8`, `ruff.toml`, `.eslintrc*`, `.prettierrc*`). If none is configured, use the sensible defaults below and say so.
+3. `--fix` mutates files (formatting + safe autofixes). `--check` only reports and must exit non-zero on problems. Default (no flag) = report, don't write.
 
-## What this command does
+## Process
 
-1. **Runs multiple linters** (flake8, pylint, black, isort)
-2. **Provides detailed feedback** on code quality issues
-3. **Auto-fixes formatting** where possible
-4. **Checks type hints** if mypy is configured
+1. **Scope** to the changed area from `$ARGUMENTS` or `git status`. If a path is given, lint only that path.
+2. **Python files** → run, in order: `isort` (import order) → `black` (format) → `flake8` (style) → `mypy` (types, only if configured). `ruff` may substitute for isort+flake8 if the project uses it.
+3. **JS/TS files** → run the project's ESLint/Prettier if configured (`npx eslint`, `npx prettier`). If not configured, note that and skip rather than imposing a random style.
+4. **With `--fix`**: apply `black`, `isort`, `prettier` and re-run the checkers to confirm the tree is clean afterward. Show `git diff --stat` of what formatting changed.
+5. **Report** using the output format below. List each remaining issue with `file:line — rule — message`.
 
-## Example Commands
+## Command Reference
 
-### Black (code formatting)
+### Python
 ```bash
-# Format all Python files
-black .
-
-# Check formatting without changing files
-black --check .
-
-# Format specific file
-black src/main.py
+isort .            # or: isort --check-only .
+black .            # or: black --check .
+flake8 . --max-line-length=88 --extend-ignore=E203,W503
+mypy .             # only if mypy is configured
+ruff check .       # if the project uses ruff (replaces flake8/isort)
+ruff check --fix .
 ```
 
-### flake8 (style guide enforcement)
+### JS / TS (only if the project configures them)
 ```bash
-# Check all Python files
-flake8 .
-
-# Check specific directory
-flake8 src/
-
-# Check with specific rules
-flake8 --max-line-length=88 .
+npx prettier --write .     # or --check .
+npx eslint . --fix         # or without --fix to report
 ```
 
-### isort (import sorting)
-```bash
-# Sort imports in all files
-isort .
+## Output Format
 
-# Check import sorting
-isort --check-only .
+End with this block, filled from the real run:
 
-# Sort imports in specific file
-isort src/main.py
+```
+Lint Summary
+──────────────────────────────────
+Scope:    <paths / language(s) linted>
+Tools:    <isort, black, flake8, ... or eslint/prettier>
+Mode:     report | --fix | --check
+Result:   CLEAN ✅  |  ISSUES ❌ (<N> remaining)
+Fixed:    <N files reformatted>  (only with --fix)
+──────────────────────────────────
 ```
 
-### pylint (comprehensive linting)
-```bash
-# Run pylint on all files
-pylint src/
+If ISSUES, list each below as:
+`❌ <file>:<line> — <rule/code> — <message>`
 
-# Run with specific score threshold
-pylint --fail-under=8.0 src/
+## Examples
 
-# Generate detailed report
-pylint --output-format=html src/ > pylint_report.html
-```
+**Example 1 — Python, report only, clean:**
+> Ran `isort --check-only . && black --check . && flake8 .` on `scripts/`.
+> ```
+> Result:   CLEAN ✅
+> Tools:    isort, black, flake8
+> ```
 
-### mypy (type checking)
-```bash
-# Check types in all files
-mypy .
+**Example 2 — Python, `--fix`:**
+> Ran black + isort with `--fix` on `cfo-dashboard/scripts/build_snapshot.py`.
+> ```
+> Result:   CLEAN ✅
+> Fixed:    1 file reformatted (black: 1, isort: 1)
+> ```
+> `git diff --stat`: `build_snapshot.py | 6 +++---`. Remaining flake8: none.
 
-# Check specific module
-mypy src/models.py
+## Never Do
 
-# Check with strict mode
-mypy --strict src/
-```
-
-## Configuration Files
-
-Most projects benefit from configuration files:
-
-### .flake8
-```ini
-[flake8]
-max-line-length = 88
-exclude = .git,__pycache__,venv
-ignore = E203,W503
-```
-
-### pyproject.toml
-```toml
-[tool.black]
-line-length = 88
-
-[tool.isort]
-profile = "black"
-```
-
-## Best Practices
-
-- Run linters before committing code
-- Use consistent formatting across the project
-- Fix linting issues promptly
-- Configure linters to match your team's style
-- Use type hints for better code documentation
+- **Never impose a formatter on a language the project doesn't configure it for** (e.g. don't ESLint-fix the whole dashboard on a whim) — note it's unconfigured and skip.
+- **Never run Python linters on JS/TS files or vice-versa.**
+- **Never auto-fix under the default mode** — only `--fix` writes to files. `--check`/default report only.
+- Never silence a real error by adding blanket `# noqa` / `eslint-disable` just to get a clean run — report it instead.
+- Never commit or push from this command — it lints and reports; committing is a separate step.

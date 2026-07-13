@@ -2,6 +2,18 @@
 
 This file provides guidance to Claude Code when working with this repository.
 
+## Golden Rules (read first)
+
+These are the hard rules for this repo. When in doubt, follow these over any local habit:
+
+- **Never hardcode secrets or infrastructure IDs.** API keys, tokens, DB URLs, Vercel/Discord/Supabase project & org IDs all go in `.env` (Node: `process.env`; Python: `os.environ`). Add a placeholder to `.env.example`. See Security Guidelines for the full policy.
+- **Tests live in `cli-tool/`, not the root.** The root `npm test` is a no-op `echo`. Run `cd cli-tool && npm test` (Jest).
+- **Deploy only via the deployer agent** (`npm run deploy`). Never `vercel --prod` by hand — the agent runs required pre-deploy checks (git status, API tests, auth).
+- **Review every component change with the `component-reviewer` agent**, then regenerate the catalog with `python scripts/generate_components_json.py`. Copy `docs/components.json` → `dashboard/public/components.json` when the dashboard must serve it.
+- **Don't break existing component installs** — preserve component names, paths, and frontmatter shape.
+- **Use relative paths** (`.claude/scripts/`, `path.join()`), never absolute or home-dir paths, in committed code.
+- **The finance dashboards read committed data, never live APIs.** Only Claude Code (via the QuickBooks/Knowify MCPs) pulls live data, into `cfo-dashboard/data/raw/`; the dashboards render from the built `snapshot.json`.
+
 ## Project Overview
 
 This repository has **two distinct halves** that live side by side:

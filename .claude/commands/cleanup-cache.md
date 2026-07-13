@@ -8,6 +8,19 @@ description: Clean system caches (npm, Homebrew, Yarn, browsers, Python/ML) to f
 
 Clean temporary files and caches to free disk space: $ARGUMENTS
 
+## Purpose
+
+Reclaim disk space by clearing rebuildable caches on the user's **macOS** machine. Run it interactively when disk space is low; pick a level with the flag below. Higher levels touch more (browsers, Docker) so read the level's warnings before running.
+
+## Preconditions / Arguments
+
+- **Platform:** macOS (paths assume `~/Library/Caches` and `~/.cache`). No arguments = conservative.
+- **`$ARGUMENTS`:**
+  - *(none)* → **Conservative** (Option 1): package-manager caches only, always safe.
+  - `--aggressive` → **Aggressive** (Option 2): conservative + browser and dev-tool caches. Close browsers first.
+  - `--maximum` → **Maximum** (Option 3): aggressive + Docker prune (with warning) + *lists* stale `node_modules` for manual review.
+- **Assumptions:** these are all rebuildable caches — nothing here is a source of truth. Docker prune and any `node_modules` deletion are the only destructive actions, and Maximum only *lists* `node_modules`, never deletes them.
+
 ## Current Disk Usage
 
 - **Disk space**: !`df -h / | tail -1`
@@ -17,44 +30,31 @@ Clean temporary files and caches to free disk space: $ARGUMENTS
 
 ## Cleanup Options
 
-Based on the arguments provided, execute the appropriate cleanup level:
-
 ### Option 1: Conservative Cleanup (default)
 
-Safe cleanup of package manager caches that can be easily rebuilt:
+Safe cleanup of package-manager caches that rebuild automatically:
 
 ```bash
-# Record starting disk space
-echo "Starting cleanup..."
 df -h / | tail -1 | awk '{print "Before: " $4 " free"}'
-
-# Clean npm cache
 echo "Cleaning npm cache..."
 npm cache clean --force
-
-# Clean Homebrew
 echo "Cleaning Homebrew..."
 brew cleanup
-
-# Clean Yarn cache
 echo "Cleaning Yarn cache..."
 rm -rf ~/Library/Caches/Yarn
-
-# Show results
 df -h / | tail -1 | awk '{print "After: " $4 " free"}'
 ```
 
-### Option 2: Aggressive Cleanup (--aggressive flag)
+### Option 2: Aggressive Cleanup (`--aggressive`)
 
-Includes all conservative cleanup plus browser and development tool caches:
+Conservative plus browser and development-tool caches. **Close browsers first.**
 
 ```bash
-# Run conservative cleanup first (from Option 1)
+# Conservative first
 npm cache clean --force
 brew cleanup
 rm -rf ~/Library/Caches/Yarn
 
-# Clean browser caches
 echo "Cleaning browser caches..."
 rm -rf ~/Library/Caches/Google
 rm -rf ~/Library/Caches/com.operasoftware.Opera
@@ -63,114 +63,91 @@ rm -rf ~/Library/Caches/Mozilla
 rm -rf ~/Library/Caches/zen
 rm -rf ~/Library/Caches/Arc
 
-# Clean development tool caches
 echo "Cleaning development caches..."
 rm -rf ~/Library/Caches/JetBrains
 rm -rf ~/Library/Caches/pnpm
 rm -rf ~/.cache/puppeteer
 rm -rf ~/.cache/selenium
 
-# Clean Python/ML caches
 echo "Cleaning Python/ML caches..."
 rm -rf ~/.cache/uv
 rm -rf ~/.cache/huggingface
 rm -rf ~/.cache/torch
 rm -rf ~/.cache/whisper
 
-# Show results
 df -h / | tail -1 | awk '{print "After aggressive cleanup: " $4 " free"}'
 ```
 
-### Option 3: Maximum Cleanup (--maximum flag)
+### Option 3: Maximum Cleanup (`--maximum`)
 
-Includes all aggressive cleanup plus Docker and old node_modules:
+Aggressive plus Docker. **Warn the user before the Docker prune** — it removes all stopped containers, unused images, and volumes. `node_modules` are only *listed*, never deleted.
 
 ```bash
-# Run aggressive cleanup first (from Option 2)
+# Aggressive first
 npm cache clean --force
 brew cleanup
 rm -rf ~/Library/Caches/Yarn
 rm -rf ~/Library/Caches/{Google,com.operasoftware.Opera,Firefox,Mozilla,zen,Arc,JetBrains,pnpm}
 rm -rf ~/.cache/{puppeteer,selenium,uv,huggingface,torch,whisper}
 
-# Clean Docker (if installed)
-echo "Cleaning Docker..."
+# Docker — confirm with the user BEFORE running this line
+echo "Cleaning Docker (removes stopped containers, unused images, volumes)..."
 docker system prune -af --volumes 2>/dev/null || echo "Docker not running or not installed"
 
-# List node_modules directories for manual review
-echo "Finding node_modules directories..."
-echo "Note: Not auto-deleting. Review and delete manually if needed."
+# node_modules — LIST ONLY, never auto-delete
+echo "Finding node_modules directories (review and delete manually if needed)..."
 find ~ -name "node_modules" -type d -prune 2>/dev/null | head -20
 
-# Show results
 df -h / | tail -1 | awk '{print "After maximum cleanup: " $4 " free"}'
 ```
 
 ## Execution Steps
 
-1. **Determine Cleanup Level**
-   - No arguments or empty: Run Conservative Cleanup (Option 1)
-   - `--aggressive`: Run Aggressive Cleanup (Option 2)
-   - `--maximum`: Run Maximum Cleanup (Option 3)
-
-2. **Safety Checks**
-   - Verify sufficient permissions
-   - Ensure critical applications are closed (browsers for Option 2+)
-   - Warn about Docker containers being removed (Option 3)
-
-3. **Execute Cleanup**
-   - Run appropriate commands based on the selected option
-   - Show progress for each cleanup step
-   - Handle errors gracefully (missing directories, permissions)
-
-4. **Report Results**
-   - Display disk space before and after
-   - Show amount of space recovered
-   - List what was cleaned
-   - Provide recommendations if more space is needed
+1. **Determine level** from `$ARGUMENTS` (none → Option 1, `--aggressive` → Option 2, `--maximum` → Option 3).
+2. **Safety checks:** confirm permissions; ask the user to close browsers for Option 2+; explicitly warn and get confirmation before the Docker prune in Option 3.
+3. **Execute** the selected option, showing progress per step and handling missing dirs/permissions gracefully.
+4. **Report** disk space before/after, space recovered, and what was cleaned.
 
 ## Important Notes
 
-**Conservative Cleanup** (default):
-- ✅ Always safe to run
-- ✅ Caches rebuild automatically when needed
-- ✅ No application impact
-
-**Aggressive Cleanup** (--aggressive):
-- ⚠️ Close browsers before running
-- ⚠️ Browser caches will rebuild on next use
-- ⚠️ ML models will re-download if needed
-
-**Maximum Cleanup** (--maximum):
-- ⚠️ Stops and removes all Docker containers/images
-- ⚠️ Only deletes node_modules after manual review
-- ⚠️ Most impactful but recovers the most space
+- **Conservative** — always safe; caches rebuild on next use; no app impact.
+- **Aggressive** — close browsers first; browser + ML caches re-download on next use.
+- **Maximum** — Docker prune removes containers/images/volumes (warn first); `node_modules` are listed only, deleted manually by the user.
 
 ## Recovery
 
-All cleaned caches are temporary and will rebuild automatically:
+All cleared caches rebuild automatically: npm/Yarn on next `install`, Homebrew on next `brew install`, browsers on next session, Python/ML on next model use, Docker via `docker pull`.
 
-- **npm/Yarn**: Rebuilds on next `npm install`
-- **Homebrew**: Downloaded on next `brew install`
-- **Browsers**: Rebuilds on next browsing session
-- **Python/ML**: Re-downloads models on next use
-- **Docker**: Pull images again with `docker pull`
+## Examples
 
-## Example Usage
+**`/cleanup-cache`** (conservative):
 
-```bash
-# Conservative cleanup (default)
-/cleanup-cache
-
-# Aggressive cleanup
-/cleanup-cache --aggressive
-
-# Maximum cleanup
-/cleanup-cache --maximum
+```
+Before: 18Gi free
+Cleaning npm cache...
+Cleaning Homebrew...
+Cleaning Yarn cache...
+After: 24Gi free
+Freed ~6Gi (npm, Homebrew, Yarn).
 ```
 
-After cleanup, verify the results and inform the user of:
-1. Space freed
-2. Current free space
-3. What was cleaned
-4. Whether additional cleanup is recommended
+**`/cleanup-cache --maximum`** (after user confirms the Docker prune):
+
+```
+...aggressive steps...
+Cleaning Docker (removes stopped containers, unused images, volumes)...
+Total reclaimed space: 9.2GB
+Finding node_modules directories (review and delete manually if needed):
+  ~/projects/old-app/node_modules
+  ~/projects/archive/node_modules
+After maximum cleanup: 41Gi free
+node_modules above were NOT deleted — remove manually if you no longer need them.
+```
+
+## Never do
+
+- **Never** auto-delete `node_modules` at any level — Maximum only lists them for manual review.
+- **Never** run the Docker prune without warning the user and getting confirmation first.
+- **Never** `rm -rf` anything outside cache locations (`~/Library/Caches/*`, `~/.cache/*`, `~/.npm`) — never source code, documents, or config.
+- **Never** delete `.env` files, credentials, or app data; only rebuildable caches.
+- **Never** escalate past the level the user's flag selected (no Docker/browser wipes on a plain `/cleanup-cache`).

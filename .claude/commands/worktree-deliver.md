@@ -1,32 +1,41 @@
 ---
 allowed-tools: Bash(git:*), Bash(gh:*), Bash(rm:*), Bash(cat:*), Bash(pwd:*), Bash(ls:*)
-description: Commit, push, and create PR from the current worktree
+description: Commit, push, and open a PR from the current worktree
 ---
 
 # Worktree Deliver
 
 Commit all work, push, and create a pull request from the current worktree.
 
-## Instructions
+## Purpose
 
-You are inside a worktree. Package up the work and deliver it as a PR.
+Package the work in the current worktree into a commit, push the branch, and open a PR. **Run this from inside the worktree** whose work you want to deliver (a `wt/*` branch created by `/worktree-init`).
+
+## Preconditions / Arguments
+
+- **cwd:** the worktree to deliver. No arguments.
+- **Main working tree** — the first entry of `git worktree list`; if `pwd` matches it, refuse (deliver from a worktree, not the main repo).
+- **Requires:** `gh` authenticated (`gh auth status`) and a writable `origin` remote.
+- **Assumptions:** the branch should follow `wt/*`; warn and confirm if it doesn't.
+
+## Process
 
 ### Step 1: Validate Environment
 
-1. Verify this is a worktree (not the main working tree) using `git worktree list`
-2. Get current branch: `git branch --show-current`
-3. Verify branch follows `wt/*` pattern. If not, warn the user and ask if they want to continue.
-4. Read `.worktree-task.md` if it exists to get the original task description
+1. Confirm this is a worktree, not the main working tree, via `git worktree list`. If it's the main repo, stop and tell the user to run from a worktree.
+2. Current branch: `git branch --show-current`.
+3. If the branch doesn't match `wt/*`, warn and ask before continuing.
+4. Read `.worktree-task.md` (if present) to recover the original task description **before** deleting it in Step 3.
 
 ### Step 2: Review Changes
 
-1. Run `git diff --stat` and `git diff --cached --stat` to show all changes
-2. Run `git status --short` to show the full picture
-3. If there are no changes at all (clean working tree, no commits ahead of main), inform the user there's nothing to deliver and stop.
+1. `git diff --stat` and `git diff --cached --stat` — show all changes.
+2. `git status --short` — full picture, including untracked files.
+3. If there is nothing to deliver (clean tree AND no commits ahead of base), inform the user and stop.
 
 ### Step 3: Clean Up Task File
 
-Before staging anything, remove the worktree task file so it doesn't end up in the commit:
+Remove the task file so it never lands in the commit:
 
 ```bash
 rm -f .worktree-task.md
@@ -34,94 +43,100 @@ rm -f .worktree-task.md
 
 ### Step 4: Confirm Files to Commit
 
-Use AskUserQuestion to show the user what will be committed and ask for confirmation. List all modified, added, and untracked files.
+Use AskUserQuestion to show what will be committed (list modified, added, untracked files). Before proposing to stage, scan for anything that must not be committed — `.env` / secret files, credentials, tokens, keys, large binaries — and exclude them by default, calling out anything skipped.
 
 Options:
-- "Stage all changes" — stage everything
-- "Let me choose" — user will specify which files to include
-
-If the user wants to choose, ask them which files to stage.
+- "Stage all changes" — stage everything (minus the excluded secrets above).
+- "Let me choose" — user specifies which files to include.
 
 ### Step 5: Stage and Commit
 
-1. Stage the confirmed files with `git add`
-2. Generate a commit message following conventional commits format
-
-**Commit Message Strategy:**
-
-   1. **Analyze the diff** to determine the conventional commit type:
-      - `feat:` — New functionality, new files, new exports, new API endpoints
-      - `fix:` — Bug fixes, error corrections, fixing broken behavior
-      - `refactor:` — Code restructuring without changing behavior
-      - `docs:` — Documentation only changes
-      - `test:` — Adding or modifying tests
-      - `chore:` — Build scripts, configs, maintenance tasks
-
-   2. **Generate a commit message** based on:
-      - The task description from `.worktree-task.md` (if it was found)
-      - A brief summary of what the diff actually changed
-      - Format: `<type>: <subject>` (max 72 characters)
-
-   3. **Show the proposed message** to the user with AskUserQuestion:
-      - Display the generated message clearly
-      - Options: "Use this message" / "Let me write my own"
-
-   4. **If user chooses to write their own:**
-      - Ask them to provide their commit message
-      - Validate it follows conventional commits format (warn if not, but allow)
-
-   5. **Always include body and co-author:**
-      - Add a brief body summarizing what changed (2-3 bullet points if multiple changes)
-      - Include the standard co-author line
-
-3. Create the commit with the message using a HEREDOC:
+1. Stage the confirmed files with `git add` (never `git add -A` blindly if secrets were flagged).
+2. Determine the conventional commit type from the diff:
+   - `feat:` new functionality/files/exports/endpoints
+   - `fix:` bug fixes, corrected behavior
+   - `refactor:` restructuring without behavior change
+   - `docs:` docs only
+   - `test:` tests only
+   - `chore:` build/config/maintenance
+3. Generate `<type>: <subject>` (subject max 72 chars) from the task description + a summary of the actual diff.
+4. Show the message via AskUserQuestion: "Use this message" / "Let me write my own". If the user writes their own, validate conventional-commit format (warn but allow).
+5. Always include a short body (2-3 bullets if multi-change) and the standard co-author line.
+6. Commit with a HEREDOC:
    ```bash
    git commit -m "$(cat <<'EOF'
-   <commit message here>
+   <type>: <subject>
+
+   - <bullet>
+   - <bullet>
+
+   Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
    EOF
    )"
    ```
 
 ### Step 6: Push
 
-Push the branch to origin:
-
 ```bash
 git push -u origin HEAD
 ```
 
-If push fails due to no upstream, the `-u` flag should handle it. If it fails for another reason, show the error and suggest fixes.
+The `-u` sets upstream on first push. On any other failure, show the error and suggest a fix (e.g. `git pull --rebase` if the remote moved).
 
 ### Step 7: Create Pull Request
 
-1. Determine the base branch (main or master) using the same detection as worktree-init
-2. Create the PR using `gh pr create`:
+1. Determine the base branch (`main`/`master`) as in `/worktree-init`.
+2. Open the PR:
+   ```bash
+   gh pr create --base <main-branch> --title "<PR title>" --body "$(cat <<'EOF'
+   ## Summary
 
-```bash
-gh pr create --base <main-branch> --title "<PR title>" --body "$(cat <<'EOF'
-## Summary
+   <bullets from task description + diff>
 
-<bullet points describing the changes based on task description and diff>
+   ## Original Task
 
-## Original Task
+   <task description from .worktree-task.md>
 
-<task description from .worktree-task.md>
+   ## Changes
 
-## Changes
+   <git diff --stat summary>
 
-<git diff --stat summary>
-
----
-Created from worktree `wt/<name>` using `/worktree-deliver`
-EOF
-)"
-```
-
-3. Display the PR URL prominently
+   ---
+   Created from worktree `wt/<name>` using `/worktree-deliver`
+   EOF
+   )"
+   ```
+3. Display the PR URL prominently.
 
 ### Step 8: Next Steps
 
 Tell the user:
-- PR is ready for review at `<URL>`
-- After merging, run `/worktree-cleanup` from the main repo to clean up
-- They can close this terminal panel
+- PR is ready at `<URL>`.
+- After merging, run `/worktree-cleanup` from the main repo.
+- This panel can be closed.
+
+## Examples
+
+**Deliver `wt/fix-auth-timeout`, one changed file:**
+
+```
+Reviewing changes on wt/fix-auth-timeout...
+ src/auth/session.js | 12 +++++---
+Proposed commit: fix: extend auth session timeout to 30m
+[confirmed] Committed 1 file.
+Pushed wt/fix-auth-timeout → origin.
+
+PR opened:
+https://github.com/acme/refactored-winner/pull/482
+
+Next: after merge, run /worktree-cleanup from the main repo.
+```
+
+## Never do
+
+- **Never** commit `.worktree-task.md` — always `rm -f` it first (Step 3).
+- **Never** commit `.env` files, secrets, tokens, keys, or credentials; exclude and warn.
+- **Never** deliver from the main working tree — only from a `wt/*` worktree.
+- **Never** use `git add -A` when secrets were flagged; stage explicit paths.
+- **Never** force-push (`--force`); if the push is rejected, surface the error and suggest a rebase.
+- **Never** invent a task description if `.worktree-task.md` is missing — derive the PR body from the diff instead.
