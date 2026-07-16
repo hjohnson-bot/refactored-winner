@@ -55,7 +55,7 @@ Most "component" workflows below concern half (1). The finance dashboards
 | `.claude/` | Project agents, commands, hooks, `launch.json` for this repo |
 | `.claude-plugin/marketplace.json` | Plugin marketplace manifest |
 | `.mcp.json` | Project MCP servers (Linear, Neon) |
-| `schedule.json` | Scheduled job: runs `/knowify-report` daily at 23:35 |
+| `schedule.json` | Scheduled job: runs `/knowify-report` daily at 23:35 (CFO refresh is scheduled separately via `cfo-dashboard-refresh.yml`) |
 
 ## Essential Commands
 
@@ -456,20 +456,43 @@ renders from `data/snapshot.json` — there are **no hardcoded numbers**.
 | `react/snapshotAdapter.js` | Maps `snapshot.json` into the React component's shape |
 | `ACCOUNT_MAP.md` | Audit map: every QuickBooks account → dashboard tab/KPI |
 
-### Monthly refresh flow
+### Refreshing the data
+
+Three ways to refresh, all producing the same `data/snapshot.json`:
+
+1. **`/cfo-refresh` (preferred, interactive)** — run the slash command in a
+   Claude Code session with the QuickBooks MCP enabled. It pulls the 3 P&L
+   periods, 2 cash-flow periods, last 13 months, and benchmark into
+   `data/raw/`, rebuilds `snapshot.json`, and reports KPI deltas. See
+   `.claude/commands/cfo-refresh.md`.
+2. **Nightly cron (headless)** — `.github/workflows/cfo-dashboard-refresh.yml`
+   runs `scripts/refresh-quickbooks.mjs` (needs `ANTHROPIC_API_KEY`, `QB_MCP_URL`).
+   `/cfo-refresh` mirrors this script's exact pull plan — **keep the two in
+   lockstep** if either changes.
+3. **Manual fallback** — `./scripts/refresh.sh prompt` prints a copy/paste
+   prompt; `./scripts/refresh.sh build` rebuilds `snapshot.json` from existing
+   `data/raw/` files (no QuickBooks calls).
 
 ```bash
 cd cfo-dashboard
-./scripts/refresh.sh prompt   # prints a copy/paste prompt for Claude Code
-# Paste into Claude Code — it pulls live P&L + Cash Flow via the QuickBooks
-# MCP and saves each response under data/raw/ and data/raw/months/
-./scripts/refresh.sh build    # build_snapshot.py → data/snapshot.json
+./scripts/refresh.sh build    # rebuild snapshot.json from existing raw files
 # Open index.html (re-reads snapshot.json on load)
 ```
 
-**Only Claude Code has QuickBooks MCP access** — the dashboard itself never
-calls QuickBooks directly. Keep `data/raw/` as the verifiable source of truth;
-all formulas are documented in both `README.md` and `ACCOUNT_MAP.md`.
+**Only Claude Code (or the headless script) has QuickBooks MCP access** — the
+dashboard itself never calls QuickBooks directly. Keep `data/raw/` as the
+verifiable source of truth; all formulas are documented in both `README.md`
+and `ACCOUNT_MAP.md`.
+
+### Recurring data refreshes (at a glance)
+
+| Command | Refreshes | Scheduled by | On-demand |
+|---|---|---|---|
+| `/cfo-refresh` | CFO dashboard `snapshot.json` from QuickBooks | `cfo-dashboard-refresh.yml` (GitHub Actions cron) | run `/cfo-refresh` |
+| `/knowify-report` | Knowify Advanced Jobs Report → AJR Reports folder | `schedule.json` (daily 23:35) | run `/knowify-report` |
+
+Both are finance/ops automations for Midwest Design Group LLC and both require
+their respective MCP/credentials to be present in the session that runs them.
 
 ## Knowify Integration
 
@@ -505,7 +528,8 @@ This repo ships its own Claude Code configuration:
 - **`.claude/agents/`** — project agents including `component-reviewer`,
   `deployer`, `catalog-generator`, `blog-writer`, the `*-expert` component
   authors, and `linear-tracker`. Use them as directed elsewhere in this file.
-- **`.claude/commands/`** — slash commands: `knowify-report`, `create-blog-article`,
+- **`.claude/commands/`** — slash commands: `cfo-refresh` (rebuild the CFO
+  dashboard from QuickBooks), `knowify-report`, `create-blog-article`,
   `lint`, `test`, `cleanup-cache`, and the `worktree-*` family
   (`worktree-init`, `worktree-check`, `worktree-deliver`, `worktree-cleanup`)
   for parallel multi-task development.
