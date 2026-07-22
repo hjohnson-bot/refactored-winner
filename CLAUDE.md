@@ -473,6 +473,26 @@ Group LLC.
 - A **Knowify MCP** is also available in some sessions for direct data access
   (company is Midwest Design Group LLC, time zone America/Indianapolis).
 
+## MDG Agent Team (`mdg-team/` + `.claude/agents/mdg-*.md`)
+
+A multi-agent operating system for Midwest Design Group finance, project, HR, and
+document work. Ten specialist subagents (`.claude/agents/mdg-*.md`) orchestrated by
+the `/mdg` command, with a shared memory system and playbook library:
+
+- `/mdg <request>` — triages the request, gathers context via `mdg-source-of-truth`,
+  fans out to specialists in parallel (one owner per workstream), verifies through
+  `mdg-chief-of-staff`, and packages via `mdg-exec-briefing`.
+- `/mdg-retro` — learning loop: mines sessions for corrections and proposes updates
+  to `mdg-team/memory/` (saved only with user approval).
+- `mdg-team/memory/` — business facts, Hunter's preferences, mistake log. Agents
+  read these before working; they are appended only through the approval flow.
+- `mdg-team/playbooks/` — repeatable workflows (month-end close, forecast bridge,
+  WIP review, payroll bridge, QuickBooks coding audit).
+
+**Standing rule: all QuickBooks and Knowify access from these agents is read-only.**
+Reclasses, invoices, and payroll changes are always proposals for a human. See
+`mdg-team/README.md` for the full architecture.
+
 ## Docusaurus Site (`docu/`)
 
 A **separate** Docusaurus documentation project (its own `package.json`,
