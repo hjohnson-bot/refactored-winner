@@ -26,7 +26,7 @@ Most "component" workflows below concern half (1). The finance dashboards
 (half 2) are largely standalone and documented in their own sections.
 
 Directory-specific guidance lives in nested `CLAUDE.md` files
-(`cli-tool/components/`, `dashboard/`, `cloudflare-workers/`, `cfo-dashboard/`,
+(`cli-tool/`, `dashboard/`, `cloudflare-workers/`, `cfo-dashboard/`,
 `docu/`) and loads only when working in those trees.
 
 ## Essential Commands
@@ -86,7 +86,7 @@ Use the component-reviewer agent to review [component-path]
 ```
 
 Then run `python scripts/generate_components_json.py` to update the catalog.
-See `cli-tool/components/CLAUDE.md` for the full creation workflow.
+See `cli-tool/CLAUDE.md` for the full creation workflow.
 
 #### Statuslines with Python Scripts
 
